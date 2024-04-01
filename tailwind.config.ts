@@ -5,6 +5,9 @@ const config = {
   content: ['./src/**/*.tsx'],
   theme: {
     extend: {
+      width: {
+        card: '37rem',
+      },
       colors: {
         primary: '#7C3AED',
         secondary: '#FBBF24',

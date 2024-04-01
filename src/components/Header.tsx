@@ -9,7 +9,7 @@ export function Header() {
   // const isDark = resolvedTheme === 'dark'
   const isDark = true
   return (
-    <div className="flex w-full justify-between bg-violet-700 px-16 py-6">
+    <div className="bg-violet-700 flex w-full justify-between px-16 py-6">
       <LogoEJC isDark={isDark} />
 
       <ModeToggle />

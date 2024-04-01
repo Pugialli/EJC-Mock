@@ -1,17 +1,24 @@
-import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import {
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { getMonthBR } from '@/utils/get-month-locale'
 import { toProper } from '@/utils/to-proper'
 
 export interface InitialFormProps {
   date: Date
+  forward: () => void
 }
 
-export function InitialForm({ date }: InitialFormProps) {
+export function InitialForm({ date, forward }: InitialFormProps) {
   const month = toProper(getMonthBR(date))
 
   const isDateSet = true
   return (
-    <>
+    <div className="text-center">
       <CardHeader className="">
         <CardTitle className="text-2xl font-bold">Olá!</CardTitle>
       </CardHeader>
@@ -49,6 +56,11 @@ export function InitialForm({ date }: InitialFormProps) {
 
         <p>Vamos começar?</p>
       </CardContent>
-    </>
+      <CardFooter className="w-full p-0">
+        <Button className="w-full" onClick={forward}>
+          Vamos!
+        </Button>
+      </CardFooter>
+    </div>
   )
 }

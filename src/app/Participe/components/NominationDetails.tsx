@@ -1,7 +1,12 @@
+import { MultiStep } from '@/components/MultiStep'
+
 export function NominationDetails() {
   return (
     <div>
-      <h1>Indicado por</h1>
+      <div className="flex w-full items-center justify-between">
+        <span className="text-nowrap text-2xl font-bold">Indicado por</span>
+        <MultiStep size={5} currentStep={4} />
+      </div>
     </div>
   )
 }

@@ -1,25 +1,38 @@
-import * as React from "react"
+import * as React from 'react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  prefix?: string
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
+  ({ prefix, className, type, ...props }, ref) => {
     return (
-      <input
-        type={type}
+      <div
         className={cn(
-          "flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:ring-offset-zinc-950 dark:placeholder:text-zinc-400 dark:focus-visible:ring-zinc-300",
-          className
+          'flex w-full items-center gap-1 rounded-lg border border-zinc-300 px-3 py-2 text-sm shadow-sm placeholder:text-zinc-400',
+          'disabled:cursor-not-allowed  disabled:opacity-50',
+          'focus-within:border-amber-300 focus-within:ring-4 focus-within:ring-amber-100',
+          'dark:border-zinc-700 dark:bg-zinc-800',
+          'dark:focus-within:border-amber-500 dark:focus-within:ring-amber-500/20',
         )}
-        ref={ref}
-        {...props}
-      />
+      >
+        {prefix && <span className="text-zinc-400">{prefix}</span>}
+        <input
+          type={type}
+          className={cn(
+            'flex-1 border-0 bg-transparent p-0 text-zinc-700 placeholder-zinc-400 outline-none dark:text-zinc-100 dark:placeholder-zinc-400',
+            className,
+          )}
+          ref={ref}
+          {...props}
+        />
+      </div>
     )
-  }
+  },
 )
-Input.displayName = "Input"
+Input.displayName = 'Input'
 
 export { Input }

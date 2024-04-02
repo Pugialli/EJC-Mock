@@ -12,7 +12,7 @@ import { SuccessForm } from './components/SuccessForm'
 import { useState } from 'react'
 
 export function Participe() {
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(6)
   const dateEJC = new Date(2024, 4, 24)
 
   function forwardStep() {
@@ -23,9 +23,9 @@ export function Participe() {
     setStep((state) => state - 1)
   }
 
-  // function resetStep() {
-  //   setStep(0)
-  // }
+  function resetStep() {
+    setStep(0)
+  }
 
   function renderStep() {
     switch (step) {
@@ -34,21 +34,23 @@ export function Participe() {
       case 1:
         return <PersonalDetails forward={forwardStep} previous={previousStep} />
       case 2:
-        return <AddressDetails />
+        return <AddressDetails forward={forwardStep} previous={previousStep} />
       case 3:
-        return <FamilyDetails />
+        return <FamilyDetails forward={forwardStep} previous={previousStep} />
       case 4:
-        return <NominationDetails />
+        return (
+          <NominationDetails forward={forwardStep} previous={previousStep} />
+        )
       case 5:
-        return <OtherDetails />
+        return <OtherDetails forward={forwardStep} previous={previousStep} />
       case 6:
-        return <SuccessForm date={dateEJC} />
+        return <SuccessForm date={dateEJC} reset={resetStep} />
       default:
         return <InitialForm date={dateEJC} forward={forwardStep} />
     }
   }
   return (
-    <div className="flex h-auto items-center justify-center bg-primary pb-24 pt-24">
+    <div className="flex h-auto items-center justify-center bg-primary pb-32 pt-24">
       <Card className="flex w-card flex-col items-center gap-5 p-8 text-zinc-700 ">
         {renderStep()}
         {/* <CardFooter className="w-full p-0">

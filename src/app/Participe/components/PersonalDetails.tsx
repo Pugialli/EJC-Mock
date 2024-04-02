@@ -2,6 +2,11 @@
 
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
+import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
+import {
+  SelectArray,
+  SelectItem,
+} from '@/components/Form/SelectInput/SelectItem'
 import { TextInput } from '@/components/Form/TextInput'
 import { MultiStep } from '@/components/MultiStep'
 import { Button } from '@/components/ui/button'
@@ -12,6 +17,16 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
+
+const religionList = [
+  { value: 'catolica', label: 'Católica' },
+  { value: 'evangelica', label: 'Evangélica' },
+  { value: 'espirita', label: 'Espírita' },
+  { value: 'matriz_africana', label: 'Religião de matriz afro-brasileira' },
+  { value: 'judaica', label: 'Judaica' },
+  { value: 'nao_tenho', label: 'Não tenho religião' },
+  { value: 'outra', label: 'Outra' },
+] as SelectArray[]
 
 const personalFormScheme = z.object({
   nome: z
@@ -24,13 +39,13 @@ const personalFormScheme = z.object({
   apelido: z.string().optional(),
   religiao: z
     .enum([
-      'Católica',
-      'Evangélica',
-      'Espírita',
-      'Religião de matriz afro-brasileira',
-      'Judaica',
-      'Não tenho religião',
-      'Outra',
+      'catolica',
+      'evangelica',
+      'espirita',
+      'matriz_africana',
+      'judaica',
+      'nao_tenho',
+      'outra',
     ])
     .optional(),
   paraVoce: z.enum(['sim', 'nao']),
@@ -56,12 +71,19 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
     resolver: zodResolver(personalFormScheme),
   })
 
-  const { register, handleSubmit, control } = form
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { isSubmitting },
+  } = form
 
   const registerWithMask = useHookFormMask(register)
 
-  function handleNextFormStep(data: PersonalFormData) {
+  async function handleNextFormStep(data: PersonalFormData) {
     console.log(data)
+    await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
+
     forward()
   }
 
@@ -138,11 +160,24 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="religiao"
+                defaultValue="catolica"
                 render={({ field }) => {
                   return (
-                    <TextInput label={'Religião'}>
-                      <Input {...field} />
-                    </TextInput>
+                    <SelectGroupInput
+                      label="Religião"
+                      onChange={field.onChange}
+                      value={field.value}
+                    >
+                      {religionList.map((item) => {
+                        return (
+                          <SelectItem
+                            key={item.value}
+                            value={item.value}
+                            text={item.label}
+                          />
+                        )
+                      })}
+                    </SelectGroupInput>
                   )
                 }}
               />
@@ -237,7 +272,9 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
             <Button variant="outline" onClick={previous}>
               Voltar
             </Button>
-            <Button type="submit">Avançar</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              Avançar
+            </Button>
           </div>
         </CardFooter>
       </form>

@@ -25,9 +25,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-
-          {children}
+          <div className="h-screen bg-primary">
+            <Header />
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

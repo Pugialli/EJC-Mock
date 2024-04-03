@@ -5,18 +5,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { CreateEncontristaContext } from '@/context/CreateEncontristaContext'
 import { getMonthBR } from '@/utils/get-month-locale'
 import { toProper } from '@/utils/to-proper'
 import { Check } from 'lucide-react'
+import { useContext } from 'react'
 
-export interface SuccessFormProps {
-  date: Date
-  reset: () => void
-}
+export function SuccessForm() {
+  const { dateEJC, resetStep } = useContext(CreateEncontristaContext)
+  const isDateSet = dateEJC !== undefined
 
-export function SuccessForm({ date, reset }: SuccessFormProps) {
-  const month = toProper(getMonthBR(date))
-  const isDateSet = true
+  const month = dateEJC ? toProper(getMonthBR(dateEJC)) : ''
 
   return (
     <>
@@ -36,7 +35,7 @@ export function SuccessForm({ date, reset }: SuccessFormProps) {
               participação nos dias:
             </p>
             <p className="text-2xl font-bold text-violet-600 dark:text-violet-400">
-              {`${date.getDate()}, ${date.getDate() + 1} e ${date.getDate() + 2} de ${month}`}
+              {`${dateEJC.getDate()}, ${dateEJC.getDate() + 1} e ${dateEJC.getDate() + 2} de ${month}`}
             </p>
             <p>Nos vemos lá!</p>
           </>
@@ -48,7 +47,7 @@ export function SuccessForm({ date, reset }: SuccessFormProps) {
         )}
       </CardContent>
       <CardFooter className="w-full p-0">
-        <Button className="w-full" onClick={reset}>
+        <Button className="w-full" onClick={resetStep}>
           Voltar ao site
         </Button>
       </CardFooter>

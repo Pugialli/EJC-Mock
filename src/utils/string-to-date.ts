@@ -1,3 +1,14 @@
 export function stringToDate(string: string) {
-  return new Date(string)
+  const correctedString =
+    string.split('/')[1] +
+    '/' +
+    string.split('/')[0] +
+    '/' +
+    string.split('/')[2]
+
+  const date = new Date(correctedString)
+
+  console.log(correctedString, date)
+
+  return date
 }

@@ -13,7 +13,14 @@ import { Button } from '@/components/ui/button'
 import { CardContent, CardFooter } from '@/components/ui/card'
 import { Form, FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  CreateEncontristaContext,
+  PersonalFormData,
+} from '@/context/CreateEncontristaContext'
+import { stringToDate } from '@/utils/string-to-date'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { format } from 'date-fns'
+import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
@@ -59,15 +66,17 @@ const personalFormScheme = z.object({
   instagram: z.string().optional(),
 })
 
-export type PersonalFormData = z.infer<typeof personalFormScheme>
+export type PersonalFormDataInput = z.infer<typeof personalFormScheme>
 
-interface PersonalDetailsProps {
-  forward: () => void
-  previous: () => void
-}
+export function PersonalDetails() {
+  const { forwardStep, previousStep, step, completeForm } = useContext(
+    CreateEncontristaContext,
+  )
 
-export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
-  const form = useForm<PersonalFormData>({
+  const defaultDate = '12/31/1969'
+  console.log()
+
+  const form = useForm<PersonalFormDataInput>({
     resolver: zodResolver(personalFormScheme),
   })
 
@@ -80,11 +89,25 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
 
   const registerWithMask = useHookFormMask(register)
 
-  async function handleNextFormStep(data: PersonalFormData) {
-    console.log(data)
+  async function handleNextFormStep(formDataInput: PersonalFormDataInput) {
+    const dataNascimentoCorrigido = stringToDate(formDataInput.dataNascimento)
+
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 
-    forward()
+    const data = {
+      nome: formDataInput.nome,
+      sobrenome: formDataInput.sobrenome,
+      dataNascimento: dataNascimentoCorrigido,
+      paraVoce: formDataInput.paraVoce,
+      celular: formDataInput.celular,
+      email: formDataInput.email,
+      apelido: formDataInput.apelido,
+      religiao: formDataInput.religiao,
+      telefone: formDataInput.telefone,
+      instagram: formDataInput.instagram,
+    } as PersonalFormData
+
+    forwardStep({ data })
   }
 
   return (
@@ -99,7 +122,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
             <span className="text-nowrap text-2xl font-bold">
               Dados Pessoais
             </span>
-            <MultiStep size={5} currentStep={1} />
+            <MultiStep size={5} currentStep={step} />
           </div>
           <div className="flex flex-col gap-14 px-0 py-14 text-lg">
             <div className="flex flex-col gap-3">
@@ -113,6 +136,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="nome"
+                defaultValue={completeForm.personal.nome}
                 render={({ field }) => (
                   <TextInput label={'Nome *'}>
                     <Input {...field} />
@@ -123,6 +147,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="sobrenome"
+                defaultValue={completeForm.personal.sobrenome}
                 render={({ field }) => (
                   <TextInput label={'Sobrenome *'}>
                     <Input {...field} />
@@ -132,6 +157,17 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="dataNascimento"
+                defaultValue={
+                  format(
+                    completeForm.personal.dataNascimento.toString(),
+                    'P',
+                  ) === defaultDate
+                    ? ''
+                    : format(
+                        completeForm.personal.dataNascimento.toString(),
+                        'dd/MM/yyyy',
+                      )
+                }
                 render={({ field }) => {
                   return (
                     <TextInput label={'Nascimento *'}>
@@ -148,6 +184,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="apelido"
+                defaultValue={completeForm.personal.apelido}
                 render={({ field }) => {
                   return (
                     <TextInput label={'Como gostaria de ser chamado?'}>
@@ -160,7 +197,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="religiao"
-                defaultValue="catolica"
+                defaultValue={completeForm.personal.religiao}
                 render={({ field }) => {
                   return (
                     <SelectGroupInput
@@ -185,7 +222,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="paraVoce"
-                defaultValue="sim"
+                defaultValue={completeForm.personal.paraVoce}
                 render={({ field }) => {
                   return (
                     <RadioInputGroup
@@ -212,6 +249,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="celular"
+                defaultValue={completeForm.personal.celular}
                 render={({ field }) => {
                   return (
                     <TextInput label={'Celular *'}>
@@ -228,6 +266,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="telefone"
+                defaultValue={completeForm.personal.telefone}
                 render={({ field }) => {
                   return (
                     <TextInput label={'Telefone'}>
@@ -244,6 +283,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="email"
+                defaultValue={completeForm.personal.email}
                 render={({ field }) => {
                   return (
                     <TextInput label={'Email *'}>
@@ -256,6 +296,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
               <FormField
                 control={control}
                 name="instagram"
+                defaultValue={completeForm.personal.instagram}
                 render={({ field }) => {
                   return (
                     <TextInput label={'Instagram'}>
@@ -269,7 +310,7 @@ export function PersonalDetails({ forward, previous }: PersonalDetailsProps) {
         </CardContent>
         <CardFooter className="w-full p-0">
           <div className="flex w-full justify-between">
-            <Button variant="outline" onClick={previous}>
+            <Button variant="outline" onClick={previousStep}>
               Voltar
             </Button>
             <Button type="submit" disabled={isSubmitting}>

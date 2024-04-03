@@ -8,35 +8,39 @@ import { Button } from '@/components/ui/button'
 import { CardContent, CardFooter } from '@/components/ui/card'
 import { Form, FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  AddressFormData,
+  CreateEncontristaContext,
+} from '@/context/CreateEncontristaContext'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
 
 const addressFormScheme = z.object({
   cep: z
-    .number({ required_error: 'O cep é obrigatório.' })
+    .string({ required_error: 'O cep é obrigatório.' })
     .min(9, { message: 'O cep está incompleto.' }),
   estado: z.string({ required_error: 'O estado é obrigatório.' }),
   cidade: z.string({ required_error: 'A cidade é obrigatória.' }),
   bairro: z.string({ required_error: 'O bairro é obrigatório.' }),
   rua: z.string({ required_error: 'A rua é obrigatória.' }),
-  numero: z.number().min(1, { message: 'O numero é obrigatório.' }),
+  numero: z.string().min(1, { message: 'O número é obrigatório.' }),
   complemento: z.string(),
 
   dormiraEmCasa: z.enum(['sim', 'nao']),
-  bairroDuranteOEncontro: z.enum(['sim', 'nao']),
+  bairroDuranteOEncontro: z.string().optional(),
 })
 
-export type AddressFormData = z.infer<typeof addressFormScheme>
+export type AddressFormDataInput = z.infer<typeof addressFormScheme>
 
-interface AddressDetailsProps {
-  forward: () => void
-  previous: () => void
-}
+export function AddressDetails() {
+  const { forwardStep, previousStep, step, completeForm } = useContext(
+    CreateEncontristaContext,
+  )
 
-export function AddressDetails({ forward, previous }: AddressDetailsProps) {
-  const form = useForm<AddressFormData>({
+  const form = useForm<AddressFormDataInput>({
     resolver: zodResolver(addressFormScheme),
   })
 
@@ -44,16 +48,28 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
     register,
     handleSubmit,
     control,
+    watch,
+    setValue,
     formState: { isSubmitting },
   } = form
 
+  const isOnOtherLocation = !(watch('dormiraEmCasa') === 'nao')
+
+  const bairro = watch('bairro')
+
+  useEffect(() => {
+    if (isOnOtherLocation) {
+      setValue('bairroDuranteOEncontro', bairro)
+    }
+  }, [isOnOtherLocation, setValue, bairro])
+
   const registerWithMask = useHookFormMask(register)
 
-  async function handleNextFormStep(data: AddressFormData) {
-    console.log(data)
+  async function handleNextFormStep(formDataInput: AddressFormDataInput) {
+    const data = formDataInput as AddressFormData
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 
-    forward()
+    forwardStep({ data })
   }
 
   return (
@@ -66,7 +82,7 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
         <CardContent>
           <div className="flex w-full items-center justify-between">
             <span className="text-nowrap text-2xl font-bold">Endereço</span>
-            <MultiStep size={5} currentStep={2} />
+            <MultiStep size={5} currentStep={step} />
           </div>
           <div className="flex flex-col gap-14 px-0 py-14 text-lg">
             <div className="flex flex-col gap-3">
@@ -80,6 +96,7 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
               <FormField
                 control={control}
                 name="cep"
+                defaultValue={completeForm.address.cep}
                 render={({ field }) => (
                   <TextInput label={'CEP *'}>
                     <Input
@@ -93,6 +110,7 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
               <FormField
                 control={control}
                 name="estado"
+                defaultValue={completeForm.address.estado}
                 render={({ field }) => (
                   <TextInput label={'Estado *'}>
                     <Input {...field} />
@@ -102,6 +120,7 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
               <FormField
                 control={control}
                 name="cidade"
+                defaultValue={completeForm.address.cidade}
                 render={({ field }) => (
                   <TextInput label={'Cidade *'}>
                     <Input {...field} />
@@ -112,6 +131,7 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
               <FormField
                 control={control}
                 name="bairro"
+                defaultValue={completeForm.address.bairro}
                 render={({ field }) => (
                   <TextInput label={'Bairro *'}>
                     <Input {...field} />
@@ -122,6 +142,7 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
               <FormField
                 control={control}
                 name="rua"
+                defaultValue={completeForm.address.rua}
                 render={({ field }) => (
                   <TextInput label={'Rua *'}>
                     <Input {...field} />
@@ -132,6 +153,7 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
               <FormField
                 control={control}
                 name="numero"
+                defaultValue={completeForm.address.numero}
                 render={({ field }) => (
                   <TextInput label={'Número *'}>
                     <Input {...field} />
@@ -141,6 +163,7 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
               <FormField
                 control={control}
                 name="complemento"
+                defaultValue={completeForm.address.complemento}
                 render={({ field }) => (
                   <TextInput label={'Complemento'}>
                     <Input {...field} />
@@ -161,7 +184,7 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
               <FormField
                 control={control}
                 name="dormiraEmCasa"
-                defaultValue="sim"
+                defaultValue={completeForm.address.dormiraEmCasa}
                 render={({ field }) => {
                   return (
                     <RadioInputGroup
@@ -180,9 +203,14 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
               <FormField
                 control={control}
                 name="bairroDuranteOEncontro"
+                defaultValue={
+                  isOnOtherLocation
+                    ? completeForm.address.bairro
+                    : completeForm.address.bairroDuranteOEncontro
+                }
                 render={({ field }) => (
                   <TextInput label={'Em qual bairro você ficará?'}>
-                    <Input {...field} />
+                    <Input {...field} disabled={isOnOtherLocation} />
                   </TextInput>
                 )}
               />
@@ -191,7 +219,7 @@ export function AddressDetails({ forward, previous }: AddressDetailsProps) {
         </CardContent>
         <CardFooter className="w-full p-0">
           <div className="flex w-full justify-between">
-            <Button variant="outline" onClick={previous}>
+            <Button variant="outline" onClick={previousStep}>
               Voltar
             </Button>
             <Button type="submit" disabled={isSubmitting}>

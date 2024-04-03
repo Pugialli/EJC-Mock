@@ -13,7 +13,9 @@ import { Button } from '@/components/ui/button'
 import { CardContent, CardFooter } from '@/components/ui/card'
 import { Form, FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { CreateEncontristaContext } from '@/context/CreateEncontristaContext'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
@@ -43,15 +45,14 @@ const familyFormScheme = z.object({
     .min(13, { message: 'O número de telefone está incompleto' }),
 })
 
-export type FamilyFormData = z.infer<typeof familyFormScheme>
+export type FamilyFormDataInput = z.infer<typeof familyFormScheme>
 
-interface FamilyDetailsProps {
-  forward: () => void
-  previous: () => void
-}
+export function FamilyDetails() {
+  const { forwardStep, previousStep, step, completeForm } = useContext(
+    CreateEncontristaContext,
+  )
 
-export function FamilyDetails({ forward, previous }: FamilyDetailsProps) {
-  const form = useForm<FamilyFormData>({
+  const form = useForm<FamilyFormDataInput>({
     resolver: zodResolver(familyFormScheme),
   })
 
@@ -64,11 +65,11 @@ export function FamilyDetails({ forward, previous }: FamilyDetailsProps) {
 
   const registerWithMask = useHookFormMask(register)
 
-  async function handleNextFormStep(data: FamilyFormData) {
-    console.log(data)
+  async function handleNextFormStep(formDataInput: FamilyFormDataInput) {
+    const data = formDataInput
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 
-    forward()
+    forwardStep({ data })
   }
 
   return (
@@ -81,7 +82,7 @@ export function FamilyDetails({ forward, previous }: FamilyDetailsProps) {
         <CardContent>
           <div className="flex w-full items-center justify-between">
             <span className="text-nowrap text-2xl font-bold">Família</span>
-            <MultiStep size={5} currentStep={3} />
+            <MultiStep size={5} currentStep={step} />
           </div>
           <div className="flex flex-col gap-14 px-0 py-14 text-lg">
             <div className="flex flex-col gap-3">
@@ -97,6 +98,7 @@ export function FamilyDetails({ forward, previous }: FamilyDetailsProps) {
               <FormField
                 control={control}
                 name="moraCom"
+                defaultValue={completeForm.family.moraCom}
                 render={({ field }) => {
                   return (
                     <SelectGroupInput
@@ -122,6 +124,7 @@ export function FamilyDetails({ forward, previous }: FamilyDetailsProps) {
               <FormField
                 control={control}
                 name="paisSeparados"
+                defaultValue={completeForm.family.paisSeparados}
                 render={({ field }) => {
                   return (
                     <RadioInputGroup
@@ -138,6 +141,7 @@ export function FamilyDetails({ forward, previous }: FamilyDetailsProps) {
               <FormField
                 control={control}
                 name="nomeMae"
+                defaultValue={completeForm.family.nomeMae}
                 render={({ field }) => (
                   <TextInput label={'Nome da mãe *'}>
                     <Input {...field} />
@@ -148,6 +152,7 @@ export function FamilyDetails({ forward, previous }: FamilyDetailsProps) {
               <FormField
                 control={control}
                 name="telMae"
+                defaultValue={completeForm.family.telMae}
                 render={({ field }) => {
                   return (
                     <TextInput label={'Telefone da mãe *'}>
@@ -164,6 +169,7 @@ export function FamilyDetails({ forward, previous }: FamilyDetailsProps) {
               <FormField
                 control={control}
                 name="nomePai"
+                defaultValue={completeForm.family.nomePai}
                 render={({ field }) => (
                   <TextInput label={'Nome do pai *'}>
                     <Input {...field} />
@@ -174,6 +180,7 @@ export function FamilyDetails({ forward, previous }: FamilyDetailsProps) {
               <FormField
                 control={control}
                 name="telPai"
+                defaultValue={completeForm.family.telPai}
                 render={({ field }) => {
                   return (
                     <TextInput label={'Telefone do pai *'}>
@@ -191,7 +198,7 @@ export function FamilyDetails({ forward, previous }: FamilyDetailsProps) {
         </CardContent>
         <CardFooter className="w-full p-0">
           <div className="flex w-full justify-between">
-            <Button variant="outline" onClick={previous}>
+            <Button variant="outline" onClick={previousStep}>
               Voltar
             </Button>
             <Button type="submit" disabled={isSubmitting}>

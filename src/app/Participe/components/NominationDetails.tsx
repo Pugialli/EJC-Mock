@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button'
 import { CardContent, CardFooter } from '@/components/ui/card'
 import { Form, FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { CreateEncontristaContext } from '@/context/CreateEncontristaContext'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
@@ -18,18 +20,14 @@ const nominationFormScheme = z.object({
   indicadoEmail: z.string().optional(),
 })
 
-export type NominationFormData = z.infer<typeof nominationFormScheme>
+export type NominationFormDataInput = z.infer<typeof nominationFormScheme>
 
-interface NominationDetailsProps {
-  forward: () => void
-  previous: () => void
-}
+export function NominationDetails() {
+  const { forwardStep, previousStep, step, completeForm } = useContext(
+    CreateEncontristaContext,
+  )
 
-export function NominationDetails({
-  forward,
-  previous,
-}: NominationDetailsProps) {
-  const form = useForm<NominationFormData>({
+  const form = useForm<NominationFormDataInput>({
     resolver: zodResolver(nominationFormScheme),
   })
 
@@ -42,11 +40,11 @@ export function NominationDetails({
 
   const registerWithMask = useHookFormMask(register)
 
-  async function handleNextFormStep(data: NominationFormData) {
-    console.log(data)
+  async function handleNextFormStep(formDataInput: NominationFormDataInput) {
+    const data = formDataInput
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 
-    forward()
+    forwardStep({ data })
   }
 
   return (
@@ -59,7 +57,7 @@ export function NominationDetails({
         <CardContent>
           <div className="flex w-full items-center justify-between">
             <span className="text-nowrap text-2xl font-bold">Indicação</span>
-            <MultiStep size={5} currentStep={4} />
+            <MultiStep size={5} currentStep={step} />
           </div>
           <div className="flex flex-col gap-14 px-0 py-14 text-lg">
             <div className="flex flex-col gap-3">
@@ -75,6 +73,7 @@ export function NominationDetails({
               <FormField
                 control={control}
                 name="indicadoPorNome"
+                defaultValue={completeForm.nomination.indicadoPorNome}
                 render={({ field }) => (
                   <TextInput label={'Nome de quem te convidou'}>
                     <Input {...field} />
@@ -85,6 +84,7 @@ export function NominationDetails({
               <FormField
                 control={control}
                 name="indicadoApelido"
+                defaultValue={completeForm.nomination.indicadoApelido}
                 render={({ field }) => (
                   <TextInput label={'Apelido de quem te convidou'}>
                     <Input {...field} />
@@ -95,6 +95,7 @@ export function NominationDetails({
               <FormField
                 control={control}
                 name="indicadoTelefone"
+                defaultValue={completeForm.nomination.indicadoTelefone}
                 render={({ field }) => (
                   <TextInput label={'Telefone de quem te convidou'}>
                     <Input
@@ -108,6 +109,7 @@ export function NominationDetails({
               <FormField
                 control={control}
                 name="indicadoEmail"
+                defaultValue={completeForm.nomination.indicadoEmail}
                 render={({ field }) => (
                   <TextInput label={'Email de quem te convidou'}>
                     <Input
@@ -123,7 +125,7 @@ export function NominationDetails({
         </CardContent>
         <CardFooter className="w-full p-0">
           <div className="flex w-full justify-between">
-            <Button variant="outline" onClick={previous}>
+            <Button variant="outline" onClick={previousStep}>
               Voltar
             </Button>
             <Button type="submit" disabled={isSubmitting}>

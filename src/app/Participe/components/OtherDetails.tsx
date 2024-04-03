@@ -14,7 +14,9 @@ import { Button } from '@/components/ui/button'
 import { CardContent, CardFooter } from '@/components/ui/card'
 import { Form, FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { CreateEncontristaContext } from '@/context/CreateEncontristaContext'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -38,15 +40,14 @@ const otherFormScheme = z.object({
   observacoes: z.string().optional(),
 })
 
-export type OtherFormData = z.infer<typeof otherFormScheme>
+export type OtherFormDataInput = z.infer<typeof otherFormScheme>
 
-interface OtherDetailsProps {
-  forward: () => void
-  previous: () => void
-}
+export function OtherDetails() {
+  const { forwardStep, previousStep, step, completeForm } = useContext(
+    CreateEncontristaContext,
+  )
 
-export function OtherDetails({ forward, previous }: OtherDetailsProps) {
-  const form = useForm<OtherFormData>({
+  const form = useForm<OtherFormDataInput>({
     resolver: zodResolver(otherFormScheme),
   })
 
@@ -57,11 +58,11 @@ export function OtherDetails({ forward, previous }: OtherDetailsProps) {
     formState: { isSubmitting },
   } = form
 
-  async function handleNextFormStep(data: OtherFormData) {
-    console.log(data)
+  async function handleNextFormStep(formDataInput: OtherFormDataInput) {
+    const data = formDataInput
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 
-    forward()
+    forwardStep({ data })
   }
 
   const isFromOtherGroup = !(watch('outroMovimento') === 'sim')
@@ -76,7 +77,7 @@ export function OtherDetails({ forward, previous }: OtherDetailsProps) {
         <CardContent>
           <div className="flex w-full items-center justify-between">
             <span className="text-nowrap text-2xl font-bold">Outros</span>
-            <MultiStep size={5} currentStep={5} />
+            <MultiStep size={5} currentStep={step} />
           </div>
           <div className="flex flex-col gap-14 px-0 py-14 text-lg">
             <div className="flex flex-col gap-3">
@@ -92,6 +93,7 @@ export function OtherDetails({ forward, previous }: OtherDetailsProps) {
               <FormField
                 control={control}
                 name="tamanhoCamisa"
+                defaultValue={completeForm.other.tamanhoCamisa}
                 render={({ field }) => {
                   return (
                     <SelectGroupInput
@@ -117,10 +119,11 @@ export function OtherDetails({ forward, previous }: OtherDetailsProps) {
               <FormField
                 control={control}
                 name="outroMovimento"
+                defaultValue={completeForm.other.outroMovimento}
                 render={({ field }) => {
                   return (
                     <RadioInputGroup
-                      label="Você faz parte ativamente de outro encontro de jovens? *"
+                      label="Você fez parte ativamente de outro encontro de jovens? *"
                       onChange={field.onChange}
                       defaultValue={field.value}
                     >
@@ -134,6 +137,7 @@ export function OtherDetails({ forward, previous }: OtherDetailsProps) {
               <FormField
                 control={control}
                 name="nomeMovimento"
+                defaultValue={completeForm.other.nomeMovimento}
                 render={({ field }) => (
                   <TextInput label={'De qual movimento você fez parte?'}>
                     <Input {...field} disabled={isFromOtherGroup} />
@@ -144,6 +148,7 @@ export function OtherDetails({ forward, previous }: OtherDetailsProps) {
               <FormField
                 control={control}
                 name="restricoesAlimentares"
+                defaultValue={completeForm.other.restricoesAlimentares}
                 render={({ field }) => (
                   <TextInput label={'Restrições alimentares'}>
                     <Input {...field} />
@@ -154,6 +159,7 @@ export function OtherDetails({ forward, previous }: OtherDetailsProps) {
               <FormField
                 control={control}
                 name="observacoes"
+                defaultValue={completeForm.other.observacoes}
                 render={({ field }) => (
                   <TextInput label={'Observações'}>
                     <Input {...field} />
@@ -165,7 +171,7 @@ export function OtherDetails({ forward, previous }: OtherDetailsProps) {
         </CardContent>
         <CardFooter className="w-full p-0">
           <div className="flex w-full justify-between">
-            <Button variant="outline" onClick={previous}>
+            <Button variant="outline" onClick={previousStep}>
               Voltar
             </Button>
             <Button type="submit" disabled={isSubmitting}>

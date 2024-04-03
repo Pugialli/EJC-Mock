@@ -5,18 +5,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { CreateEncontristaContext } from '@/context/CreateEncontristaContext'
 import { getMonthBR } from '@/utils/get-month-locale'
 import { toProper } from '@/utils/to-proper'
+import { useContext } from 'react'
 
-export interface InitialFormProps {
-  date: Date
-  forward: () => void
-}
+export function InitialForm() {
+  const { dateEJC, forwardStep } = useContext(CreateEncontristaContext)
+  const isDateSet = dateEJC !== undefined
 
-export function InitialForm({ date, forward }: InitialFormProps) {
-  const month = toProper(getMonthBR(date))
+  const month = dateEJC ? toProper(getMonthBR(dateEJC)) : ''
 
-  const isDateSet = true
   return (
     <div className="text-center">
       <CardHeader className="">
@@ -31,7 +30,7 @@ export function InitialForm({ date, forward }: InitialFormProps) {
               Nosso próximo encontrão acontecerá nos dias:
             </p>
             <p className="text-2xl font-bold text-violet-600 dark:text-violet-400">
-              {`${date.getDate()}, ${date.getDate() + 1} e ${date.getDate() + 2} de ${month}`}
+              {`${dateEJC.getDate()}, ${dateEJC.getDate() + 1} e ${dateEJC.getDate() + 2} de ${month}`}
             </p>
           </>
         ) : (
@@ -57,7 +56,7 @@ export function InitialForm({ date, forward }: InitialFormProps) {
         <p>Vamos começar?</p>
       </CardContent>
       <CardFooter className="w-full p-0">
-        <Button className="w-full" onClick={forward}>
+        <Button className="w-full" onClick={forwardStep}>
           Vamos!
         </Button>
       </CardFooter>

@@ -2,6 +2,8 @@
 
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
+import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
+import { SelectItem } from '@/components/Form/SelectInput/SelectItem'
 import { TextInput } from '@/components/Form/TextInput'
 import { MultiStep } from '@/components/MultiStep'
 import { Button } from '@/components/ui/button'
@@ -12,6 +14,8 @@ import {
   AddressFormData,
   CreateEncontristaContext,
 } from '@/context/CreateEncontristaContext'
+import { getBairros } from '@/lib/fetch-bairros'
+import { CEPResponse, getCEPData } from '@/lib/fetch-cep'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -22,15 +26,15 @@ const addressFormScheme = z.object({
   cep: z
     .string({ required_error: 'O cep é obrigatório.' })
     .min(9, { message: 'O cep está incompleto.' }),
-  estado: z.string({ required_error: 'O estado é obrigatório.' }),
-  cidade: z.string({ required_error: 'A cidade é obrigatória.' }),
-  bairro: z.string({ required_error: 'O bairro é obrigatório.' }),
-  rua: z.string({ required_error: 'A rua é obrigatória.' }),
+  estado: z.string().min(1, { message: 'O estado é obrigatório.' }),
+  cidade: z.string().min(1, { message: 'A cidade é obrigatória.' }),
+  bairro: z.string().min(1, { message: 'O bairro é obrigatório.' }),
+  rua: z.string().min(1, { message: 'A rua é obrigatória.' }),
   numero: z.string().min(1, { message: 'O número é obrigatório.' }),
   complemento: z.string(),
 
   dormiraEmCasa: z.enum(['sim', 'nao']),
-  bairroDuranteOEncontro: z.string().optional(),
+  bairroDuranteOEncontro: z.enum(['botafogo', 'copacabana']).optional(),
 })
 
 export type AddressFormDataInput = z.infer<typeof addressFormScheme>
@@ -55,13 +59,29 @@ export function AddressDetails() {
 
   const isOnOtherLocation = !(watch('dormiraEmCasa') === 'nao')
 
-  const bairro = watch('bairro')
+  const cepValue = watch('cep')
 
   useEffect(() => {
-    if (isOnOtherLocation) {
-      setValue('bairroDuranteOEncontro', bairro)
+    async function fetchAddress(cep: string) {
+      const response = await getCEPData(cep)
+      const addressData: CEPResponse = await response.json()
+      setValue('estado', addressData.state, {
+        shouldValidate: false,
+        shouldDirty: true,
+      })
+      setValue('cidade', addressData.city, { shouldValidate: false })
+      setValue('bairro', addressData.neighborhood, { shouldValidate: false })
+      setValue('rua', addressData.street, { shouldValidate: false })
     }
-  }, [isOnOtherLocation, setValue, bairro])
+    if (cepValue && cepValue[8] !== '_') {
+      fetchAddress(cepValue)
+    } else {
+      setValue('estado', '')
+      setValue('cidade', '')
+      setValue('bairro', '')
+      setValue('rua', '')
+    }
+  }, [cepValue, setValue])
 
   const registerWithMask = useHookFormMask(register)
 
@@ -113,7 +133,7 @@ export function AddressDetails() {
                 defaultValue={completeForm.address.estado}
                 render={({ field }) => (
                   <TextInput label={'Estado *'}>
-                    <Input {...field} />
+                    <Input readOnly={true} {...field} />
                   </TextInput>
                 )}
               />
@@ -123,7 +143,7 @@ export function AddressDetails() {
                 defaultValue={completeForm.address.cidade}
                 render={({ field }) => (
                   <TextInput label={'Cidade *'}>
-                    <Input {...field} />
+                    <Input readOnly={true} {...field} />
                   </TextInput>
                 )}
               />
@@ -134,7 +154,7 @@ export function AddressDetails() {
                 defaultValue={completeForm.address.bairro}
                 render={({ field }) => (
                   <TextInput label={'Bairro *'}>
-                    <Input {...field} />
+                    <Input readOnly={true} {...field} />
                   </TextInput>
                 )}
               />
@@ -145,7 +165,7 @@ export function AddressDetails() {
                 defaultValue={completeForm.address.rua}
                 render={({ field }) => (
                   <TextInput label={'Rua *'}>
-                    <Input {...field} />
+                    <Input readOnly={true} {...field} />
                   </TextInput>
                 )}
               />
@@ -203,16 +223,28 @@ export function AddressDetails() {
               <FormField
                 control={control}
                 name="bairroDuranteOEncontro"
-                defaultValue={
-                  isOnOtherLocation
-                    ? completeForm.address.bairro
-                    : completeForm.address.bairroDuranteOEncontro
-                }
-                render={({ field }) => (
-                  <TextInput label={'Em qual bairro você ficará?'}>
-                    <Input {...field} disabled={isOnOtherLocation} />
-                  </TextInput>
-                )}
+                defaultValue={completeForm.address.bairroDuranteOEncontro}
+                render={({ field }) => {
+                  return (
+                    <SelectGroupInput
+                      label="Em qual bairro você ficará?"
+                      placeholder="Selecione uma opção"
+                      onChange={field.onChange}
+                      value={field.value}
+                      disabled={isOnOtherLocation}
+                    >
+                      {getBairros().map((item) => {
+                        return (
+                          <SelectItem
+                            key={item.id}
+                            value={item.value}
+                            text={item.bairro}
+                          />
+                        )
+                      })}
+                    </SelectGroupInput>
+                  )
+                }}
               />
             </div>
           </div>

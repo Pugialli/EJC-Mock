@@ -18,6 +18,7 @@ export interface SelectGroupInputProps {
   description?: string
   placeholder?: string
   children: React.ReactNode
+  disabled?: boolean
   onChange: () => void
 }
 
@@ -27,12 +28,13 @@ export function SelectGroupInput({
   description,
   placeholder = '',
   children,
+  disabled = false,
   onChange,
 }: SelectGroupInputProps) {
   return (
     <FormItem>
       <FormLabel>{label}</FormLabel>
-      <Select onValueChange={onChange} value={value}>
+      <Select disabled={disabled} onValueChange={onChange} value={value}>
         <FormControl>
           <SelectTrigger className="outline-none">
             <SelectValue placeholder={placeholder} />

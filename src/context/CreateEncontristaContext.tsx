@@ -30,16 +30,16 @@ export interface AddressFormData {
   numero: string
   complemento: string
   dormiraEmCasa: 'sim' | 'nao'
-  bairroDuranteOEncontro: string
+  bairroDuranteOEncontro?: 'botafogo' | 'copacabana'
 }
 
 export interface FamilyFormData {
-  moraCom: 'sozinho' | 'conjuge' | 'pais' | 'pai' | 'mae'
-  paisSeparados: 'sim' | 'nao'
-  nomeMae: string
-  telMae: string
-  nomePai: string
-  telPai: string
+  moraCom: 'sozinho' | 'conjuge' | 'familiar'
+  paisSeparados: 'sim' | 'nao' | 'na'
+  nomeFamiliar: string
+  telFamiliar: string
+  nomeFamiliar2: string
+  telFamiliar2: string
 }
 
 export interface NominationFormData {
@@ -95,7 +95,7 @@ interface CreateEncontristaContextProviderProps {
 export function CreateEncontristaContextProvider({
   children,
 }: CreateEncontristaContextProviderProps) {
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(2)
   const [completeForm, setCompleteForm] = useState<CreateEncontristaData>({
     personal: {
       nome: '',
@@ -118,15 +118,15 @@ export function CreateEncontristaContextProvider({
       numero: '',
       complemento: '',
       dormiraEmCasa: 'sim',
-      bairroDuranteOEncontro: '',
+      bairroDuranteOEncontro: undefined,
     },
     family: {
-      moraCom: 'pais',
+      moraCom: 'familiar',
       paisSeparados: 'nao',
-      nomeMae: '',
-      telMae: '',
-      nomePai: '',
-      telPai: '',
+      nomeFamiliar: '',
+      telFamiliar: '',
+      nomeFamiliar2: '',
+      telFamiliar2: '',
     },
     nomination: {
       indicadoPorNome: undefined,

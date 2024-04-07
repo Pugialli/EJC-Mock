@@ -23,26 +23,27 @@ import { z } from 'zod'
 const moraComList = [
   { value: 'sozinho', label: 'Sozinho' },
   { value: 'conjuge', label: 'Cônjuge' },
-  { value: 'pais', label: 'Pais' },
-  { value: 'pai', label: 'Pai' },
-  { value: 'mae', label: 'Mãe' },
+  { value: 'familiar', label: 'Familiar' },
 ] as SelectArray[]
 
 const familyFormScheme = z.object({
-  moraCom: z.enum(['sozinho', 'conjuge', 'pais', 'pai', 'mae'], {
+  moraCom: z.enum(['sozinho', 'conjuge', 'familiar'], {
     required_error: 'Este campo é obrigatório',
   }),
-  paisSeparados: z.enum(['sim', 'nao'], {
+  paisSeparados: z.enum(['sim', 'nao', 'na'], {
     required_error: 'Este campo é obrigatório',
   }),
-  nomeMae: z.string({ required_error: 'O nome da mãe é obrigatório.' }),
-  telMae: z
+  nomeFamiliar: z
+    .string({
+      required_error: 'O nome de pelo menos um familiar é obrigatório.',
+    })
+    .min(3, { message: 'O nome de pelo menos um familiar é obrigatório.' }),
+
+  telFamiliar: z
     .string()
     .min(13, { message: 'O número de telefone está incompleto' }),
-  nomePai: z.string({ required_error: 'O nome do pai é obrigatório.' }),
-  telPai: z
-    .string()
-    .min(13, { message: 'O número de telefone está incompleto' }),
+  nomeFamiliar2: z.string(),
+  telFamiliar2: z.string(),
 })
 
 export type FamilyFormDataInput = z.infer<typeof familyFormScheme>
@@ -128,11 +129,12 @@ export function FamilyDetails() {
                 render={({ field }) => {
                   return (
                     <RadioInputGroup
-                      label="Seus pais são separados?*"
+                      label="Seus pais são separados? *"
                       onChange={field.onChange}
                     >
                       <RadioInputItem value="sim" label="Sim" />
                       <RadioInputItem value="nao" label="Não" />
+                      <RadioInputItem value="na" label="Não se aplica" />
                     </RadioInputGroup>
                   )
                 }}
@@ -140,10 +142,10 @@ export function FamilyDetails() {
 
               <FormField
                 control={control}
-                name="nomeMae"
-                defaultValue={completeForm.family.nomeMae}
+                name="nomeFamiliar"
+                defaultValue={completeForm.family.nomeFamiliar}
                 render={({ field }) => (
-                  <TextInput label={'Nome da mãe *'}>
+                  <TextInput label={'Nome de um familiar *'}>
                     <Input {...field} />
                   </TextInput>
                 )}
@@ -151,11 +153,11 @@ export function FamilyDetails() {
 
               <FormField
                 control={control}
-                name="telMae"
-                defaultValue={completeForm.family.telMae}
+                name="telFamiliar"
+                defaultValue={completeForm.family.telFamiliar}
                 render={({ field }) => {
                   return (
-                    <TextInput label={'Telefone da mãe *'}>
+                    <TextInput label={'Telefone do familiar *'}>
                       <Input
                         {...field}
                         {...registerWithMask(field.name, '(99) [9]9999-9999')}
@@ -168,10 +170,10 @@ export function FamilyDetails() {
 
               <FormField
                 control={control}
-                name="nomePai"
-                defaultValue={completeForm.family.nomePai}
+                name="nomeFamiliar2"
+                defaultValue={completeForm.family.nomeFamiliar2}
                 render={({ field }) => (
-                  <TextInput label={'Nome do pai *'}>
+                  <TextInput label={'Nome de outro familiar'}>
                     <Input {...field} />
                   </TextInput>
                 )}
@@ -179,11 +181,11 @@ export function FamilyDetails() {
 
               <FormField
                 control={control}
-                name="telPai"
-                defaultValue={completeForm.family.telPai}
+                name="telFamiliar2"
+                defaultValue={completeForm.family.telFamiliar2}
                 render={({ field }) => {
                   return (
-                    <TextInput label={'Telefone do pai *'}>
+                    <TextInput label={'Telefone do familiar'}>
                       <Input
                         {...field}
                         {...registerWithMask(field.name, '(99) [9]9999-9999')}

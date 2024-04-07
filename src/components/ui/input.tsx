@@ -12,7 +12,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div
         aria-invalid={props['aria-invalid']}
-        aria-disabled={props.disabled}
+        aria-disabled={props.readOnly || props.disabled}
         className={cn(
           'flex w-full items-center gap-1 rounded-lg border border-zinc-300 px-3 py-2 text-sm shadow-sm placeholder:text-zinc-400',
           'aria-invalid:border-red-400 ',
@@ -28,6 +28,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             'flex-1 border-0 bg-transparent p-0 text-zinc-700 placeholder-zinc-400 outline-none',
             'dark:text-zinc-100 dark:placeholder-zinc-400',
+            'read-only:cursor-not-allowed',
             'disabled:cursor-not-allowed',
             className,
           )}

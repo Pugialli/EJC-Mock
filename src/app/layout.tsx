@@ -1,4 +1,3 @@
-import { Header } from '@/components/Header'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
@@ -25,10 +24,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="h-screen bg-primary">
-            <Header />
-            {children}
-          </div>
+          {children}
         </ThemeProvider>
       </body>
     </html>

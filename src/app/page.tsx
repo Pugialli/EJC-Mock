@@ -1,12 +1,12 @@
 'use client'
 
-import { CreateEncontristaContextProvider } from '@/context/CreateEncontristaContext'
-import { Participe } from './Participe/page'
+import GeneralLayout from './(geral)/layout'
+import Participe from './(geral)/participe/page'
 
 export default function Home() {
   return (
-    <CreateEncontristaContextProvider>
+    <GeneralLayout>
       <Participe />
-    </CreateEncontristaContextProvider>
+    </GeneralLayout>
   )
 }

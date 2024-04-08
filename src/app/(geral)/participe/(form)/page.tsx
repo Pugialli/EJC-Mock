@@ -12,7 +12,7 @@ import { OtherDetails } from './components/OtherDetails'
 import { PersonalDetails } from './components/PersonalDetails'
 import { SuccessForm } from './components/SuccessForm'
 
-export function Participe() {
+export default function ParticipeForm() {
   const { step } = useContext(CreateEncontristaContext)
 
   function renderStep() {

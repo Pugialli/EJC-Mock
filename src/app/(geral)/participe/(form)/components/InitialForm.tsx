@@ -16,6 +16,10 @@ export function InitialForm() {
 
   const month = dateEJC ? toProper(getMonthBR(dateEJC)) : ''
 
+  function handleForward() {
+    forwardStep({ data: undefined })
+  }
+
   return (
     <div className="text-center">
       <CardHeader className="">
@@ -56,7 +60,7 @@ export function InitialForm() {
         <p>Vamos começar?</p>
       </CardContent>
       <CardFooter className="w-full p-0">
-        <Button className="w-full" onClick={forwardStep}>
+        <Button className="w-full" onClick={handleForward}>
           Vamos!
         </Button>
       </CardFooter>

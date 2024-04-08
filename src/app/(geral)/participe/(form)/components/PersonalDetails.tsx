@@ -92,7 +92,7 @@ export function PersonalDetails() {
   async function handleNextFormStep(formDataInput: PersonalFormDataInput) {
     const dataNascimentoCorrigido = stringToDate(formDataInput.dataNascimento)
 
-    await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
+    // await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 
     const data = {
       nome: formDataInput.nome,

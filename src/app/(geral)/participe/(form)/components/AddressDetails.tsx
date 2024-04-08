@@ -14,8 +14,9 @@ import {
   AddressFormData,
   CreateEncontristaContext,
 } from '@/context/CreateEncontristaContext'
-import { getBairros } from '@/lib/fetch-bairros'
+import { bairrosProps, getBairros } from '@/lib/fetch-bairros'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useHookFormMask } from 'use-mask-input'
@@ -38,7 +39,16 @@ const addressFormScheme = z.object({
 
 export type AddressFormDataInput = z.infer<typeof addressFormScheme>
 
-export function AddressDetails() {
+export const getStaticProps = (async () => {
+  const bairros = getBairros()
+  return { props: { bairros } }
+}) satisfies GetStaticProps<{
+  bairros: bairrosProps[]
+}>
+
+export function AddressDetails({
+  bairros,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const { forwardStep, previousStep, step, completeForm } = useContext(
     CreateEncontristaContext,
   )
@@ -57,6 +67,8 @@ export function AddressDetails() {
   } = form
 
   const isOnOtherLocation = !(watch('dormiraEmCasa') === 'nao')
+
+  // Falbo: comentei essa parte pq achei que ele podia estar dando ruim enquanto não conseguia realizar o fetch
 
   // const cepValue = watch('cep')
 
@@ -86,7 +98,7 @@ export function AddressDetails() {
 
   async function handleNextFormStep(formDataInput: AddressFormDataInput) {
     const data = formDataInput as AddressFormData
-    await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
+    // await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 
     forwardStep({ data })
   }
@@ -232,7 +244,7 @@ export function AddressDetails() {
                       value={field.value}
                       disabled={isOnOtherLocation}
                     >
-                      {getBairros().map((item) => {
+                      {bairros.map((item) => {
                         return (
                           <SelectItem
                             key={item.id}

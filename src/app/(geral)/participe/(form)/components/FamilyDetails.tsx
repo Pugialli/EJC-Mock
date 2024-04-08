@@ -68,7 +68,7 @@ export function FamilyDetails() {
 
   async function handleNextFormStep(formDataInput: FamilyFormDataInput) {
     const data = formDataInput
-    await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
+    // await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 
     forwardStep({ data })
   }

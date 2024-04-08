@@ -162,14 +162,14 @@ export const bairrosValue = [
   'zumbi',
 ] as const
 
-interface bairros {
+export interface bairrosProps {
   id: number
   value: string
   bairro: string
   zona: 'norte' | 'sul' | 'oeste' | 'central'
 }
 
-const bairrosRJ: bairros[] = [
+const bairrosRJ: bairrosProps[] = [
   {
     id: 82,
     value: 'abolicao',

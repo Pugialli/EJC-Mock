@@ -22,7 +22,7 @@ export default function ParticipeForm() {
       case 1:
         return <PersonalDetails />
       case 2:
-        return <AddressDetails />
+        return <AddressDetails bairros={[]} /> // Falbo: tenho que conseguir retirar isso
       case 3:
         return <FamilyDetails />
       case 4:

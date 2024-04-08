@@ -149,7 +149,6 @@ export function CreateEncontristaContextProvider({
     if (step === 0) {
       setStep((state) => state + 1)
     } else if (step === 1) {
-      console.log(`Step: ${step}`, data)
       const newEncontrista = {
         personal: data,
         address: completeForm.address,
@@ -160,7 +159,6 @@ export function CreateEncontristaContextProvider({
       setCompleteForm(newEncontrista)
       setStep((state) => state + 1)
     } else if (step === 2) {
-      console.log(`Step: ${step}`, data)
       const newEncontrista = {
         personal: completeForm.personal,
         address: data,
@@ -171,7 +169,6 @@ export function CreateEncontristaContextProvider({
       setCompleteForm(newEncontrista)
       setStep((state) => state + 1)
     } else if (step === 3) {
-      console.log(`Step: ${step}`, data)
       const newEncontrista = {
         personal: completeForm.personal,
         address: completeForm.address,
@@ -182,7 +179,6 @@ export function CreateEncontristaContextProvider({
       setCompleteForm(newEncontrista)
       setStep((state) => state + 1)
     } else if (step === 4) {
-      console.log(`Step: ${step}`, data)
       const newEncontrista = {
         personal: completeForm.personal,
         address: completeForm.address,
@@ -193,7 +189,6 @@ export function CreateEncontristaContextProvider({
       setCompleteForm(newEncontrista)
       setStep((state) => state + 1)
     } else if (step === 5) {
-      console.log(`Step: ${step}`, data)
       const newEncontrista = {
         personal: completeForm.personal,
         address: completeForm.address,

@@ -15,10 +15,12 @@ import {
   CreateEncontristaContext,
 } from '@/context/CreateEncontristaContext'
 import { bairrosProps, getBairros } from '@/lib/fetch-bairros'
+import { CEPResponse, getCEPData } from '@/lib/fetch-cep'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
 
@@ -62,7 +64,7 @@ export function AddressDetails({
     handleSubmit,
     control,
     watch,
-    // setValue,
+    setValue,
     formState: { isSubmitting },
   } = form
 
@@ -70,29 +72,33 @@ export function AddressDetails({
 
   // Falbo: comentei essa parte pq achei que ele podia estar dando ruim enquanto não conseguia realizar o fetch
 
-  // const cepValue = watch('cep')
+  const cepValue = watch('cep')
 
-  // useEffect(() => {
-  //   async function fetchAddress(cep: string) {
-  //     const response = await getCEPData(cep)
-  //     const addressData: CEPResponse = await response.json()
-  //     setValue('estado', addressData.state, {
-  //       shouldValidate: false,
-  //       shouldDirty: true,
-  //     })
-  //     setValue('cidade', addressData.city, { shouldValidate: false })
-  //     setValue('bairro', addressData.neighborhood, { shouldValidate: false })
-  //     setValue('rua', addressData.street, { shouldValidate: false })
-  //   }
-  //   if (cepValue && cepValue[8] !== '_') {
-  //     fetchAddress(cepValue)
-  //   } else {
-  //     setValue('estado', '')
-  //     setValue('cidade', '')
-  //     setValue('bairro', '')
-  //     setValue('rua', '')
-  //   }
-  // }, [cepValue, setValue])
+  useEffect(() => {
+    async function fetchAddress(cep: string) {
+      const response = await getCEPData(cep)
+      if (response === undefined) {
+        toast.error('Seu CEP não foi encontrado')
+      } else {
+        const addressData: CEPResponse = await response.json()
+        setValue('estado', addressData.state, {
+          shouldValidate: false,
+          shouldDirty: true,
+        })
+        setValue('cidade', addressData.city, { shouldValidate: false })
+        setValue('bairro', addressData.neighborhood, { shouldValidate: false })
+        setValue('rua', addressData.street, { shouldValidate: false })
+      }
+    }
+    if (cepValue && cepValue[8] !== '_') {
+      fetchAddress(cepValue)
+    } else {
+      setValue('estado', '')
+      setValue('cidade', '')
+      setValue('bairro', '')
+      setValue('rua', '')
+    }
+  }, [cepValue, setValue])
 
   const registerWithMask = useHookFormMask(register)
 

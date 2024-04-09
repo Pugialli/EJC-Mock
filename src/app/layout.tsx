@@ -1,4 +1,4 @@
-// import { ThemeProvider } from '@/components/theme/theme-provider'
+import { ThemeProvider } from '@/components/theme/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
 import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
@@ -20,15 +20,15 @@ export default function RootLayout({
     // eslint-disable-next-line prettier/prettier
     <html lang="pt-br" className="antialiased" suppressHydrationWarning>
       <body className={nunito.className}>
-        {/* <ThemeProvider
+        <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange
-        > */}
-        <main>{children}</main>
-        <Toaster richColors />
-        {/* </ThemeProvider> */}
+        >
+          <main>{children}</main>
+          <Toaster richColors />
+        </ThemeProvider>
       </body>
     </html>
   )

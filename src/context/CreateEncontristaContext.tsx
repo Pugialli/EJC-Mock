@@ -3,7 +3,7 @@ import { ReactNode, createContext, useState } from 'react'
 export interface PersonalFormData {
   nome: string
   sobrenome: string
-  dataNascimento: Date
+  dataNascimento: string
   paraVoce: 'sim' | 'nao'
   celular: string
   email: string
@@ -95,12 +95,12 @@ interface CreateEncontristaContextProviderProps {
 export function CreateEncontristaContextProvider({
   children,
 }: CreateEncontristaContextProviderProps) {
-  const [step, setStep] = useState(2)
+  const [step, setStep] = useState(0)
   const [completeForm, setCompleteForm] = useState<CreateEncontristaData>({
     personal: {
       nome: '',
       sobrenome: '',
-      dataNascimento: new Date(1),
+      dataNascimento: '',
       paraVoce: 'sim',
       celular: '',
       email: '',

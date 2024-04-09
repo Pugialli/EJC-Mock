@@ -1,12 +1,7 @@
-'use client'
+'use server'
 
-import GeneralLayout from './(geral)/layout'
-import Participe from './(geral)/participe/page'
+import { permanentRedirect } from 'next/navigation'
 
-export default function Home() {
-  return (
-    <GeneralLayout>
-      <Participe />
-    </GeneralLayout>
-  )
+export default async function Home() {
+  permanentRedirect('/participe')
 }

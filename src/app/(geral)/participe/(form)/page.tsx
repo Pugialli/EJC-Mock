@@ -4,13 +4,13 @@ import { Card } from '@/components/ui/card'
 
 import { CreateEncontristaContext } from '@/context/CreateEncontristaContext'
 import { useContext } from 'react'
-import { AddressDetails } from './components/AddressDetails'
-import { FamilyDetails } from './components/FamilyDetails'
-import { InitialForm } from './components/InitialForm'
-import { NominationDetails } from './components/NominationDetails'
-import { OtherDetails } from './components/OtherDetails'
-import { PersonalDetails } from './components/PersonalDetails'
-import { SuccessForm } from './components/SuccessForm'
+import { AddressDetails } from './pageComponents/AddressDetails'
+import { FamilyDetails } from './pageComponents/FamilyDetails'
+import { InitialForm } from './pageComponents/InitialForm'
+import { NominationDetails } from './pageComponents/NominationDetails'
+import { OtherDetails } from './pageComponents/OtherDetails'
+import { PersonalDetails } from './pageComponents/PersonalDetails'
+import { SuccessForm } from './pageComponents/SuccessForm'
 
 export default function ParticipeForm() {
   const { step } = useContext(CreateEncontristaContext)

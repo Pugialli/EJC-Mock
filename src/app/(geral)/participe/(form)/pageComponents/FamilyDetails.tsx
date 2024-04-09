@@ -69,7 +69,7 @@ export function FamilyDetails() {
 
   const registerWithMask = useHookFormMask(register)
 
-  async function handleNextFormStep(formDataInput: FamilyFormDataInput) {
+  function handleNextFormStep(formDataInput: FamilyFormDataInput) {
     // await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 
     const familyData = formDataInput as FamilyFormData

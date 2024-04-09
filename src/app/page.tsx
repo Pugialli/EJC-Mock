@@ -1,7 +1,9 @@
-'use server'
-
 import { permanentRedirect } from 'next/navigation'
 
-export default async function Home() {
-  permanentRedirect('/participe')
+export default function Home() {
+  async function redirectFromHome() {
+    'use server'
+    permanentRedirect('/participe')
+  }
+  redirectFromHome()
 }

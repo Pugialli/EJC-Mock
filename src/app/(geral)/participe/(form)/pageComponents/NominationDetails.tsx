@@ -43,7 +43,7 @@ export function NominationDetails() {
 
   const registerWithMask = useHookFormMask(register)
 
-  async function handleNextFormStep(formDataInput: NominationFormDataInput) {
+  function handleNextFormStep(formDataInput: NominationFormDataInput) {
     // await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
     const nominationData = formDataInput as NominationFormData
 

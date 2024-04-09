@@ -94,7 +94,7 @@ export function AddressDetails() {
 
   const registerWithMask = useHookFormMask(register)
 
-  async function handleNextFormStep(formDataInput: AddressFormDataInput) {
+  function handleNextFormStep(formDataInput: AddressFormDataInput) {
     const addressData = formDataInput as AddressFormData
     // await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 

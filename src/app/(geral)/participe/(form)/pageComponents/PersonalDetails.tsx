@@ -88,7 +88,7 @@ export function PersonalDetails() {
 
   const registerWithMask = useHookFormMask(register)
 
-  async function handleNextFormStep(formDataInput: PersonalFormDataInput) {
+  function handleNextFormStep(formDataInput: PersonalFormDataInput) {
     // const dataNascimentoCorrigido = stringToDate(formDataInput.dataNascimento)
     // await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 

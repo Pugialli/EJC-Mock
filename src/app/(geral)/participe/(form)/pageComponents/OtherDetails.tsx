@@ -61,7 +61,7 @@ export function OtherDetails() {
     formState: { isSubmitting },
   } = form
 
-  async function handleNextFormStep(formDataInput: OtherFormDataInput) {
+  function handleNextFormStep(formDataInput: OtherFormDataInput) {
     // await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
     const otherData = formDataInput as OtherFormData
 

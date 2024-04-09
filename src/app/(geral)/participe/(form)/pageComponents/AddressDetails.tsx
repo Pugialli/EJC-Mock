@@ -14,10 +14,9 @@ import {
   AddressFormData,
   CreateEncontristaContext,
 } from '@/context/CreateEncontristaContext'
-import { bairrosProps, getBairros } from '@/lib/fetch-bairros'
+import { getBairros } from '@/lib/fetch-bairros'
 import { CEPResponse, getCEPData } from '@/lib/fetch-cep'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -41,16 +40,9 @@ const addressFormScheme = z.object({
 
 export type AddressFormDataInput = z.infer<typeof addressFormScheme>
 
-export const getStaticProps = (async () => {
+export function AddressDetails() {
   const bairros = getBairros()
-  return { props: { bairros } }
-}) satisfies GetStaticProps<{
-  bairros: bairrosProps[]
-}>
 
-export function AddressDetails({
-  bairros,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
   const { forwardStep, previousStep, step, completeForm } = useContext(
     CreateEncontristaContext,
   )

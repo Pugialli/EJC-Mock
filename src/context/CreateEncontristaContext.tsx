@@ -95,7 +95,7 @@ interface CreateEncontristaContextProviderProps {
 export function CreateEncontristaContextProvider({
   children,
 }: CreateEncontristaContextProviderProps) {
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(2)
   const [completeForm, setCompleteForm] = useState<CreateEncontristaData>({
     personal: {
       nome: '',

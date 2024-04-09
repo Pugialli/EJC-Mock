@@ -17,7 +17,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-br" className="antialiased">
+    // eslint-disable-next-line prettier/prettier
+    <html lang="pt-br" className="antialiased" suppressHydrationWarning>
       <body className={nunito.className}>
         <ThemeProvider
           attribute="class"

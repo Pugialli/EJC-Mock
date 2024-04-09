@@ -1,14 +1,20 @@
-import * as React from 'react'
-
 import { cn } from '@/lib/utils'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { forwardRef, useState } from 'react'
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   prefix?: string
+  hidable?: boolean
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ prefix, className, type, ...props }, ref) => {
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ prefix, className, type, hidable = false, ...props }, ref) => {
+    const [isHidden, setIsHidden] = useState(hidable)
+
+    function toggleHidden() {
+      setIsHidden((state) => !state)
+    }
     return (
       <div
         aria-invalid={props['aria-invalid']}
@@ -24,7 +30,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       >
         {prefix && <span className="text-zinc-400">{prefix}</span>}
         <input
-          type={type}
+          type={isHidden ? 'password' : type}
           className={cn(
             'flex-1 border-0 bg-transparent p-0 text-zinc-700 placeholder-zinc-400 outline-none',
             'dark:text-zinc-100 dark:placeholder-zinc-400',
@@ -35,6 +41,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           {...props}
         />
+        {hidable && (
+          <button type="button" onClick={toggleHidden}>
+            {isHidden ? (
+              <EyeOffIcon className="text-zinc-500" />
+            ) : (
+              <EyeIcon className="text-zinc-500" />
+            )}
+          </button>
+        )}
       </div>
     )
   },

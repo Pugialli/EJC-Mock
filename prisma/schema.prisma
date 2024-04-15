@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model Pessoa {
+  id          String  @id @default(uuid())
+  nome        String
+  sobrenome   String
+  enderecoCep String
+  celular     String
+  telefone    String?
+  email       String  @unique
+  avatar_url  String?
+
+  created_at  DateTime @default(now())
+  modified_at DateTime @default(now())
+
+  Cep         Endereco     @relation(fields: [enderecoCep], references: [cep])
+  Encontrista Encontrista?
+
+  @@map("pessoas")
+}
+
+model Endereco {
+  cep    String @id @default(uuid())
+  estado String
+  cidade String
+  bairro String
+  rua    String
+
+  created_at  DateTime @default(now())
+  modified_at DateTime @default(now())
+
+  Pessoa Pessoa[]
+
+  @@map("endereco")
+}
+
+model Encontrista {
+  id_pessoa          String @unique
+  id_status          String
+  id_religiao        String
+  is_autofill        String
+  end_numero         String
+  end_complemento    String
+  id_bairro_encontro String
+  id_moracom         String
+  id_paissep         String
+  movimento_anterior String
+  observacao         String
+  nome_contato1      String
+  tel_contato1       String
+  id_contato1        String
+  nome_contato2      String
+  tel_contato2       String
+  id_contato2        String
+
+  created_at  DateTime @default(now())
+  modified_at DateTime @default(now())
+
+  Pessoa         Pessoa         @relation(fields: [id_pessoa], references: [id])
+  Status         Status         @relation(fields: [id_status], references: [id])
+  Religiao       Religiao       @relation(fields: [id_religiao], references: [id])
+  BairroEncontro BairroEncontro @relation(fields: [id_bairro_encontro], references: [id])
+  MoraCom        MoraCom        @relation(fields: [id_moracom], references: [id])
+  PaisSeparados  PaisSeparados  @relation(fields: [id_paissep], references: [id])
+  // Relacao        Relacao?       @relation(fields: [id_contato1, id_contato2], references: [id, id])
+
+  @@map("encontrista")
+}
+
+model Status {
+  id     String @id @default(uuid())
+  status String
+
+  Encontrista Encontrista[]
+
+  @@map("status")
+}
+
+model Religiao {
+  id          String        @id @default(uuid())
+  religiao    String
+  Encontrista Encontrista[]
+
+  @@map("religiao")
+}
+
+model BairroEncontro {
+  id          String        @id @default(uuid())
+  nome_bairro String
+  Encontrista Encontrista[]
+
+  @@map("bairroEncontro")
+}
+
+model MoraCom {
+  id          String        @id @default(uuid())
+  mora_com    String
+  Encontrista Encontrista[]
+
+  @@map("moraCom")
+}
+
+model PaisSeparados {
+  id          String        @id @default(uuid())
+  status_pais String
+  Encontrista Encontrista[]
+
+  @@map("paisSeparados")
+}
+
+model Relacao {
+  id      String @id @default(uuid())
+  relacao String
+  // Encontrista Encontrista?[]
+  // Encontrista Encontrista[]
+
+  @@map("relacao")
+}

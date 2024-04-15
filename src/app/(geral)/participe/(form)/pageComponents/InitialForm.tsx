@@ -10,11 +10,25 @@ import { getMonthBR } from '@/utils/get-month-locale'
 import { toProper } from '@/utils/to-proper'
 import { useContext } from 'react'
 
-export function InitialForm() {
-  const { dateEJC, forwardStep } = useContext(CreateEncontristaContext)
-  const isDateSet = dateEJC !== undefined
+export async function InitialForm() {
+  const { forwardStep } = useContext(CreateEncontristaContext)
 
-  const month = dateEJC ? toProper(getMonthBR(dateEJC)) : ''
+  // const { data: encontrao } = useQuery<EncontraoData>({
+  //   queryKey: ['encontrao', '71'],
+  //   queryFn: async () => {
+  //     const response = await api.get(`/encontrao`)
+
+  //     return response.data
+  //   },
+  // })
+
+  // console.log(encontrao)
+
+  const dateEncontrao = new Date('4/24/2024')
+
+  const isDateSet = dateEncontrao !== undefined
+
+  const month = dateEncontrao ? toProper(getMonthBR(dateEncontrao)) : ''
 
   function handleForward() {
     const emptyData = undefined
@@ -35,7 +49,7 @@ export function InitialForm() {
               Nosso próximo encontrão acontecerá nos dias:
             </p>
             <p className="text-2xl font-bold text-violet-600 dark:text-violet-400">
-              {`${dateEJC.getDate()}, ${dateEJC.getDate() + 1} e ${dateEJC.getDate() + 2} de ${month}`}
+              {`${dateEncontrao.getDate()}, ${dateEncontrao.getDate() + 1} e ${dateEncontrao.getDate() + 2} de ${month}`}
             </p>
           </>
         ) : (

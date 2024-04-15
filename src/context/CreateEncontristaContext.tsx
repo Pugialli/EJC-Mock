@@ -78,7 +78,6 @@ interface CreateEncontristaData {
 interface EncontristaContextType {
   step: number
   completeForm: CreateEncontristaData
-  dateEJC: Date | undefined
   forwardStep: (data: FormData) => void
   previousStep: () => void
   resetStep: () => void
@@ -142,8 +141,6 @@ export function CreateEncontristaContextProvider({
       observacoes: undefined,
     },
   })
-  const dateEJC = new Date(2024, 4, 24)
-  // const dateEJC = undefined
 
   function forwardStep({ data }: FormData) {
     if (step === 0) {
@@ -222,7 +219,6 @@ export function CreateEncontristaContextProvider({
         forwardStep,
         previousStep,
         resetStep,
-        dateEJC,
       }}
     >
       {children}

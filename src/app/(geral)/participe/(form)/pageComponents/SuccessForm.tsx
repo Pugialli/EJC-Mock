@@ -12,10 +12,13 @@ import { Check } from 'lucide-react'
 import { useContext } from 'react'
 
 export function SuccessForm() {
-  const { dateEJC, resetStep } = useContext(CreateEncontristaContext)
-  const isDateSet = dateEJC !== undefined
+  const { resetStep } = useContext(CreateEncontristaContext)
 
-  const month = dateEJC ? toProper(getMonthBR(dateEJC)) : ''
+  const dateEncontrao = new Date('4/24/2024')
+
+  const isDateSet = dateEncontrao !== undefined
+
+  const month = dateEncontrao ? toProper(getMonthBR(dateEncontrao)) : ''
 
   return (
     <>
@@ -35,7 +38,7 @@ export function SuccessForm() {
               participação nos dias:
             </p>
             <p className="text-2xl font-bold text-violet-600 dark:text-violet-400">
-              {`${dateEJC.getDate()}, ${dateEJC.getDate() + 1} e ${dateEJC.getDate() + 2} de ${month}`}
+              {`${dateEncontrao.getDate()}, ${dateEncontrao.getDate() + 1} e ${dateEncontrao.getDate() + 2} de ${month}`}
             </p>
             <p>Nos vemos lá!</p>
           </>

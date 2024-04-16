@@ -9,9 +9,12 @@ import { CreateEncontristaContext } from '@/context/CreateEncontristaContext'
 import { getMonthBR } from '@/utils/get-month-locale'
 import { toProper } from '@/utils/to-proper'
 import { useContext } from 'react'
+import { useWizard } from 'react-use-wizard'
 
-export async function InitialForm() {
-  const { forwardStep } = useContext(CreateEncontristaContext)
+export function InitialForm() {
+  const { nextStep, handleStep, activeStep } = useWizard()
+
+  const { updateData } = useContext(CreateEncontristaContext)
 
   // const { data: encontrao } = useQuery<EncontraoData>({
   //   queryKey: ['encontrao', '71'],
@@ -32,7 +35,10 @@ export async function InitialForm() {
 
   function handleForward() {
     const emptyData = undefined
-    forwardStep({ data: emptyData })
+    handleStep(() => {
+      updateData({ data: emptyData, step: activeStep })
+    })
+    nextStep()
   }
 
   return (

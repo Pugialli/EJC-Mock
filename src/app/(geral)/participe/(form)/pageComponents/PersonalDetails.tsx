@@ -18,9 +18,9 @@ import {
   PersonalFormData,
 } from '@/context/CreateEncontristaContext'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { format } from 'date-fns'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
+import { useWizard } from 'react-use-wizard'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
 
@@ -68,12 +68,10 @@ const personalFormScheme = z.object({
 export type PersonalFormDataInput = z.infer<typeof personalFormScheme>
 
 export function PersonalDetails() {
-  const { forwardStep, previousStep, step, completeForm } = useContext(
-    CreateEncontristaContext,
-  )
+  const { completeForm, updateData } = useContext(CreateEncontristaContext)
+  const { nextStep, previousStep, handleStep, activeStep } = useWizard()
 
-  const defaultDate = '12/31/1969'
-  console.log()
+  // const defaultDate = '12/31/1969'
 
   const form = useForm<PersonalFormDataInput>({
     resolver: zodResolver(personalFormScheme),
@@ -94,7 +92,10 @@ export function PersonalDetails() {
 
     const personalData = formDataInput as PersonalFormData
 
-    forwardStep({ data: personalData })
+    handleStep(() => {
+      updateData({ data: personalData, step: activeStep })
+    })
+    nextStep()
   }
 
   return (
@@ -109,7 +110,7 @@ export function PersonalDetails() {
             <span className="text-nowrap text-2xl font-bold">
               Dados Pessoais
             </span>
-            <MultiStep size={5} currentStep={step} />
+            <MultiStep size={5} currentStep={activeStep} />
           </div>
           <div className="flex flex-col gap-14 px-0 py-14 text-lg">
             <div className="flex flex-col gap-3">
@@ -144,17 +145,18 @@ export function PersonalDetails() {
               <FormField
                 control={control}
                 name="dataNascimento"
-                defaultValue={
-                  format(
-                    completeForm.personal.dataNascimento.toString(),
-                    'P',
-                  ) === defaultDate
-                    ? ''
-                    : format(
-                        completeForm.personal.dataNascimento.toString(),
-                        'dd/MM/yyyy',
-                      )
-                }
+                defaultValue={completeForm.personal.dataNascimento}
+                // defaultValue={
+                //   format(
+                //     completeForm.personal.dataNascimento.toString(),
+                //     'P',
+                //   ) === defaultDate
+                //     ? ''
+                //     : format(
+                //         completeForm.personal.dataNascimento.toString(),
+                //         'dd/MM/yyyy',
+                //       )
+                // }
                 render={({ field }) => {
                   return (
                     <TextInput label={'Nascimento *'}>

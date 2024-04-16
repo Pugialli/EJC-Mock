@@ -8,8 +8,10 @@ export interface TextInputProps {
 export function TextInput({ label, children }: TextInputProps) {
   return (
     <FormItem>
-      <FormLabel className="font-medium">{label}</FormLabel>
-      <FormControl>{children}</FormControl>
+      <label>
+        <FormLabel className="font-medium">{label}</FormLabel>
+        <FormControl>{children}</FormControl>
+      </label>
       <FormMessage />
     </FormItem>
   )

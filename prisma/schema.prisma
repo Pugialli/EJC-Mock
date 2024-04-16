@@ -62,7 +62,7 @@ model Encontrista {
   observacao         String
   nome_contato1      String
   tel_contato1       String
-  id_contato1        String
+  id_contato1        String @unique
   nome_contato2      String
   tel_contato2       String
   id_contato2        String
@@ -76,7 +76,8 @@ model Encontrista {
   BairroEncontro BairroEncontro @relation(fields: [id_bairro_encontro], references: [id])
   MoraCom        MoraCom        @relation(fields: [id_moracom], references: [id])
   PaisSeparados  PaisSeparados  @relation(fields: [id_paissep], references: [id])
-  // Relacao        Relacao?       @relation(fields: [id_contato1, id_contato2], references: [id, id])
+  Relacao1       Relacao?       @relation("Relacao1", fields: [id_contato1], references: [id])
+  Relacao2       Relacao?       @relation("Relacao2", fields: [id_contato2], references: [id])
 
   @@map("encontrista")
 }
@@ -87,7 +88,7 @@ model Status {
 
   Encontrista Encontrista[]
 
-  @@map("status")
+  @@map("domainStatus")
 }
 
 model Religiao {
@@ -95,7 +96,7 @@ model Religiao {
   religiao    String
   Encontrista Encontrista[]
 
-  @@map("religiao")
+  @@map("domainReligiao")
 }
 
 model BairroEncontro {
@@ -103,7 +104,7 @@ model BairroEncontro {
   nome_bairro String
   Encontrista Encontrista[]
 
-  @@map("bairroEncontro")
+  @@map("domainBairroEncontro")
 }
 
 model MoraCom {
@@ -111,7 +112,7 @@ model MoraCom {
   mora_com    String
   Encontrista Encontrista[]
 
-  @@map("moraCom")
+  @@map("domainMoraCom")
 }
 
 model PaisSeparados {
@@ -119,14 +120,15 @@ model PaisSeparados {
   status_pais String
   Encontrista Encontrista[]
 
-  @@map("paisSeparados")
+  @@map("domainPaisSeparados")
 }
 
 model Relacao {
   id      String @id @default(uuid())
   relacao String
-  // Encontrista Encontrista?[]
-  // Encontrista Encontrista[]
 
-  @@map("relacao")
+  EncontristaRelacao1 Encontrista?  @relation("Relacao1")
+  EncontristaRelacao2 Encontrista[] @relation("Relacao2")
+
+  @@map("domainRelacao")
 }

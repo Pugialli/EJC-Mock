@@ -33,16 +33,18 @@ export function SelectGroupInput({
 }: SelectGroupInputProps) {
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
-      <Select disabled={disabled} onValueChange={onChange} value={value}>
-        <FormControl>
-          <SelectTrigger className="outline-none">
-            <SelectValue placeholder={placeholder} />
-          </SelectTrigger>
-        </FormControl>
-        <SelectContent>{children}</SelectContent>
-      </Select>
-      {description && <FormDescription>{description}</FormDescription>}
+      <label>
+        <FormLabel>{label}</FormLabel>
+        <Select disabled={disabled} onValueChange={onChange} value={value}>
+          <FormControl>
+            <SelectTrigger className="outline-none">
+              <SelectValue placeholder={placeholder} />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>{children}</SelectContent>
+        </Select>
+        {description && <FormDescription>{description}</FormDescription>}
+      </label>
       <FormMessage />
     </FormItem>
   )

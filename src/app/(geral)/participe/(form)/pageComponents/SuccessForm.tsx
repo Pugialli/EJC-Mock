@@ -10,15 +10,22 @@ import { getMonthBR } from '@/utils/get-month-locale'
 import { toProper } from '@/utils/to-proper'
 import { Check } from 'lucide-react'
 import { useContext } from 'react'
+import { useWizard } from 'react-use-wizard'
 
 export function SuccessForm() {
-  const { resetStep } = useContext(CreateEncontristaContext)
+  const { clearForm } = useContext(CreateEncontristaContext)
+  const { goToStep } = useWizard()
 
   const dateEncontrao = new Date('4/24/2024')
 
   const isDateSet = dateEncontrao !== undefined
 
   const month = dateEncontrao ? toProper(getMonthBR(dateEncontrao)) : ''
+
+  function resetForm() {
+    clearForm()
+    goToStep(1)
+  }
 
   return (
     <>
@@ -50,7 +57,7 @@ export function SuccessForm() {
         )}
       </CardContent>
       <CardFooter className="w-full p-0">
-        <Button className="w-full" onClick={resetStep}>
+        <Button className="w-full" onClick={resetForm}>
           Voltar ao site
         </Button>
       </CardFooter>

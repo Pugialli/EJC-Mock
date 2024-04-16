@@ -19,6 +19,7 @@ import { CEPResponse, getCEPData } from '@/lib/fetch-cep'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { useWizard } from 'react-use-wizard'
 import { toast } from 'sonner'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
@@ -43,9 +44,8 @@ export type AddressFormDataInput = z.infer<typeof addressFormScheme>
 export function AddressDetails() {
   const bairros = getBairros()
 
-  const { forwardStep, previousStep, step, completeForm } = useContext(
-    CreateEncontristaContext,
-  )
+  const { completeForm, updateData } = useContext(CreateEncontristaContext)
+  const { nextStep, previousStep, handleStep, activeStep } = useWizard()
 
   const form = useForm<AddressFormDataInput>({
     resolver: zodResolver(addressFormScheme),
@@ -98,7 +98,10 @@ export function AddressDetails() {
     const addressData = formDataInput as AddressFormData
     // await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
 
-    forwardStep({ data: addressData })
+    handleStep(() => {
+      updateData({ data: addressData, step: activeStep })
+    })
+    nextStep()
   }
 
   return (
@@ -111,7 +114,7 @@ export function AddressDetails() {
         <CardContent>
           <div className="flex w-full items-center justify-between">
             <span className="text-nowrap text-2xl font-bold">Endereço</span>
-            <MultiStep size={5} currentStep={step} />
+            <MultiStep size={5} currentStep={activeStep} />
           </div>
           <div className="flex flex-col gap-14 px-0 py-14 text-lg">
             <div className="flex flex-col gap-3">

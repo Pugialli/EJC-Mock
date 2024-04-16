@@ -58,6 +58,7 @@ export interface OtherFormData {
 }
 
 interface FormData {
+  step: number
   data:
     | PersonalFormData
     | AddressFormData
@@ -76,11 +77,9 @@ interface CreateEncontristaData {
 }
 
 interface EncontristaContextType {
-  step: number
   completeForm: CreateEncontristaData
-  forwardStep: (data: FormData) => void
-  previousStep: () => void
-  resetStep: () => void
+  updateData: ({ data, step }: FormData) => void
+  clearForm: () => void
 }
 
 export const CreateEncontristaContext = createContext(
@@ -91,61 +90,61 @@ interface CreateEncontristaContextProviderProps {
   children: ReactNode
 }
 
+const initialState = {
+  personal: {
+    nome: '',
+    sobrenome: '',
+    dataNascimento: '',
+    paraVoce: 'sim',
+    celular: '',
+    email: '',
+    apelido: undefined,
+    religiao: 'catolica',
+    telefone: undefined,
+    instagram: undefined,
+  },
+  address: {
+    cep: '',
+    estado: '',
+    cidade: '',
+    bairro: '',
+    rua: '',
+    numero: '',
+    complemento: '',
+    dormiraEmCasa: 'sim',
+    bairroDuranteOEncontro: undefined,
+  },
+  family: {
+    moraCom: 'familiar',
+    paisSeparados: 'nao',
+    nomeFamiliar: '',
+    telFamiliar: '',
+    nomeFamiliar2: '',
+    telFamiliar2: '',
+  },
+  nomination: {
+    indicadoPorNome: undefined,
+    indicadoApelido: undefined,
+    indicadoTelefone: undefined,
+    indicadoEmail: undefined,
+  },
+  other: {
+    outroMovimento: 'nao',
+    tamanhoCamisa: undefined,
+    nomeMovimento: undefined,
+    restricoesAlimentares: undefined,
+    observacoes: undefined,
+  },
+} as CreateEncontristaData
+
 export function CreateEncontristaContextProvider({
   children,
 }: CreateEncontristaContextProviderProps) {
-  const [step, setStep] = useState(0)
-  const [completeForm, setCompleteForm] = useState<CreateEncontristaData>({
-    personal: {
-      nome: '',
-      sobrenome: '',
-      dataNascimento: '',
-      paraVoce: 'sim',
-      celular: '',
-      email: '',
-      apelido: undefined,
-      religiao: 'catolica',
-      telefone: undefined,
-      instagram: undefined,
-    },
-    address: {
-      cep: '',
-      estado: '',
-      cidade: '',
-      bairro: '',
-      rua: '',
-      numero: '',
-      complemento: '',
-      dormiraEmCasa: 'sim',
-      bairroDuranteOEncontro: undefined,
-    },
-    family: {
-      moraCom: 'familiar',
-      paisSeparados: 'nao',
-      nomeFamiliar: '',
-      telFamiliar: '',
-      nomeFamiliar2: '',
-      telFamiliar2: '',
-    },
-    nomination: {
-      indicadoPorNome: undefined,
-      indicadoApelido: undefined,
-      indicadoTelefone: undefined,
-      indicadoEmail: undefined,
-    },
-    other: {
-      outroMovimento: 'nao',
-      tamanhoCamisa: undefined,
-      nomeMovimento: undefined,
-      restricoesAlimentares: undefined,
-      observacoes: undefined,
-    },
-  })
+  const [completeForm, setCompleteForm] =
+    useState<CreateEncontristaData>(initialState)
 
-  function forwardStep({ data }: FormData) {
-    if (step === 0) {
-      setStep((state) => state + 1)
-    } else if (step === 1) {
+  function updateData({ data, step }: FormData) {
+    if (step === 1) {
       const newEncontrista = {
         personal: data,
         address: completeForm.address,
@@ -154,7 +153,6 @@ export function CreateEncontristaContextProvider({
         other: completeForm.other,
       } as CreateEncontristaData
       setCompleteForm(newEncontrista)
-      setStep((state) => state + 1)
     } else if (step === 2) {
       const newEncontrista = {
         personal: completeForm.personal,
@@ -164,7 +162,6 @@ export function CreateEncontristaContextProvider({
         other: completeForm.other,
       } as CreateEncontristaData
       setCompleteForm(newEncontrista)
-      setStep((state) => state + 1)
     } else if (step === 3) {
       const newEncontrista = {
         personal: completeForm.personal,
@@ -174,7 +171,6 @@ export function CreateEncontristaContextProvider({
         other: completeForm.other,
       } as CreateEncontristaData
       setCompleteForm(newEncontrista)
-      setStep((state) => state + 1)
     } else if (step === 4) {
       const newEncontrista = {
         personal: completeForm.personal,
@@ -184,7 +180,6 @@ export function CreateEncontristaContextProvider({
         other: completeForm.other,
       } as CreateEncontristaData
       setCompleteForm(newEncontrista)
-      setStep((state) => state + 1)
     } else if (step === 5) {
       const newEncontrista = {
         personal: completeForm.personal,
@@ -195,30 +190,23 @@ export function CreateEncontristaContextProvider({
       } as CreateEncontristaData
       setCompleteForm(newEncontrista)
       createNewEncontrista(completeForm)
-      setStep((state) => state + 1)
     }
-  }
-
-  function previousStep() {
-    setStep((state) => state - 1)
-  }
-
-  function resetStep() {
-    setStep(0)
   }
 
   function createNewEncontrista(data: CreateEncontristaData) {
     console.log(data)
   }
 
+  const clearForm = () => {
+    setCompleteForm({ ...initialState })
+  }
+
   return (
     <CreateEncontristaContext.Provider
       value={{
-        step,
         completeForm,
-        forwardStep,
-        previousStep,
-        resetStep,
+        updateData,
+        clearForm,
       }}
     >
       {children}

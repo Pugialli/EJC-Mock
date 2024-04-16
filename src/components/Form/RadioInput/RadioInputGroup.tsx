@@ -24,23 +24,25 @@ export function RadioInputGroup({
 }: RadioInputGroupProps) {
   return (
     <FormItem className="w-full space-y-3">
-      <div>
-        <FormLabel className="text-zinc-700">{label}</FormLabel>
-        {description && (
-          <FormDescription className="mt-1 text-xs text-zinc-500">
-            {description}
-          </FormDescription>
-        )}
-      </div>
-      <FormControl>
-        <RadioGroup
-          onValueChange={onChange}
-          defaultValue={defaultValue}
-          className="flex flex-col space-y-1"
-        >
-          {children}
-        </RadioGroup>
-      </FormControl>
+      <label>
+        <div>
+          <FormLabel className="text-zinc-700">{label}</FormLabel>
+          {description && (
+            <FormDescription className="mt-1 text-xs text-zinc-500">
+              {description}
+            </FormDescription>
+          )}
+        </div>
+        <FormControl>
+          <RadioGroup
+            onValueChange={onChange}
+            defaultValue={defaultValue}
+            className="flex flex-col space-y-1"
+          >
+            {children}
+          </RadioGroup>
+        </FormControl>
+      </label>
       <FormMessage />
     </FormItem>
   )

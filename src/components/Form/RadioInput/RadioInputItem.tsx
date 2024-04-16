@@ -8,10 +8,12 @@ export interface RadioInputItemProps {
 export function RadioInputItem({ value, label }: RadioInputItemProps) {
   return (
     <FormItem className="flex items-center space-x-2 space-y-0">
-      <FormControl>
-        <RadioGroupItem value={value} />
-      </FormControl>
-      <FormLabel className="font-normal">{label}</FormLabel>
+      <label>
+        <FormControl>
+          <RadioGroupItem value={value} />
+        </FormControl>
+        <FormLabel className="font-normal">{label}</FormLabel>
+      </label>
     </FormItem>
   )
 }

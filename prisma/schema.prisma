@@ -15,37 +15,27 @@ datasource db {
 }
 
 model Pessoa {
-  id          String  @id @default(uuid())
-  nome        String
-  sobrenome   String
-  enderecoCep String
-  celular     String
-  telefone    String?
-  email       String  @unique
-  avatar_url  String?
+  id           String  @id @default(uuid())
+  nome         String
+  sobrenome    String
+  endereco_cep String
+  celular      String
+  telefone     String?
+  email        String  @unique
+  avatar_url   String?
 
   created_at  DateTime @default(now())
   modified_at DateTime @default(now())
 
-  Cep         Endereco     @relation(fields: [enderecoCep], references: [cep])
-  Encontrista Encontrista?
+  Cep                Endereco        @relation(fields: [endereco_cep], references: [cep])
+  Encontrista        Encontrista?
+  TioAparenteCirculo Circulo?        @relation("TioAparente")
+  TioSecretoCirculo  Circulo?        @relation("TioSecreto")
+  PessoaMotorista    Carro?          @relation("PessoaMotorista")
+  PessoaCarona       Carro[]         @relation("PessoaCarona")
+  CarroEncontro      CarroEncontro[]
 
   @@map("pessoas")
-}
-
-model Endereco {
-  cep    String @id @default(uuid())
-  estado String
-  cidade String
-  bairro String
-  rua    String
-
-  created_at  DateTime @default(now())
-  modified_at DateTime @default(now())
-
-  Pessoa Pessoa[]
-
-  @@map("endereco")
 }
 
 model Encontrista {
@@ -81,6 +71,118 @@ model Encontrista {
 
   @@map("encontrista")
 }
+
+model Encontreiro {
+  id_pessoa           String  @unique
+  nascimento          String
+  apelido             String?
+  instagram           String
+  senha               String?
+  restricao_alimentar String?
+  id_tamanho_camisa   String
+  id_encontro         String
+  id_circulo          String?
+
+  TamanhoCamisa TamanhoCamisa @relation(fields: [id_tamanho_camisa], references: [id])
+  Encontro      Encontro      @relation(fields: [id_encontro], references: [id])
+  Circulo       Circulo?      @relation(fields: [id_circulo], references: [id])
+
+  @@map("encontreiro")
+}
+
+model Encontro {
+  id              String @id @default(uuid())
+  numero_encontro Int    @unique
+  data_inicio     String @unique
+  data_tema       String @unique
+  id_local        String
+  tema_espiritual String
+  tema_fantasia   String
+  numero_circulos Int
+
+  Local         Local           @relation(fields: [id_local], references: [id])
+  Encontreiro   Encontreiro[]
+  Circulo       Circulo[]
+  CarroEncontro CarroEncontro[]
+
+  @@map("encontro")
+}
+
+model Circulo {
+  id                  String @id @default(uuid())
+  id_cor_circulo      String
+  id_tio_aparente     String @unique
+  id_tio_secreto      String @unique
+  numero_encontristas Int
+  id_encontro         String
+
+  Encontro    Encontro      @relation(fields: [id_encontro], references: [id])
+  CorCirculo  CorCirculo    @relation(fields: [id_cor_circulo], references: [id])
+  TioAparente Pessoa?       @relation("TioAparente", fields: [id_tio_aparente], references: [id])
+  TioSecreto  Pessoa?       @relation("TioSecreto", fields: [id_tio_secreto], references: [id])
+  Encontreiro Encontreiro[]
+
+  @@map("circulo")
+}
+
+model Endereco {
+  cep    String @id @default(uuid())
+  estado String
+  cidade String
+  bairro String
+  rua    String
+
+  created_at  DateTime @default(now())
+  modified_at DateTime @default(now())
+
+  Pessoa Pessoa[]
+  Local  Local[]
+
+  @@map("endereco")
+}
+
+model Local {
+  id           String @id @default(uuid())
+  endereco_cep String
+  nome_local   String
+  numero_local String
+
+  Endereco Endereco   @relation(fields: [endereco_cep], references: [cep])
+  Encontro Encontro[]
+
+  @@map("local")
+}
+
+model Carro {
+  id                   String  @id @default(uuid())
+  id_motorista         String  @unique
+  id_carona            String?
+  modelo_carro         String
+  placa_carro          String
+  lugares_carro        Int
+  observacao_motorista String
+
+  PessoaMotorista Pessoa          @relation("PessoaMotorista", fields: [id_motorista], references: [id])
+  PessoaCarona    Pessoa?         @relation("PessoaCarona", fields: [id_carona], references: [id])
+  CarroEncontro   CarroEncontro[]
+
+  @@map("carro")
+}
+
+model CarroEncontro {
+  id             String @id @default(uuid())
+  id_carro       String
+  id_encontrista String
+  id_encontro    String
+
+  Carro       Carro    @relation(fields: [id_carro], references: [id])
+  Encontrista Pessoa   @relation(fields: [id_encontrista], references: [id])
+  Encontro    Encontro @relation(fields: [id_encontro], references: [id])
+
+  @@map("carro_encontro")
+}
+
+//Domains
 
 model Status {
   id     String @id @default(uuid())
@@ -131,4 +233,20 @@ model Relacao {
   EncontristaRelacao2 Encontrista[] @relation("Relacao2")
 
   @@map("domainRelacao")
+}
+
+model TamanhoCamisa {
+  id             String        @id @default(uuid())
+  tamanho_camisa String
+  Encontreiro    Encontreiro[]
+
+  @@map("domainTamanhoCamisa")
+}
+
+model CorCirculo {
+  id      String    @id @default(uuid())
+  cor     String
+  Circulo Circulo[]
+
+  @@map("domainCorCirculo")
 }

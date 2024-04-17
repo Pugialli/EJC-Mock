@@ -20,7 +20,7 @@ export async function GET(request: Request) {
 
   const encontro = await prisma.encontro.findUnique({
     include: {
-      Local: true,
+      local: true,
     },
     where: {
       numero_encontro: numero,

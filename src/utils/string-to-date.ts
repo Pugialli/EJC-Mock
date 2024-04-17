@@ -8,7 +8,5 @@ export function stringToDate(string: string) {
 
   const date = new Date(correctedString)
 
-  console.log(correctedString, date)
-
   return date
 }

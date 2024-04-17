@@ -1,5 +1,6 @@
 'use client'
 
+import { TamanhoCamisaData } from '@/app/api/domains/tamanho_camisa/route'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -18,20 +19,13 @@ import {
   CreateEncontristaContext,
   OtherFormData,
 } from '@/context/CreateEncontristaContext'
+import { api } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useWizard } from 'react-use-wizard'
 import { z } from 'zod'
-
-const tamanhoCamisaList = [
-  { value: 'p', label: 'P' },
-  { value: 'm', label: 'M' },
-  { value: 'g', label: 'G' },
-  { value: 'gg', label: 'GG' },
-  { value: 'xgg', label: 'XGG' },
-  { value: 'outro', label: 'Outro' },
-] as SelectArray[]
 
 const otherFormScheme = z.object({
   tamanhoCamisa: z.enum(['p', 'm', 'g', 'gg', 'xgg', 'outro']).optional(),
@@ -46,9 +40,33 @@ const otherFormScheme = z.object({
 
 export type OtherFormDataInput = z.infer<typeof otherFormScheme>
 
+async function getTamanhoCamisa() {
+  const response: TamanhoCamisaData[] = await api
+    .get('domains/tamanho_camisa')
+    .then((response) => response.data)
+    .catch((err) => console.error(err))
+
+  const selectData: SelectArray[] = []
+  response.forEach((item) => {
+    const selectItem: SelectArray = {
+      label: item.tamanho_camisa,
+      value: item.id,
+    }
+
+    selectData.push(selectItem)
+  })
+
+  return selectData
+}
+
 export function OtherDetails() {
   const { completeForm, updateData } = useContext(CreateEncontristaContext)
   const { nextStep, previousStep, handleStep, activeStep } = useWizard()
+
+  const { data: tamanhoCamisa } = useQuery<SelectArray[]>({
+    queryFn: async () => await getTamanhoCamisa(),
+    queryKey: ['tamanhoCamisa'],
+  })
 
   const form = useForm<OtherFormDataInput>({
     resolver: zodResolver(otherFormScheme),
@@ -108,15 +126,16 @@ export function OtherDetails() {
                       onChange={field.onChange}
                       value={field.value}
                     >
-                      {tamanhoCamisaList.map((item) => {
-                        return (
-                          <SelectItem
-                            key={item.value}
-                            value={item.value}
-                            text={item.label}
-                          />
-                        )
-                      })}
+                      {tamanhoCamisa &&
+                        tamanhoCamisa.map((item) => {
+                          return (
+                            <SelectItem
+                              key={item.value}
+                              value={item.value}
+                              text={item.label}
+                            />
+                          )
+                        })}
                     </SelectGroupInput>
                   )
                 }}

@@ -1,5 +1,7 @@
 'use client'
 
+import { MoraComData } from '@/app/api/domains/mora_com/route'
+import { StatusPaisData } from '@/app/api/domains/status_pais/route'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -17,26 +19,20 @@ import {
   CreateEncontristaContext,
   FamilyFormData,
 } from '@/context/CreateEncontristaContext'
+import { api } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useWizard } from 'react-use-wizard'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
 
-const moraComList = [
-  { value: 'sozinho', label: 'Sozinho' },
-  { value: 'conjuge', label: 'Cônjuge' },
-  { value: 'familiar', label: 'Familiar' },
-] as SelectArray[]
-
 const familyFormScheme = z.object({
   moraCom: z.enum(['sozinho', 'conjuge', 'familiar'], {
     required_error: 'Este campo é obrigatório',
   }),
-  paisSeparados: z.enum(['sim', 'nao', 'na'], {
-    required_error: 'Este campo é obrigatório',
-  }),
+  statusPais: z.string({ required_error: 'Este campo é obrigatório' }),
   nomeFamiliar: z
     .string({
       required_error: 'O nome de pelo menos um familiar é obrigatório.',
@@ -52,9 +48,51 @@ const familyFormScheme = z.object({
 
 export type FamilyFormDataInput = z.infer<typeof familyFormScheme>
 
+async function getMoraCom() {
+  const response: MoraComData[] = await api
+    .get('domains/mora_com')
+    .then((response) => response.data)
+    .catch((err) => console.error(err))
+
+  const selectData: SelectArray[] = []
+  response.forEach((item) => {
+    const selectItem: SelectArray = { label: item.mora_com, value: item.id }
+
+    selectData.push(selectItem)
+  })
+
+  return selectData
+}
+
+async function getStatusPais() {
+  const response: StatusPaisData[] = await api
+    .get('domains/status_pais')
+    .then((response) => response.data)
+    .catch((err) => console.error(err))
+
+  const selectData: SelectArray[] = []
+  response.forEach((item) => {
+    const selectItem: SelectArray = { label: item.status_pais, value: item.id }
+
+    selectData.push(selectItem)
+  })
+
+  return selectData
+}
+
 export function FamilyDetails() {
   const { completeForm, updateData } = useContext(CreateEncontristaContext)
   const { nextStep, previousStep, handleStep, activeStep } = useWizard()
+
+  const { data: moraCom } = useQuery<SelectArray[]>({
+    queryFn: async () => await getMoraCom(),
+    queryKey: ['moraCom'],
+  })
+
+  const { data: statusPais } = useQuery({
+    queryFn: async () => await getStatusPais(),
+    queryKey: ['statusPais'],
+  })
 
   const form = useForm<FamilyFormDataInput>({
     resolver: zodResolver(familyFormScheme),
@@ -115,15 +153,16 @@ export function FamilyDetails() {
                       onChange={field.onChange}
                       value={field.value}
                     >
-                      {moraComList.map((item) => {
-                        return (
-                          <SelectItem
-                            key={item.value}
-                            value={item.value}
-                            text={item.label}
-                          />
-                        )
-                      })}
+                      {moraCom &&
+                        moraCom.map((item) => {
+                          return (
+                            <SelectItem
+                              key={item.value}
+                              value={item.value}
+                              text={item.label}
+                            />
+                          )
+                        })}
                     </SelectGroupInput>
                   )
                 }}
@@ -131,17 +170,24 @@ export function FamilyDetails() {
 
               <FormField
                 control={control}
-                name="paisSeparados"
-                defaultValue={completeForm.family.paisSeparados}
+                name="statusPais"
+                defaultValue={completeForm.family.statusPais}
                 render={({ field }) => {
                   return (
                     <RadioInputGroup
                       label="Seus pais são separados? *"
                       onChange={field.onChange}
                     >
-                      <RadioInputItem value="sim" label="Sim" />
-                      <RadioInputItem value="nao" label="Não" />
-                      <RadioInputItem value="na" label="Não se aplica" />
+                      {statusPais &&
+                        statusPais.map((item) => {
+                          return (
+                            <RadioInputItem
+                              key={item.value}
+                              value={item.value}
+                              label={item.label}
+                            />
+                          )
+                        })}
                     </RadioInputGroup>
                   )
                 }}

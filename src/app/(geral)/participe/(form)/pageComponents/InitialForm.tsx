@@ -1,3 +1,4 @@
+import { EncontroData } from '@/app/api/encontro/route'
 import { Button } from '@/components/ui/button'
 import {
   CardContent,
@@ -6,32 +7,32 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { CreateEncontristaContext } from '@/context/CreateEncontristaContext'
+import { api } from '@/lib/axios'
 import { getMonthBR } from '@/utils/get-month-locale'
+import { stringToDate } from '@/utils/string-to-date'
 import { toProper } from '@/utils/to-proper'
+import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { useWizard } from 'react-use-wizard'
+
+async function getEncontro(number: number) {
+  const response: EncontroData = await api
+    .get(`http://localhost:3000/api/encontro?encontro=${number}`)
+    .then((response) => response.data)
+    .catch((err) => console.error(err))
+
+  return response
+}
 
 export function InitialForm() {
   const { nextStep, handleStep, activeStep } = useWizard()
 
   const { updateData } = useContext(CreateEncontristaContext)
 
-  // const { data: encontrao } = useQuery<EncontraoData>({
-  //   queryKey: ['encontrao', '71'],
-  //   queryFn: async () => {
-  //     const response = await api.get(`/encontrao`)
-
-  //     return response.data
-  //   },
-  // })
-
-  // console.log(encontrao)
-
-  const dateEncontrao = new Date('4/24/2024')
-
-  const isDateSet = dateEncontrao !== undefined
-
-  const month = dateEncontrao ? toProper(getMonthBR(dateEncontrao)) : ''
+  const { data: encontro } = useQuery<EncontroData>({
+    queryFn: async () => await getEncontro(71),
+    queryKey: ['encontro'],
+  })
 
   function handleForward() {
     const emptyData = undefined
@@ -47,7 +48,7 @@ export function InitialForm() {
         <CardTitle className="text-2xl font-bold">Olá!</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3 text-lg">
-        {isDateSet ? (
+        {encontro ? (
           <>
             <p>
               Que bom te ver por aqui!
@@ -55,7 +56,7 @@ export function InitialForm() {
               Nosso próximo encontrão acontecerá nos dias:
             </p>
             <p className="text-2xl font-bold text-violet-600 dark:text-violet-400">
-              {`${dateEncontrao.getDate()}, ${dateEncontrao.getDate() + 1} e ${dateEncontrao.getDate() + 2} de ${month}`}
+              {`${stringToDate(encontro.data_inicio).getDate()}, ${stringToDate(encontro.data_inicio).getDate() + 1} e ${stringToDate(encontro.data_inicio).getDate() + 2} de ${toProper(getMonthBR(stringToDate(encontro.data_inicio)))}`}
             </p>
           </>
         ) : (
@@ -66,7 +67,7 @@ export function InitialForm() {
             você já pode se inscrever.
           </p>
         )}
-        {isDateSet ? (
+        {encontro ? (
           <p>
             Para realizar sua inscrição, vamos fazer algumas perguntas para te
             conhecer melhor e preparar um fim de semana inesquecível para você.

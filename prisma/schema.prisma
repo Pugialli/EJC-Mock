@@ -39,35 +39,33 @@ model Pessoa {
 }
 
 model Encontrista {
-  id_pessoa          String @unique
-  id_status          String
-  id_religiao        String
-  is_autofill        String
-  end_numero         String
-  end_complemento    String
-  id_bairro_encontro String
-  id_moracom         String
-  id_paissep         String
-  movimento_anterior String
-  observacao         String
-  nome_contato1      String
-  tel_contato1       String
-  id_contato1        String @unique
-  nome_contato2      String
-  tel_contato2       String
-  id_contato2        String
+  id_pessoa           String  @unique
+  id_status           String
+  id_religiao         String
+  is_autofill         String
+  end_numero          String
+  end_complemento     String
+  id_bairro_encontro  String
+  id_moracom          String
+  id_paissep          String
+  movimento_anterior  String
+  observacao          String
+  nome_contato1       String
+  tel_contato1        String
+  parentesco_contato1 String
+  nome_contato2       String?
+  tel_contato2        String?
+  parentesco_contato2 String?
 
   created_at  DateTime @default(now())
   modified_at DateTime @default(now())
 
-  Pessoa         Pessoa         @relation(fields: [id_pessoa], references: [id])
-  Status         Status         @relation(fields: [id_status], references: [id])
-  Religiao       Religiao       @relation(fields: [id_religiao], references: [id])
-  BairroEncontro BairroEncontro @relation(fields: [id_bairro_encontro], references: [id])
-  MoraCom        MoraCom        @relation(fields: [id_moracom], references: [id])
-  PaisSeparados  PaisSeparados  @relation(fields: [id_paissep], references: [id])
-  Relacao1       Relacao?       @relation("Relacao1", fields: [id_contato1], references: [id])
-  Relacao2       Relacao?       @relation("Relacao2", fields: [id_contato2], references: [id])
+  Pessoa         Pessoa               @relation(fields: [id_pessoa], references: [id])
+  Status         DomainStatus         @relation(fields: [id_status], references: [id])
+  Religiao       DomainReligiao       @relation(fields: [id_religiao], references: [id])
+  BairroEncontro DomainBairroEncontro @relation(fields: [id_bairro_encontro], references: [value])
+  MoraCom        DomainMoraCom        @relation(fields: [id_moracom], references: [id])
+  PaisSeparados  DomainStatusPais     @relation(fields: [id_paissep], references: [id])
 
   @@map("encontrista")
 }
@@ -83,9 +81,9 @@ model Encontreiro {
   id_encontro         String
   id_circulo          String?
 
-  TamanhoCamisa TamanhoCamisa @relation(fields: [id_tamanho_camisa], references: [id])
-  Encontro      Encontro      @relation(fields: [id_encontro], references: [id])
-  Circulo       Circulo?      @relation(fields: [id_circulo], references: [id])
+  TamanhoCamisa DomainTamanhoCamisa @relation(fields: [id_tamanho_camisa], references: [id])
+  Encontro      Encontro            @relation(fields: [id_encontro], references: [id])
+  Circulo       Circulo?            @relation(fields: [id_circulo], references: [id])
 
   @@map("encontreiro")
 }
@@ -110,23 +108,23 @@ model Encontro {
 
 model Circulo {
   id                  String @id @default(uuid())
-  id_cor_circulo      String
+  id_cor_circulo      Int
   id_tio_aparente     String @unique
   id_tio_secreto      String @unique
   numero_encontristas Int
   id_encontro         String
 
-  Encontro    Encontro      @relation(fields: [id_encontro], references: [id])
-  CorCirculo  CorCirculo    @relation(fields: [id_cor_circulo], references: [id])
-  TioAparente Pessoa?       @relation("TioAparente", fields: [id_tio_aparente], references: [id])
-  TioSecreto  Pessoa?       @relation("TioSecreto", fields: [id_tio_secreto], references: [id])
+  Encontro    Encontro         @relation(fields: [id_encontro], references: [id])
+  CorCirculo  DomainCorCirculo @relation(fields: [id_cor_circulo], references: [id])
+  TioAparente Pessoa?          @relation("TioAparente", fields: [id_tio_aparente], references: [id])
+  TioSecreto  Pessoa?          @relation("TioSecreto", fields: [id_tio_secreto], references: [id])
   Encontreiro Encontreiro[]
 
   @@map("circulo")
 }
 
 model Endereco {
-  cep    String @id @default(uuid())
+  cep    String @id @unique
   estado String
   cidade String
   bairro String
@@ -170,7 +168,6 @@ model Carro {
 }
 
 model CarroEncontro {
-  id             String @id @default(uuid())
   id_carro       String
   id_encontrista String
   id_encontro    String
@@ -179,73 +176,66 @@ model CarroEncontro {
   Encontrista Pessoa   @relation(fields: [id_encontrista], references: [id])
   Encontro    Encontro @relation(fields: [id_encontro], references: [id])
 
+  @@unique([id_carro, id_encontrista, id_encontro])
   @@map("carro_encontro")
 }
 
 //Domains
 
-model Status {
-  id     String @id @default(uuid())
-  status String
+model DomainStatus {
+  id     String @id @unique
+  status String @unique
 
   Encontrista Encontrista[]
 
   @@map("domainStatus")
 }
 
-model Religiao {
-  id          String        @id @default(uuid())
-  religiao    String
+model DomainReligiao {
+  id          String        @id @unique
+  religiao    String        @unique
   Encontrista Encontrista[]
 
   @@map("domainReligiao")
 }
 
-model BairroEncontro {
-  id          String        @id @default(uuid())
-  nome_bairro String
+model DomainBairroEncontro {
+  id          Int           @id
+  value       String        @unique
+  bairro      String        @unique
+  zona        String
   Encontrista Encontrista[]
 
   @@map("domainBairroEncontro")
 }
 
-model MoraCom {
-  id          String        @id @default(uuid())
-  mora_com    String
+model DomainMoraCom {
+  id          String        @id @unique
+  mora_com    String        @unique
   Encontrista Encontrista[]
 
   @@map("domainMoraCom")
 }
 
-model PaisSeparados {
-  id          String        @id @default(uuid())
-  status_pais String
+model DomainStatusPais {
+  id          String        @id @unique
+  status_pais String        @unique
   Encontrista Encontrista[]
 
-  @@map("domainPaisSeparados")
+  @@map("domainStatusPais")
 }
 
-model Relacao {
-  id      String @id @default(uuid())
-  relacao String
-
-  EncontristaRelacao1 Encontrista?  @relation("Relacao1")
-  EncontristaRelacao2 Encontrista[] @relation("Relacao2")
-
-  @@map("domainRelacao")
-}
-
-model TamanhoCamisa {
-  id             String        @id @default(uuid())
-  tamanho_camisa String
+model DomainTamanhoCamisa {
+  id             String        @id @unique
+  tamanho_camisa String        @unique
   Encontreiro    Encontreiro[]
 
   @@map("domainTamanhoCamisa")
 }
 
-model CorCirculo {
-  id      String    @id @default(uuid())
-  cor     String
+model DomainCorCirculo {
+  id      Int       @id @default(autoincrement())
+  cor     String    @unique
   Circulo Circulo[]
 
   @@map("domainCorCirculo")

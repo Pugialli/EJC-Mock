@@ -35,7 +35,7 @@ export interface AddressFormData {
 
 export interface FamilyFormData {
   moraCom: 'sozinho' | 'conjuge' | 'familiar'
-  paisSeparados: 'sim' | 'nao' | 'na'
+  statusPais: 'sim' | 'nao' | 'na'
   nomeFamiliar: string
   telFamiliar: string
   nomeFamiliar2: string
@@ -116,7 +116,7 @@ const initialState = {
   },
   family: {
     moraCom: 'familiar',
-    paisSeparados: 'nao',
+    statusPais: 'nao',
     nomeFamiliar: '',
     telFamiliar: '',
     nomeFamiliar2: '',

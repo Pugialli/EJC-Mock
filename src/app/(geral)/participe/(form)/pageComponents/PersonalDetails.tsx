@@ -1,5 +1,6 @@
 'use client'
 
+import { ReligiaoData } from '@/app/api/domains/religiao/route'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -17,22 +18,14 @@ import {
   CreateEncontristaContext,
   PersonalFormData,
 } from '@/context/CreateEncontristaContext'
+import { api } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useWizard } from 'react-use-wizard'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
-
-const religionList = [
-  { value: 'catolica', label: 'Católica' },
-  { value: 'evangelica', label: 'Evangélica' },
-  { value: 'espirita', label: 'Espírita' },
-  { value: 'matriz_africana', label: 'Religião de matriz afro-brasileira' },
-  { value: 'judaica', label: 'Judaica' },
-  { value: 'nao_tenho', label: 'Não tenho religião' },
-  { value: 'outra', label: 'Outra' },
-] as SelectArray[]
 
 const personalFormScheme = z.object({
   nome: z
@@ -67,9 +60,30 @@ const personalFormScheme = z.object({
 
 export type PersonalFormDataInput = z.infer<typeof personalFormScheme>
 
+async function getReligioes() {
+  const response: ReligiaoData[] = await api
+    .get('domains/religiao')
+    .then((response) => response.data)
+    .catch((err) => console.error(err))
+
+  const selectData: SelectArray[] = []
+  response.forEach((item) => {
+    const selectItem: SelectArray = { label: item.religiao, value: item.id }
+
+    selectData.push(selectItem)
+  })
+
+  return selectData
+}
+
 export function PersonalDetails() {
   const { completeForm, updateData } = useContext(CreateEncontristaContext)
   const { nextStep, previousStep, handleStep, activeStep } = useWizard()
+
+  const { data: religioes } = useQuery<SelectArray[]>({
+    queryFn: async () => await getReligioes(),
+    queryKey: ['religioes'],
+  })
 
   // const defaultDate = '12/31/1969'
 
@@ -194,15 +208,21 @@ export function PersonalDetails() {
                       onChange={field.onChange}
                       value={field.value}
                     >
-                      {religionList.map((item) => {
-                        return (
-                          <SelectItem
-                            key={item.value}
-                            value={item.value}
-                            text={item.label}
-                          />
-                        )
-                      })}
+                      {
+                        // if (!isLoading) {
+                        //   console.log(religioes)
+                        //     }
+                        religioes &&
+                          religioes.map((item) => {
+                            return (
+                              <SelectItem
+                                key={item.value}
+                                value={item.value}
+                                text={item.label}
+                              />
+                            )
+                          })
+                      }
                     </SelectGroupInput>
                   )
                 }}

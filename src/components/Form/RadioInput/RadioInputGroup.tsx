@@ -23,8 +23,8 @@ export function RadioInputGroup({
   onChange,
 }: RadioInputGroupProps) {
   return (
-    <FormItem className="w-full space-y-3">
-      <label>
+    <FormItem>
+      <label className="w-full space-y-3">
         <div>
           <FormLabel className="text-zinc-700">{label}</FormLabel>
           {description && (

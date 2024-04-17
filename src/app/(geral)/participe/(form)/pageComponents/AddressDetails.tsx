@@ -1,5 +1,6 @@
 'use client'
 
+import { BairrosRJ } from '@/app/api/domains/bairrosRJ/route'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -14,9 +15,10 @@ import {
   AddressFormData,
   CreateEncontristaContext,
 } from '@/context/CreateEncontristaContext'
-import { getBairros } from '@/lib/fetch-bairros'
+import { api } from '@/lib/axios'
 import { CEPResponse, getCEPData } from '@/lib/fetch-cep'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery } from '@tanstack/react-query'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useWizard } from 'react-use-wizard'
@@ -34,15 +36,29 @@ const addressFormScheme = z.object({
   rua: z.string().min(1, { message: 'A rua é obrigatória.' }),
   numero: z.string().min(1, { message: 'O número é obrigatório.' }),
   complemento: z.string(),
-
   dormiraEmCasa: z.enum(['sim', 'nao']),
-  bairroDuranteOEncontro: z.enum(['botafogo', 'copacabana']).optional(),
+  bairroDuranteOEncontro: z
+    .string()
+    .min(1, { message: 'Selecione um bairro' })
+    .optional(),
 })
 
 export type AddressFormDataInput = z.infer<typeof addressFormScheme>
 
+async function getBairros() {
+  const response = await api
+    .get('domains/bairrosRJ')
+    .then((response) => response.data)
+    .catch((err) => console.error(err))
+
+  return response
+}
+
 export function AddressDetails() {
-  const bairros = getBairros()
+  const { data: bairros } = useQuery<BairrosRJ[]>({
+    queryFn: async () => await getBairros(),
+    queryKey: ['bairrosRJ'],
+  })
 
   const { completeForm, updateData } = useContext(CreateEncontristaContext)
   const { nextStep, previousStep, handleStep, activeStep } = useWizard()
@@ -61,8 +77,6 @@ export function AddressDetails() {
   } = form
 
   const isOnOtherLocation = !(watch('dormiraEmCasa') === 'nao')
-
-  // Falbo: comentei essa parte pq achei que ele podia estar dando ruim enquanto não conseguia realizar o fetch
 
   const cepValue = watch('cep')
 
@@ -90,7 +104,7 @@ export function AddressDetails() {
       setValue('bairro', '')
       setValue('rua', '')
     }
-  }, [cepValue, setValue])
+  }, [activeStep, cepValue, setValue])
 
   const registerWithMask = useHookFormMask(register)
 
@@ -245,15 +259,16 @@ export function AddressDetails() {
                       value={field.value}
                       disabled={isOnOtherLocation}
                     >
-                      {bairros.map((item) => {
-                        return (
-                          <SelectItem
-                            key={item.id}
-                            value={item.value}
-                            text={item.bairro}
-                          />
-                        )
-                      })}
+                      {bairros &&
+                        bairros.map((item) => {
+                          return (
+                            <SelectItem
+                              key={item.id}
+                              value={item.value}
+                              text={item.bairro}
+                            />
+                          )
+                        })}
                     </SelectGroupInput>
                   )
                 }}

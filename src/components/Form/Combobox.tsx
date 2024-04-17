@@ -49,8 +49,6 @@ export function Combobox({
   list,
 }: ComboboxProps) {
   const { setValue } = useFormContext()
-  console.log(value)
-  console.log(list)
   return (
     <FormItem className="flex flex-col">
       <FormLabel>{label}</FormLabel>

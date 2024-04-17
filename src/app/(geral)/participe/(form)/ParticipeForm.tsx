@@ -14,7 +14,7 @@ export function ParticipeForm() {
   return (
     <div className="flex h-auto items-center justify-center bg-primary pb-32 pt-24">
       <Card className="flex w-card flex-col items-center gap-5 p-8 text-zinc-700 ">
-        <Wizard>
+        <Wizard startIndex={0}>
           <InitialForm />
           <PersonalDetails />
           <AddressDetails />

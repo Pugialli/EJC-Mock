@@ -1,3 +1,4 @@
+import { api } from '@/lib/axios'
 import { ReactNode, createContext, useState } from 'react'
 
 export interface PersonalFormData {
@@ -194,6 +195,7 @@ export function CreateEncontristaContextProvider({
   }
 
   function createNewEncontrista(data: CreateEncontristaData) {
+    api.post('/encontrista', data)
     console.log(data)
   }
 

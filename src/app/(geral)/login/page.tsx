@@ -12,8 +12,10 @@ import {
 } from '@/components/ui/card'
 import { FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { AuthContext } from '@/context/AuthContext'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
+import { useContext } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -22,7 +24,7 @@ const loginScheme = z.object({
     .string({ required_error: 'O email é obrigatório.' })
     .email({ message: 'O email não é válido' }),
 
-  password: z.string(),
+  password: z.string({ required_error: 'A senha é obrigatória.' }),
 })
 
 export type loginData = z.infer<typeof loginScheme>
@@ -32,14 +34,20 @@ export default function Login() {
     resolver: zodResolver(loginScheme),
   })
 
+  const { signIn } = useContext(AuthContext)
+
   const {
     handleSubmit,
     control,
     formState: { isSubmitting },
   } = form
 
-  function handleLogIn(data: loginData) {
-    console.log(data)
+  async function handleLogIn(data: loginData) {
+    try {
+      await signIn(data)
+    } catch (error) {
+      console.log('Não foi possível logar')
+    }
   }
 
   return (

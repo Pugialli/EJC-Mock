@@ -208,21 +208,16 @@ export function PersonalDetails() {
                       onChange={field.onChange}
                       value={field.value}
                     >
-                      {
-                        // if (!isLoading) {
-                        //   console.log(religioes)
-                        //     }
-                        religioes &&
-                          religioes.map((item) => {
-                            return (
-                              <SelectItem
-                                key={item.value}
-                                value={item.value}
-                                text={item.label}
-                              />
-                            )
-                          })
-                      }
+                      {religioes &&
+                        religioes.map((item) => {
+                          return (
+                            <SelectItem
+                              key={item.value}
+                              value={item.value}
+                              text={item.label}
+                            />
+                          )
+                        })}
                     </SelectGroupInput>
                   )
                 }}

@@ -27,13 +27,14 @@ model Pessoa {
   created_at  DateTime @default(now())
   modified_at DateTime @default(now())
 
-  Cep                Endereco        @relation(fields: [endereco_cep], references: [cep])
-  Encontrista        Encontrista?
-  TioAparenteCirculo Circulo?        @relation("TioAparente")
-  TioSecretoCirculo  Circulo?        @relation("TioSecreto")
-  PessoaMotorista    Carro?          @relation("PessoaMotorista")
-  PessoaCarona       Carro[]         @relation("PessoaCarona")
-  CarroEncontro      CarroEncontro[]
+  cep                Endereco        @relation(fields: [endereco_cep], references: [cep])
+  encontrista        Encontrista?
+  tioAparenteCirculo Circulo?        @relation("TioAparente")
+  tioSecretoCirculo  Circulo?        @relation("TioSecreto")
+  pessoaMotorista    Carro?          @relation("PessoaMotorista")
+  pessoaCarona       Carro[]         @relation("PessoaCarona")
+  carroEncontro      CarroEncontro[]
+  encontreiro        Encontreiro[]
 
   @@map("pessoas")
 }
@@ -60,12 +61,12 @@ model Encontrista {
   created_at  DateTime @default(now())
   modified_at DateTime @default(now())
 
-  Pessoa         Pessoa               @relation(fields: [id_pessoa], references: [id])
-  Status         DomainStatus         @relation(fields: [id_status], references: [id])
-  Religiao       DomainReligiao       @relation(fields: [id_religiao], references: [id])
-  BairroEncontro DomainBairroEncontro @relation(fields: [id_bairro_encontro], references: [value])
-  MoraCom        DomainMoraCom        @relation(fields: [id_moracom], references: [id])
-  PaisSeparados  DomainStatusPais     @relation(fields: [id_paissep], references: [id])
+  pessoa         Pessoa               @relation(fields: [id_pessoa], references: [id])
+  status         DomainStatus         @relation(fields: [id_status], references: [id])
+  religiao       DomainReligiao       @relation(fields: [id_religiao], references: [id])
+  bairroEncontro DomainBairroEncontro @relation(fields: [id_bairro_encontro], references: [value])
+  moraCom        DomainMoraCom        @relation(fields: [id_moracom], references: [id])
+  statusPais     DomainStatusPais     @relation(fields: [id_paissep], references: [id])
 
   @@map("encontrista")
 }
@@ -81,9 +82,10 @@ model Encontreiro {
   id_encontro         String
   id_circulo          String?
 
-  TamanhoCamisa DomainTamanhoCamisa @relation(fields: [id_tamanho_camisa], references: [id])
-  Encontro      Encontro            @relation(fields: [id_encontro], references: [id])
-  Circulo       Circulo?            @relation(fields: [id_circulo], references: [id])
+  tamanhoCamisa DomainTamanhoCamisa @relation(fields: [id_tamanho_camisa], references: [id])
+  encontro      Encontro            @relation(fields: [id_encontro], references: [id])
+  circulo       Circulo?            @relation(fields: [id_circulo], references: [id])
+  pessoa        Pessoa              @relation(fields: [id_pessoa], references: [id])
 
   @@map("encontreiro")
 }
@@ -98,10 +100,10 @@ model Encontro {
   tema_fantasia   String
   numero_circulos Int
 
-  Local         Local           @relation(fields: [id_local], references: [id])
-  Encontreiro   Encontreiro[]
-  Circulo       Circulo[]
-  CarroEncontro CarroEncontro[]
+  local         Local           @relation(fields: [id_local], references: [id])
+  encontreiro   Encontreiro[]
+  circulo       Circulo[]
+  carroEncontro CarroEncontro[]
 
   @@map("encontro")
 }
@@ -114,11 +116,11 @@ model Circulo {
   numero_encontristas Int
   id_encontro         String
 
-  Encontro    Encontro         @relation(fields: [id_encontro], references: [id])
-  CorCirculo  DomainCorCirculo @relation(fields: [id_cor_circulo], references: [id])
-  TioAparente Pessoa?          @relation("TioAparente", fields: [id_tio_aparente], references: [id])
-  TioSecreto  Pessoa?          @relation("TioSecreto", fields: [id_tio_secreto], references: [id])
-  Encontreiro Encontreiro[]
+  encontro    Encontro         @relation(fields: [id_encontro], references: [id])
+  corCirculo  DomainCorCirculo @relation(fields: [id_cor_circulo], references: [id])
+  tioAparente Pessoa?          @relation("TioAparente", fields: [id_tio_aparente], references: [id])
+  tioSecreto  Pessoa?          @relation("TioSecreto", fields: [id_tio_secreto], references: [id])
+  encontreiro Encontreiro[]
 
   @@map("circulo")
 }
@@ -133,8 +135,8 @@ model Endereco {
   created_at  DateTime @default(now())
   modified_at DateTime @default(now())
 
-  Pessoa Pessoa[]
-  Local  Local[]
+  pessoa Pessoa[]
+  local  Local[]
 
   @@map("endereco")
 }
@@ -145,8 +147,8 @@ model Local {
   nome_local   String
   numero_local String
 
-  Endereco Endereco   @relation(fields: [endereco_cep], references: [cep])
-  Encontro Encontro[]
+  endereco Endereco   @relation(fields: [endereco_cep], references: [cep])
+  encontro Encontro[]
 
   @@map("local")
 }
@@ -160,9 +162,9 @@ model Carro {
   lugares_carro        Int
   observacao_motorista String
 
-  PessoaMotorista Pessoa          @relation("PessoaMotorista", fields: [id_motorista], references: [id])
-  PessoaCarona    Pessoa?         @relation("PessoaCarona", fields: [id_carona], references: [id])
-  CarroEncontro   CarroEncontro[]
+  pessoaMotorista Pessoa          @relation("PessoaMotorista", fields: [id_motorista], references: [id])
+  pessoaCarona    Pessoa?         @relation("PessoaCarona", fields: [id_carona], references: [id])
+  carroEncontro   CarroEncontro[]
 
   @@map("carro")
 }
@@ -172,9 +174,9 @@ model CarroEncontro {
   id_encontrista String
   id_encontro    String
 
-  Carro       Carro    @relation(fields: [id_carro], references: [id])
-  Encontrista Pessoa   @relation(fields: [id_encontrista], references: [id])
-  Encontro    Encontro @relation(fields: [id_encontro], references: [id])
+  carro       Carro    @relation(fields: [id_carro], references: [id])
+  encontrista Pessoa   @relation(fields: [id_encontrista], references: [id])
+  encontro    Encontro @relation(fields: [id_encontro], references: [id])
 
   @@unique([id_carro, id_encontrista, id_encontro])
   @@map("carro_encontro")
@@ -186,57 +188,63 @@ model DomainStatus {
   id     String @id @unique
   status String @unique
 
-  Encontrista Encontrista[]
+  encontrista Encontrista[]
 
   @@map("domainStatus")
 }
 
 model DomainReligiao {
-  id          String        @id @unique
-  religiao    String        @unique
-  Encontrista Encontrista[]
+  id       String @id @unique
+  religiao String @unique
+
+  encontrista Encontrista[]
 
   @@map("domainReligiao")
 }
 
 model DomainBairroEncontro {
-  id          Int           @id
-  value       String        @unique
-  bairro      String        @unique
-  zona        String
-  Encontrista Encontrista[]
+  id     Int    @id
+  value  String @unique
+  bairro String @unique
+  zona   String
+
+  encontrista Encontrista[]
 
   @@map("domainBairroEncontro")
 }
 
 model DomainMoraCom {
-  id          String        @id @unique
-  mora_com    String        @unique
-  Encontrista Encontrista[]
+  id       String @id @unique
+  mora_com String @unique
+
+  encontrista Encontrista[]
 
   @@map("domainMoraCom")
 }
 
 model DomainStatusPais {
-  id          String        @id @unique
-  status_pais String        @unique
-  Encontrista Encontrista[]
+  id          String @id @unique
+  status_pais String @unique
+
+  encontrista Encontrista[]
 
   @@map("domainStatusPais")
 }
 
 model DomainTamanhoCamisa {
-  id             String        @id @unique
-  tamanho_camisa String        @unique
-  Encontreiro    Encontreiro[]
+  id             String @id @unique
+  tamanho_camisa String @unique
+
+  encontreiro Encontreiro[]
 
   @@map("domainTamanhoCamisa")
 }
 
 model DomainCorCirculo {
-  id      Int       @id @default(autoincrement())
-  cor     String    @unique
-  Circulo Circulo[]
+  id  Int    @id @default(autoincrement())
+  cor String @unique
+
+  circulo Circulo[]
 
   @@map("domainCorCirculo")
 }

@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
+import { AuthProvider } from '@/context/AuthContext'
 import ReactQueryProvider from '@/lib/Providers/ReactQueryProvider'
 import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
@@ -21,17 +22,19 @@ export default function RootLayout({
     // eslint-disable-next-line prettier/prettier
     <html lang="pt-br" className="antialiased" suppressHydrationWarning>
       <body className={nunito.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ReactQueryProvider>
-            <main>{children}</main>
-            <Toaster richColors />
-          </ReactQueryProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ReactQueryProvider>
+              <main>{children}</main>
+              <Toaster richColors />
+            </ReactQueryProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   )

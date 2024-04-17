@@ -17,7 +17,7 @@ import { useWizard } from 'react-use-wizard'
 
 async function getEncontro(number: number) {
   const response: EncontroData = await api
-    .get(`http://localhost:3000/api/encontro?encontro=${number}`)
+    .get(`/encontro?encontro=${number}`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 

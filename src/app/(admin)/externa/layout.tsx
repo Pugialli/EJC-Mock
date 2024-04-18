@@ -12,9 +12,13 @@ export default function ExternaLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="min-h-screen bg-zinc-50 lg:grid lg:grid-cols-4">
-      <Sidebar />
-      <main className="py-3 pr-3 lg:col-span-3 lg:col-start-2">{children}</main>
+    <div className="min-h-screen bg-zinc-50 lg:grid lg:grid-cols-12">
+      <div className="bg-blue-600 lg:col-span-3">
+        <Sidebar />
+      </div>
+      <main className="bg-zinc-200 pb-8 pl-4 pr-8 pt-12 lg:col-span-9 lg:col-start-4">
+        {children}
+      </main>
     </div>
   )
 }

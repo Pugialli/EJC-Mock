@@ -12,9 +12,8 @@ const buttonVariants = cva(
         default: 'bg-amber-400 text-zinc-900 hover:bg-amber-400/90',
         destructive:
           'bg-red-500 text-zinc-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-zinc-50 dark:hover:bg-red-900/90',
-        outline: 'border border-amber-400 bg-white hover:bg-amber-400/20',
-        secondary:
-          'bg-zinc-100 text-zinc-900 hover:bg-zinc-100/80 dark:bg-zinc-800 dark:text-zinc-50 dark:hover:bg-zinc-800/80',
+        outline: 'border border-zinc-500 bg-transparent hover:bg-amber-400/20',
+        secondary: 'border border-zinc-500 bg-transparent hover:bg-zinc-300/20',
         ghost: 'hover:text-zinc-50/80 text-zinc-50',
         link: 'text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-50',
       },

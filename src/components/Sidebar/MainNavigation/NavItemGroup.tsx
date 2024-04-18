@@ -21,11 +21,15 @@ export function NavItemGroup({
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-0.5">
+    <Collapsible
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      className="flex flex-col gap-4"
+    >
       <CollapsibleTrigger asChild>
         <Button
           variant="ghost"
-          className="group flex h-full w-full items-center gap-4 rounded px-6 py-4 hover:bg-primary"
+          className="group flex h-full w-full items-center gap-4 rounded-xl px-6 py-4 hover:bg-primary/20"
         >
           <Icon className="h-6 w-6 text-zinc-50" />
           <span className="text-sm font-medium text-zinc-50">{title}</span>

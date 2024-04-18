@@ -11,7 +11,7 @@ const config = {
       colors: {
         primary: '#7C3AED',
         secondary: '#FBBF24',
-        sidebar: '#3A3440',
+        menuBackground: '#3A3440',
       },
       keyframes: {
         'accordion-down': {

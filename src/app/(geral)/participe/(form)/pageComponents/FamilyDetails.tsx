@@ -32,13 +32,14 @@ const familyFormScheme = z.object({
   moraCom: z.enum(['sozinho', 'conjuge', 'familiar'], {
     required_error: 'Este campo é obrigatório',
   }),
-  statusPais: z.string({ required_error: 'Este campo é obrigatório' }),
+  statusPais: z.enum(['sim', 'nao', 'na'], {
+    required_error: 'Este campo é obrigatório',
+  }),
   nomeFamiliar: z
     .string({
       required_error: 'O nome de pelo menos um familiar é obrigatório.',
     })
     .min(3, { message: 'O nome de pelo menos um familiar é obrigatório.' }),
-
   telFamiliar: z
     .string()
     .min(13, { message: 'O número de telefone está incompleto' }),

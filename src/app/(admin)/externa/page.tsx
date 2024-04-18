@@ -48,7 +48,7 @@ export default function Externa() {
           </div>
         </div>
         <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
+          <AccordionItem value="graficos">
             <AccordionTrigger>
               <div className="flex items-center gap-4">
                 <BarChart4 className="h-6 w-6 text-zinc-700" />
@@ -59,7 +59,7 @@ export default function Externa() {
           </AccordionItem>
         </Accordion>
       </div>
-      <p className="w-full bg-black text-white">Tabela</p>
+      <p className="w-full bg-secondary text-white">Tabela</p>
     </div>
   )
 }

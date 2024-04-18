@@ -1,11 +1,10 @@
-import { Button } from '@/components/ui/button'
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
-import { ChevronDown, ChevronUp } from 'lucide-react'
-import { ElementType, useState } from 'react'
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { ElementType } from 'react'
 
 export interface NavItemGroupProps {
   title: string
@@ -18,32 +17,38 @@ export function NavItemGroup({
   icon: Icon,
   children,
 }: NavItemGroupProps) {
-  const [isOpen, setIsOpen] = useState(false)
-
   return (
-    <Collapsible
-      open={isOpen}
-      onOpenChange={setIsOpen}
-      className="flex flex-col gap-4"
-    >
-      <CollapsibleTrigger asChild>
-        <Button
-          variant="ghost"
-          className="group flex h-full w-full items-center gap-4 rounded-xl px-6 py-4 hover:bg-primary/20"
-        >
-          <Icon className="h-6 w-6 text-zinc-50" />
-          <span className="text-sm font-medium text-zinc-50">{title}</span>
-          {isOpen ? (
-            <ChevronUp className="ml-auto h-6 w-6 text-zinc-50" />
-          ) : (
-            <ChevronDown className="ml-auto h-6 w-6 text-zinc-50" />
-          )}
-          <span className="sr-only">Abrir</span>
-        </Button>
-      </CollapsibleTrigger>
-      <CollapsibleContent className="space-y-2 pl-4">
-        {children}
-      </CollapsibleContent>
-    </Collapsible>
+    <Accordion type="single" collapsible>
+      <AccordionItem value="tios-externa" className="border-none">
+        <AccordionTrigger className="group flex h-full w-full items-center gap-4 rounded-xl px-6 py-4 text-zinc-50 hover:bg-primary/20">
+          <div className="flex items-center gap-4">
+            <Icon className="h-6 w-6 text-zinc-50" />
+            <span className="text-sm font-medium text-zinc-50">{title}</span>
+          </div>
+        </AccordionTrigger>
+        <AccordionContent className="pl-4 pt-2">{children}</AccordionContent>
+      </AccordionItem>
+    </Accordion>
+
+    // <Collapsible
+    //   open={isOpen}
+    //   onOpenChange={setIsOpen}
+    //   className="flex flex-col gap-4"
+    // >
+    //   <CollapsibleTrigger asChild>
+    //     <Button
+    //       variant="ghost"
+    //       className="group flex h-full w-full items-center gap-4 rounded-xl px-6 py-4 hover:bg-primary/20"
+    //     >
+    //       <Icon className="h-6 w-6 text-zinc-50" />
+    //       <span className="text-sm font-medium text-zinc-50">{title}</span>
+    //       <ChevronDown className="ml-auto h-6 w-6 text-zinc-50 group-aria-expanded:rotate-180" />
+    //       <span className="sr-only">Abrir</span>
+    //     </Button>
+    //   </CollapsibleTrigger>
+    //   <CollapsibleContent className="space-y-2 pl-4">
+    //     {children}
+    //   </CollapsibleContent>
+    // </Collapsible>
   )
 }

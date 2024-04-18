@@ -20,7 +20,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         aria-invalid={props['aria-invalid']}
         aria-disabled={props.readOnly || props.disabled}
         className={cn(
-          'flex w-full items-center gap-3 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-zinc-400',
+          'flex w-full items-center gap-2 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-zinc-400',
           'aria-invalid:border-red-400 ',
           'aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
           // 'focus-within:border-zinc-300 focus-within:ring-4 focus-within:ring-zinc-100',
@@ -28,7 +28,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           'dark:focus-within:border-zinc-500 dark:focus-within:ring-amber-500/20',
         )}
       >
-        <Search className="h-4 w-4 text-zinc-500" />
+        <Search className="h-6 w-6 text-zinc-500" />
         {prefix && <span className="text-zinc-400">{prefix}</span>}
         <input
           type={isHidden ? 'password' : type}

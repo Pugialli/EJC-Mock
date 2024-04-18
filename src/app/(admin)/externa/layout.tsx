@@ -12,11 +12,11 @@ export default function ExternaLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="min-h-screen bg-zinc-50 lg:grid lg:grid-cols-12">
+    <div className="scrollbar-hide overflow-y-auto whitespace-nowrap bg-zinc-50 lg:grid lg:grid-cols-12">
       <div className="bg-blue-600 lg:col-span-3">
         <Sidebar />
       </div>
-      <main className="bg-zinc-200 pb-8 pl-4 pr-8 pt-12 lg:col-span-9 lg:col-start-4">
+      <main className="bg-zinc-100 pb-8 pl-4 pr-8 pt-12 lg:col-span-9 lg:col-start-4">
         {children}
       </main>
     </div>

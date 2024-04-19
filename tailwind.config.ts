@@ -11,7 +11,7 @@ const config = {
       colors: {
         primary: '#7C3AED',
         secondary: '#FBBF24',
-        menuBackground: '#3A3440',
+        sidebar: '#3A3440',
       },
       keyframes: {
         'accordion-down': {
@@ -32,7 +32,7 @@ const config = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar-hide')],
+  plugins: [require('tailwindcss-animate')],
 } satisfies Config
 
 export default config

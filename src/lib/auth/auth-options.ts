@@ -14,7 +14,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const response = await fetch(
-          'https://site-ejc.vercel.app/api/auth/singinRequest',
+          `${process.env.NEXTAUTH_URL}/api/auth/singinRequest`,
           // 'http://localhost:3000/api/auth/singinRequest',
           {
             method: 'POST',

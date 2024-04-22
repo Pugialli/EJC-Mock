@@ -196,7 +196,7 @@ export function CreateEncontristaContextProvider({
 
   function createNewEncontrista(data: CreateEncontristaData) {
     api.post('/encontrista', data)
-    console.log(data)
+    console.log(data) // criar o encontrista
   }
 
   const clearForm = () => {

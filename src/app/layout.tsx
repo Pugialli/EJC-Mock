@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
-import { AuthProvider } from '@/context/AuthContext'
-import ReactQueryProvider from '@/lib/Providers/ReactQueryProvider'
+import ReactQueryProvider from '@/lib/providers/ReactQueryProvider'
+import NextAuthSessionProvider from '@/lib/providers/SessionProvider'
 import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
 import './globals.css'
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: '',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -22,7 +22,7 @@ export default function RootLayout({
     // eslint-disable-next-line prettier/prettier
     <html lang="pt-br" className="antialiased" suppressHydrationWarning>
       <body className={nunito.className}>
-        <AuthProvider>
+        <NextAuthSessionProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -34,7 +34,7 @@ export default function RootLayout({
               <Toaster richColors />
             </ReactQueryProvider>
           </ThemeProvider>
-        </AuthProvider>
+        </NextAuthSessionProvider>
       </body>
     </html>
   )

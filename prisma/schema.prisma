@@ -22,10 +22,11 @@ model Pessoa {
   celular      String
   telefone     String?
   email        String  @unique
+  password     String?
   avatar_url   String?
 
   created_at  DateTime @default(now())
-  modified_at DateTime @default(now())
+  modified_at DateTime @updatedAt
 
   cep                Endereco        @relation(fields: [endereco_cep], references: [cep])
   encontrista        Encontrista?
@@ -35,6 +36,9 @@ model Pessoa {
   pessoaCarona       Carro[]         @relation("PessoaCarona")
   carroEncontro      CarroEncontro[]
   encontreiro        Encontreiro[]
+
+  accounts Account[]
+  sessions Session[]
 
   @@map("pessoas")
 }
@@ -59,7 +63,7 @@ model Encontrista {
   parentesco_contato2 String?
 
   created_at  DateTime @default(now())
-  modified_at DateTime @default(now())
+  modified_at DateTime @updatedAt
 
   pessoa         Pessoa               @relation(fields: [id_pessoa], references: [id])
   status         DomainStatus         @relation(fields: [id_status], references: [id])
@@ -68,7 +72,7 @@ model Encontrista {
   moraCom        DomainMoraCom        @relation(fields: [id_moracom], references: [id])
   statusPais     DomainStatusPais     @relation(fields: [id_paissep], references: [id])
 
-  @@map("encontrista")
+  @@map("encontristas")
 }
 
 model Encontreiro {
@@ -76,7 +80,6 @@ model Encontreiro {
   nascimento          String
   apelido             String?
   instagram           String
-  senha               String?
   restricao_alimentar String?
   id_tamanho_camisa   String
   id_encontro         String
@@ -87,7 +90,7 @@ model Encontreiro {
   circulo       Circulo?            @relation(fields: [id_circulo], references: [id])
   pessoa        Pessoa              @relation(fields: [id_pessoa], references: [id])
 
-  @@map("encontreiro")
+  @@map("encontreiros")
 }
 
 model Encontro {
@@ -105,7 +108,7 @@ model Encontro {
   circulo       Circulo[]
   carroEncontro CarroEncontro[]
 
-  @@map("encontro")
+  @@map("encontros")
 }
 
 model Circulo {
@@ -122,7 +125,7 @@ model Circulo {
   tioSecreto  Pessoa?          @relation("TioSecreto", fields: [id_tio_secreto], references: [id])
   encontreiro Encontreiro[]
 
-  @@map("circulo")
+  @@map("circulos")
 }
 
 model Endereco {
@@ -133,12 +136,12 @@ model Endereco {
   rua    String
 
   created_at  DateTime @default(now())
-  modified_at DateTime @default(now())
+  modified_at DateTime @updatedAt
 
   pessoa Pessoa[]
   local  Local[]
 
-  @@map("endereco")
+  @@map("enderecos")
 }
 
 model Local {
@@ -150,7 +153,7 @@ model Local {
   endereco Endereco   @relation(fields: [endereco_cep], references: [cep])
   encontro Encontro[]
 
-  @@map("local")
+  @@map("locais")
 }
 
 model Carro {
@@ -166,7 +169,7 @@ model Carro {
   pessoaCarona    Pessoa?         @relation("PessoaCarona", fields: [id_carona], references: [id])
   carroEncontro   CarroEncontro[]
 
-  @@map("carro")
+  @@map("carros")
 }
 
 model CarroEncontro {
@@ -247,4 +250,49 @@ model DomainCorCirculo {
   circulo Circulo[]
 
   @@map("domainCorCirculo")
+}
+
+//Next-Auth/Prisma Adapter
+
+model Account {
+  user_id             String
+  type                String
+  provider            String
+  provider_account_id String
+  refresh_token       String?
+  access_token        String?
+  expires_at          Int?
+  token_type          String?
+  scope               String?
+  id_token            String?
+  session_state       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user Pessoa @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([provider, provider_account_id])
+  @@map("accounts")
+}
+
+model Session {
+  session_token String   @unique
+  user_id       String
+  expires       DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      Pessoa   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }

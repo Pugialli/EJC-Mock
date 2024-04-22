@@ -10,7 +10,5 @@ export async function POST(request: NextRequest) {
   const nome = formData.get('nome')
   const apelido = formData.get('apelido')
 
-  console.log(formData)
-
   return NextResponse.json({ nome, apelido })
 }

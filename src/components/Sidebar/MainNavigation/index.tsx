@@ -15,48 +15,48 @@ export function MainNavigation() {
 
   return (
     <nav className="flex flex-col gap-4 space-y-0.5">
-      <Link href="/externa">
+      <Link href="/admin/externa">
         <NavItem
           title="Encontrista"
           icon={SquareUserRound}
-          active={path === '/externa'}
+          active={path === '/admin/externa'}
         />
       </Link>
-      <Link href="/externa/circulos">
+      <Link href="/admin/externa/circulos">
         <NavItem
           title="Montagem de Círculos"
           icon={Puzzle}
-          active={path === '/externa/circulos'}
+          active={path === '/admin/externa/circulos'}
         />
       </Link>
       <NavItemGroup title="Tios de Externa" icon={CarFront}>
-        <Link href="/externa/tios">
+        <Link href="/admin/externa/tios">
           <NavItem
             title="Lista de Tios"
             icon={CarFront}
-            active={path === '/externa/tios'}
+            active={path === '/admin/externa/tios'}
           />
         </Link>
-        <Link href="/externa/carros">
+        <Link href="/admin/externa/carros">
           <NavItem
             title="Alocação nos Carros"
             icon={CarFront}
-            active={path === '/externa/carros'}
+            active={path === '/admin/externa/carros'}
           />
         </Link>
       </NavItemGroup>
-      <Link href="/externa/pendencias">
+      <Link href="/admin/externa/pendencias">
         <NavItem
           title="Controle de Pendências"
           icon={ListChecks}
-          active={path === '/externa/pendencias'}
+          active={path === '/admin/externa/pendencias'}
         />
       </Link>
-      <Link href="/externa/cartas">
+      <Link href="/admin/externa/cartas">
         <NavItem
           title="Cartas"
           icon={Mail}
-          active={path === '/externa/cartas'}
+          active={path === '/admin/externa/cartas'}
         />
       </Link>
     </nav>

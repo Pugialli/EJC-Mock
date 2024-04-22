@@ -12,11 +12,12 @@ import {
 } from '@/components/ui/card'
 import { FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { AuthContext } from '@/context/AuthContext'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { signIn } from 'next-auth/react'
 import Link from 'next/link'
-import { useContext } from 'react'
+import { useRouter } from 'next/navigation'
 import { FormProvider, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 const loginScheme = z.object({
@@ -34,7 +35,7 @@ export default function Login() {
     resolver: zodResolver(loginScheme),
   })
 
-  const { signIn } = useContext(AuthContext)
+  const router = useRouter()
 
   const {
     handleSubmit,
@@ -43,10 +44,22 @@ export default function Login() {
   } = form
 
   async function handleLogIn(data: loginData) {
-    try {
-      await signIn(data)
-    } catch (error) {
-      console.log('Não foi possível logar')
+    // try {
+    //   await api.post('/auth/singinRequest', data)
+    //   router.replace('/admin/externa')
+    // } catch {
+    //   toast.error('Seu usuário ou senha estão incorretos')
+    // }
+
+    const result = await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    })
+    if (result?.ok === false) {
+      toast.error('Seu usuário ou senha estão incorretos')
+    } else {
+      router.replace('/admin/externa')
     }
   }
 

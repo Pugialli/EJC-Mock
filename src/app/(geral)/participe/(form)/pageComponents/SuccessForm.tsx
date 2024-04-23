@@ -39,8 +39,8 @@ export function SuccessForm() {
   }
 
   return (
-    <>
-      <CardHeader className="flex w-full flex-col items-center gap-6 pb-0">
+    <div className="text-center">
+      <CardHeader className="flex w-full flex-col items-center gap-6 py-0">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-600 text-zinc-50">
           <Check className="h-9 w-9 p-1" />
         </div>
@@ -48,7 +48,7 @@ export function SuccessForm() {
           Inscrição concluída!
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-3 pb-0 text-center text-lg">
+      <CardContent className="flex w-full flex-col gap-3 px-3 text-lg">
         {encontro ? (
           <>
             <p>
@@ -67,11 +67,11 @@ export function SuccessForm() {
           </p>
         )}
       </CardContent>
-      <CardFooter className="w-full p-0">
+      <CardFooter className="w-full px-3 py-0">
         <Button className="w-full" onClick={resetForm}>
           Voltar ao site
         </Button>
       </CardFooter>
-    </>
+    </div>
   )
 }

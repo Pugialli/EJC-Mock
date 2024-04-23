@@ -13,20 +13,20 @@ interface StepProps {
 function Step({ content, currentStep, index }: StepProps) {
   if (index === currentStep) {
     return (
-      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-violet-700 text-zinc-50">
-        <span>{content}</span>
+      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-700 text-zinc-50 lg:h-7 lg:w-7">
+        <span className="text-sm lg:text-base">{content}</span>
       </div>
     )
   } else if (index < currentStep) {
     return (
-      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-violet-400 text-zinc-50">
+      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-400 text-zinc-50 lg:h-7 lg:w-7">
         <Check className="p-1" />
       </div>
     )
   } else {
     return (
-      <div className="flex h-7 w-7 items-center justify-center rounded-full border border-zinc-400 text-zinc-400">
-        <span>{content}</span>
+      <div className="flex h-5 w-5 items-center justify-center rounded-full border border-zinc-400 text-zinc-400 lg:h-7 lg:w-7">
+        <span className="text-sm lg:text-base">{content}</span>
       </div>
     )
   }
@@ -34,7 +34,7 @@ function Step({ content, currentStep, index }: StepProps) {
 
 export function MultiStep({ size, currentStep }: MultiStepProps) {
   return (
-    <div className="flex w-72 items-center">
+    <div className="flex w-44 items-center justify-end lg:w-72">
       {Array.from({ length: size }).map((_, i) => {
         const isFirst = i === 0
         if (isFirst) {

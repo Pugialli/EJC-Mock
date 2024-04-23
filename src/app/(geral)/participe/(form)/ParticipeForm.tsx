@@ -13,7 +13,7 @@ import { SuccessForm } from './pageComponents/SuccessForm'
 export function ParticipeForm() {
   return (
     <div className="flex h-auto items-center justify-center bg-primary pb-32 pt-24">
-      <Card className="flex w-card flex-col items-center gap-5 p-8 text-zinc-700 ">
+      <Card className="flex w-11/12 flex-col items-center gap-5 px-0 py-8 text-zinc-700 lg:w-card lg:px-8 ">
         <Wizard startIndex={0}>
           <InitialForm />
           <PersonalDetails />

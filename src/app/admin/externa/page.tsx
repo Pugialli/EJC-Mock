@@ -16,7 +16,7 @@ export default function Externa() {
     <div className="w-ful h-full">
       <div>
         <div className="pb-8">
-          <h1 className="text-2xl font-bold text-zinc-700">Encontrista</h1>
+          <h1 className="text-2xl font-bold text-tertiary">Encontrista</h1>
           <p className="text-base font-normal text-zinc-500">
             Lista de todos os encontristas
           </p>
@@ -27,13 +27,13 @@ export default function Externa() {
           <div className="flex items-center gap-2">
             <Button variant="secondary">
               <div className="flex items-center gap-2">
-                <Download className="h-4 w-4" />
+                <Download className="h-4 w-4 text-tertiary" />
                 <span>Gerar PDF</span>
               </div>
             </Button>
             <Button variant="secondary">
               <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4" />
+                <Filter className="h-4 w-4 text-tertiary" />
                 <span>Filtros</span>
               </div>
             </Button>

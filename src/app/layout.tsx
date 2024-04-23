@@ -30,7 +30,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <ReactQueryProvider>
-              <main>{children}</main>
+              {children}
               <Toaster richColors />
             </ReactQueryProvider>
           </ThemeProvider>

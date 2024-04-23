@@ -44,10 +44,10 @@ export function InitialForm() {
 
   return (
     <div className="text-center">
-      <CardHeader className="">
+      <CardHeader>
         <CardTitle className="text-2xl font-bold">Olá!</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-3 text-lg">
+      <CardContent className="flex w-full flex-col gap-3 px-3 text-lg">
         {encontro ? (
           <>
             <p>
@@ -81,7 +81,7 @@ export function InitialForm() {
 
         <p>Vamos começar?</p>
       </CardContent>
-      <CardFooter className="w-full p-0">
+      <CardFooter className="w-full px-3 py-0">
         <Button className="w-full" onClick={handleForward}>
           Vamos!
         </Button>

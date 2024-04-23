@@ -1,9 +1,11 @@
 import {
+  Blocks,
   CarFront,
   ListChecks,
   Mail,
   Puzzle,
   SquareUserRound,
+  Users,
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -33,14 +35,14 @@ export function MainNavigation() {
         <Link href="/admin/externa/tios">
           <NavItem
             title="Lista de Tios"
-            icon={CarFront}
+            icon={Users}
             active={path === '/admin/externa/tios'}
           />
         </Link>
         <Link href="/admin/externa/carros">
           <NavItem
             title="Alocação nos Carros"
-            icon={CarFront}
+            icon={Blocks}
             active={path === '/admin/externa/carros'}
           />
         </Link>

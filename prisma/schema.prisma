@@ -18,6 +18,7 @@ model Pessoa {
   id           String  @id @default(uuid())
   nome         String
   sobrenome    String
+  apelido      String?
   endereco_cep String
   celular      String
   telefone     String?
@@ -32,7 +33,7 @@ model Pessoa {
   encontrista        Encontrista?
   tioAparenteCirculo Circulo?        @relation("TioAparente")
   tioSecretoCirculo  Circulo?        @relation("TioSecreto")
-  pessoaMotorista    Carro?          @relation("PessoaMotorista")
+  pessoaMotorista    Carro[]         @relation("PessoaMotorista")
   pessoaCarona       Carro[]         @relation("PessoaCarona")
   carroEncontro      CarroEncontro[]
   encontreiro        Encontreiro[]
@@ -78,26 +79,25 @@ model Encontrista {
 model Encontreiro {
   id_pessoa           String  @unique
   nascimento          String
-  apelido             String?
   instagram           String
   restricao_alimentar String?
   id_tamanho_camisa   String
   id_encontro         String
   id_circulo          String?
 
-  tamanhoCamisa DomainTamanhoCamisa @relation(fields: [id_tamanho_camisa], references: [id])
-  encontro      Encontro            @relation(fields: [id_encontro], references: [id])
-  circulo       Circulo?            @relation(fields: [id_circulo], references: [id])
   pessoa        Pessoa              @relation(fields: [id_pessoa], references: [id])
+  encontro      Encontro            @relation(fields: [id_encontro], references: [id])
+  tamanhoCamisa DomainTamanhoCamisa @relation(fields: [id_tamanho_camisa], references: [id])
+  circulo       Circulo?            @relation(fields: [id_circulo], references: [id])
 
   @@map("encontreiros")
 }
 
 model Encontro {
-  id              String @id @default(uuid())
-  numero_encontro Int    @unique
-  data_inicio     String @unique
-  data_tema       String @unique
+  id              String   @id @default(cuid())
+  numero_encontro Int      @unique
+  data_inicio     DateTime @unique
+  data_tema       DateTime @unique
   id_local        String
   tema_espiritual String
   tema_fantasia   String
@@ -112,7 +112,7 @@ model Encontro {
 }
 
 model Circulo {
-  id                  String @id @default(uuid())
+  id                  String @id @default(cuid())
   id_cor_circulo      Int
   id_tio_aparente     String @unique
   id_tio_secreto      String @unique
@@ -157,8 +157,8 @@ model Local {
 }
 
 model Carro {
-  id                   String  @id @default(uuid())
-  id_motorista         String  @unique
+  id                   String  @id @default(cuid())
+  id_motorista         String
   id_carona            String?
   modelo_carro         String
   placa_carro          String
@@ -169,6 +169,7 @@ model Carro {
   pessoaCarona    Pessoa?         @relation("PessoaCarona", fields: [id_carona], references: [id])
   carroEncontro   CarroEncontro[]
 
+  @@unique([id_motorista, placa_carro])
   @@map("carros")
 }
 
@@ -181,7 +182,7 @@ model CarroEncontro {
   encontrista Pessoa   @relation(fields: [id_encontrista], references: [id])
   encontro    Encontro @relation(fields: [id_encontro], references: [id])
 
-  @@unique([id_carro, id_encontrista, id_encontro])
+  @@id([id_carro, id_encontrista, id_encontro])
   @@map("carro_encontro")
 }
 
@@ -281,18 +282,19 @@ model Session {
   user_id       String
   expires       DateTime
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      Pessoa   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user Pessoa @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
+// model VerificationToken {
+//   identifier String
+//   token      String
+//   expires    DateTime
 
-  @@unique([identifier, token])
-  @@map("verification_tokens")
-}
+//   @@unique([identifier, token])
+//   @@map("verification_tokens")
+// }

@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
 
   const user: User = {
     name: userExists.nome,
+    surname: userExists.sobrenome,
     email: userExists.email,
     id: userExists.id,
     avatar_url: userExists.avatar_url ? userExists.avatar_url : undefined,

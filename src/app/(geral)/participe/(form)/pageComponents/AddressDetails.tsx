@@ -6,9 +6,6 @@ import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
 import { SelectItem } from '@/components/Form/SelectInput/SelectItem'
 import { TextInput } from '@/components/Form/TextInput'
-import { MultiStep } from '@/components/MultiStep'
-import { Button } from '@/components/ui/button'
-import { CardContent, CardFooter } from '@/components/ui/card'
 import { Form, FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
@@ -25,6 +22,8 @@ import { useWizard } from 'react-use-wizard'
 import { toast } from 'sonner'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
+import { CardParticipe } from '../components/CardParticipe'
+import { CardSection } from '../components/CardSection'
 
 const addressFormScheme = z.object({
   cep: z
@@ -61,7 +60,7 @@ export function AddressDetails() {
   })
 
   const { completeForm, updateData } = useContext(CreateEncontristaContext)
-  const { nextStep, previousStep, handleStep, activeStep } = useWizard()
+  const { nextStep, handleStep, activeStep } = useWizard()
 
   const form = useForm<AddressFormDataInput>({
     resolver: zodResolver(addressFormScheme),
@@ -125,167 +124,136 @@ export function AddressDetails() {
         onSubmit={handleSubmit(handleNextFormStep)}
         className="w-full"
       >
-        <CardContent>
-          <div className="flex w-full items-center justify-between">
-            <span className="text-nowrap text-2xl font-bold">Endereço</span>
-            <MultiStep size={5} currentStep={activeStep} />
-          </div>
-          <div className="flex flex-col gap-14 px-0 py-14 text-lg">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-semibold ">Onde você mora?</span>
-                <span className="text-xs text-zinc-500">
-                  *Perguntas obrigatórias
-                </span>
-              </div>
+        <CardParticipe title="Endereço" isSubmitting={isSubmitting}>
+          <CardSection title="Onde você mora?">
+            <FormField
+              control={control}
+              name="cep"
+              defaultValue={completeForm.address.cep}
+              render={({ field }) => (
+                <TextInput label={'CEP *'}>
+                  <Input
+                    autoFocus
+                    {...field}
+                    {...registerWithMask(field.name, '99999-999')}
+                  />
+                </TextInput>
+              )}
+            />
 
-              <FormField
-                control={control}
-                name="cep"
-                defaultValue={completeForm.address.cep}
-                render={({ field }) => (
-                  <TextInput label={'CEP *'}>
-                    <Input
-                      {...field}
-                      {...registerWithMask(field.name, '99999-999')}
-                    />
-                  </TextInput>
-                )}
-              />
+            <FormField
+              control={control}
+              name="estado"
+              defaultValue={completeForm.address.estado}
+              render={({ field }) => (
+                <TextInput label={'Estado *'}>
+                  <Input readOnly={true} {...field} />
+                </TextInput>
+              )}
+            />
+            <FormField
+              control={control}
+              name="cidade"
+              defaultValue={completeForm.address.cidade}
+              render={({ field }) => (
+                <TextInput label={'Cidade *'}>
+                  <Input readOnly={true} {...field} />
+                </TextInput>
+              )}
+            />
 
-              <FormField
-                control={control}
-                name="estado"
-                defaultValue={completeForm.address.estado}
-                render={({ field }) => (
-                  <TextInput label={'Estado *'}>
-                    <Input readOnly={true} {...field} />
-                  </TextInput>
-                )}
-              />
-              <FormField
-                control={control}
-                name="cidade"
-                defaultValue={completeForm.address.cidade}
-                render={({ field }) => (
-                  <TextInput label={'Cidade *'}>
-                    <Input readOnly={true} {...field} />
-                  </TextInput>
-                )}
-              />
+            <FormField
+              control={control}
+              name="bairro"
+              defaultValue={completeForm.address.bairro}
+              render={({ field }) => (
+                <TextInput label={'Bairro *'}>
+                  <Input readOnly={true} {...field} />
+                </TextInput>
+              )}
+            />
 
-              <FormField
-                control={control}
-                name="bairro"
-                defaultValue={completeForm.address.bairro}
-                render={({ field }) => (
-                  <TextInput label={'Bairro *'}>
-                    <Input readOnly={true} {...field} />
-                  </TextInput>
-                )}
-              />
+            <FormField
+              control={control}
+              name="rua"
+              defaultValue={completeForm.address.rua}
+              render={({ field }) => (
+                <TextInput label={'Rua *'}>
+                  <Input readOnly={true} {...field} />
+                </TextInput>
+              )}
+            />
 
-              <FormField
-                control={control}
-                name="rua"
-                defaultValue={completeForm.address.rua}
-                render={({ field }) => (
-                  <TextInput label={'Rua *'}>
-                    <Input readOnly={true} {...field} />
-                  </TextInput>
-                )}
-              />
+            <FormField
+              control={control}
+              name="numero"
+              defaultValue={completeForm.address.numero}
+              render={({ field }) => (
+                <TextInput label={'Número *'}>
+                  <Input {...field} />
+                </TextInput>
+              )}
+            />
+            <FormField
+              control={control}
+              name="complemento"
+              defaultValue={completeForm.address.complemento}
+              render={({ field }) => (
+                <TextInput label={'Complemento'}>
+                  <Input {...field} />
+                </TextInput>
+              )}
+            />
+          </CardSection>
+          <CardSection title="Aonde você ficará?">
+            <FormField
+              control={control}
+              name="dormiraEmCasa"
+              defaultValue={completeForm.address.dormiraEmCasa}
+              render={({ field }) => {
+                return (
+                  <RadioInputGroup
+                    label="Durante o Encontro, você ficará na sua própria casa? *"
+                    description='Se você for dormir na casa de algum amigo, marque "Não".'
+                    onChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <RadioInputItem value="sim" label="Sim" />
+                    <RadioInputItem value="nao" label="Não" />
+                  </RadioInputGroup>
+                )
+              }}
+            />
 
-              <FormField
-                control={control}
-                name="numero"
-                defaultValue={completeForm.address.numero}
-                render={({ field }) => (
-                  <TextInput label={'Número *'}>
-                    <Input {...field} />
-                  </TextInput>
-                )}
-              />
-              <FormField
-                control={control}
-                name="complemento"
-                defaultValue={completeForm.address.complemento}
-                render={({ field }) => (
-                  <TextInput label={'Complemento'}>
-                    <Input {...field} />
-                  </TextInput>
-                )}
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-semibold ">
-                  Aonde você ficará?
-                </span>
-                <span className="text-xs text-zinc-500">
-                  *Perguntas obrigatórias
-                </span>
-              </div>
-
-              <FormField
-                control={control}
-                name="dormiraEmCasa"
-                defaultValue={completeForm.address.dormiraEmCasa}
-                render={({ field }) => {
-                  return (
-                    <RadioInputGroup
-                      label="Durante o Encontro, você ficará na sua própria casa? *"
-                      description='Se você for dormir na casa de algum amigo, marque "Não".'
-                      onChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <RadioInputItem value="sim" label="Sim" />
-                      <RadioInputItem value="nao" label="Não" />
-                    </RadioInputGroup>
-                  )
-                }}
-              />
-
-              <FormField
-                control={control}
-                name="bairroDuranteOEncontro"
-                defaultValue={completeForm.address.bairroDuranteOEncontro}
-                render={({ field }) => {
-                  return (
-                    <SelectGroupInput
-                      label="Em qual bairro você ficará?"
-                      placeholder="Selecione uma opção"
-                      onChange={field.onChange}
-                      value={field.value}
-                      disabled={isOnOtherLocation}
-                    >
-                      {bairros &&
-                        bairros.map((item) => {
-                          return (
-                            <SelectItem
-                              key={item.id}
-                              value={item.value}
-                              text={item.bairro}
-                            />
-                          )
-                        })}
-                    </SelectGroupInput>
-                  )
-                }}
-              />
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter className="w-full p-0">
-          <div className="flex w-full justify-between">
-            <Button variant="outline" onClick={previousStep}>
-              Voltar
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              Avançar
-            </Button>
-          </div>
-        </CardFooter>
+            <FormField
+              control={control}
+              name="bairroDuranteOEncontro"
+              defaultValue={completeForm.address.bairroDuranteOEncontro}
+              render={({ field }) => {
+                return (
+                  <SelectGroupInput
+                    label="Em qual bairro você ficará?"
+                    placeholder="Selecione uma opção"
+                    onChange={field.onChange}
+                    value={field.value}
+                    disabled={isOnOtherLocation}
+                  >
+                    {bairros &&
+                      bairros.map((item) => {
+                        return (
+                          <SelectItem
+                            key={item.id}
+                            value={item.value}
+                            text={item.bairro}
+                          />
+                        )
+                      })}
+                  </SelectGroupInput>
+                )
+              }}
+            />
+          </CardSection>
+        </CardParticipe>
       </form>
     </Form>
   )

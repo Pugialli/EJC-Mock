@@ -4,17 +4,21 @@ import { getSession, signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
+import { Skeleton } from '../ui/skeleton'
 
 export function FooterNavigation() {
-  const [name, setName] = useState<string>('Carregando...')
-  const [avatar, setAvatar] = useState<string | undefined>(undefined)
+  const [name, setName] = useState<string>('')
+  const [avatar, setAvatar] = useState<string>('')
+  const [avatarFallback, setAvatarFallback] = useState<string>('')
 
   useEffect(() => {
     async function fetchSession() {
       const session = await getSession()
       if (session) {
-        setName(session.user.name)
+        const fallback = session.user.name[0] + session.user.surname[0]
+        setName(`${session.user.name}`)
         session.user.avatar_url && setAvatar(session.user.avatar_url)
+        setAvatarFallback(fallback.toUpperCase())
       }
     }
     fetchSession()
@@ -28,14 +32,19 @@ export function FooterNavigation() {
   return (
     <div className="group flex items-center justify-between rounded-xl py-3">
       <div className="flex items-center gap-4">
-        <Avatar>
-          <AvatarImage src={avatar} />
-          <AvatarFallback>
-            AP
-            {/* <UserRound className="h-full w-full pt-1" /> */}
-          </AvatarFallback>
-        </Avatar>
-        <span className="text-sm font-light text-zinc-50">{name}</span>
+        {avatarFallback === '' ? (
+          <Skeleton className="h-10 w-10 rounded-full" />
+        ) : (
+          <Avatar>
+            <AvatarImage src={avatar} />
+            <AvatarFallback>{avatarFallback}</AvatarFallback>
+          </Avatar>
+        )}
+        {name === '' ? (
+          <Skeleton className="h-3 w-32" />
+        ) : (
+          <span className="text-sm font-light text-zinc-50">{name}</span>
+        )}
       </div>
       <Button variant="ghost" onClick={logout}>
         <LogOut className="h-6 w-6 text-zinc-50 hover:opacity-80" />

@@ -9,10 +9,7 @@ import {
   SelectItem,
 } from '@/components/Form/SelectInput/SelectItem'
 import { TextInput } from '@/components/Form/TextInput'
-import { MultiStep } from '@/components/MultiStep'
 
-import { Button } from '@/components/ui/button'
-import { CardContent, CardFooter } from '@/components/ui/card'
 import { Form, FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
@@ -26,6 +23,8 @@ import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useWizard } from 'react-use-wizard'
 import { z } from 'zod'
+import { CardParticipe } from '../components/CardParticipe'
+import { CardSection } from '../components/CardSection'
 
 const otherFormScheme = z.object({
   tamanhoCamisa: z.enum(['p', 'm', 'g', 'gg', 'xgg', 'outro']).optional(),
@@ -61,7 +60,7 @@ async function getTamanhoCamisa() {
 
 export function OtherDetails() {
   const { completeForm, updateData } = useContext(CreateEncontristaContext)
-  const { nextStep, previousStep, handleStep, activeStep } = useWizard()
+  const { nextStep, handleStep, activeStep } = useWizard()
 
   const { data: tamanhoCamisa } = useQuery<SelectArray[]>({
     queryFn: async () => await getTamanhoCamisa(),
@@ -98,112 +97,87 @@ export function OtherDetails() {
         onSubmit={handleSubmit(handleNextFormStep)}
         className="w-full"
       >
-        <CardContent>
-          <div className="flex w-full items-center justify-between">
-            <span className="text-nowrap text-2xl font-bold">Outros</span>
-            <MultiStep size={5} currentStep={activeStep} />
-          </div>
-          <div className="flex flex-col gap-14 px-0 py-14 text-lg">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-semibold ">
-                  Informações extras
-                </span>
-                <span className="text-xs text-zinc-500">
-                  *Perguntas obrigatórias
-                </span>
-              </div>
+        <CardParticipe title="Outros" isSubmitting={isSubmitting}>
+          <CardSection title="Informações extras?">
+            <FormField
+              control={control}
+              name="tamanhoCamisa"
+              defaultValue={completeForm.other.tamanhoCamisa}
+              render={({ field }) => {
+                return (
+                  <SelectGroupInput
+                    label="Qual é seu tamanho de camisa?"
+                    placeholder="Selecione uma opção"
+                    onChange={field.onChange}
+                    value={field.value}
+                  >
+                    {tamanhoCamisa &&
+                      tamanhoCamisa.map((item) => {
+                        return (
+                          <SelectItem
+                            key={item.value}
+                            value={item.value}
+                            text={item.label}
+                          />
+                        )
+                      })}
+                  </SelectGroupInput>
+                )
+              }}
+            />
 
-              <FormField
-                control={control}
-                name="tamanhoCamisa"
-                defaultValue={completeForm.other.tamanhoCamisa}
-                render={({ field }) => {
-                  return (
-                    <SelectGroupInput
-                      label="Qual é seu tamanho de camisa?"
-                      placeholder="Selecione uma opção"
-                      onChange={field.onChange}
-                      value={field.value}
-                    >
-                      {tamanhoCamisa &&
-                        tamanhoCamisa.map((item) => {
-                          return (
-                            <SelectItem
-                              key={item.value}
-                              value={item.value}
-                              text={item.label}
-                            />
-                          )
-                        })}
-                    </SelectGroupInput>
-                  )
-                }}
-              />
+            <FormField
+              control={control}
+              name="outroMovimento"
+              defaultValue={completeForm.other.outroMovimento}
+              render={({ field }) => {
+                return (
+                  <RadioInputGroup
+                    label="Você fez parte ativamente de outro encontro de jovens? *"
+                    onChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <RadioInputItem value="sim" label="Sim" />
+                    <RadioInputItem value="nao" label="Não" />
+                  </RadioInputGroup>
+                )
+              }}
+            />
 
-              <FormField
-                control={control}
-                name="outroMovimento"
-                defaultValue={completeForm.other.outroMovimento}
-                render={({ field }) => {
-                  return (
-                    <RadioInputGroup
-                      label="Você fez parte ativamente de outro encontro de jovens? *"
-                      onChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <RadioInputItem value="sim" label="Sim" />
-                      <RadioInputItem value="nao" label="Não" />
-                    </RadioInputGroup>
-                  )
-                }}
-              />
+            <FormField
+              control={control}
+              name="nomeMovimento"
+              defaultValue={completeForm.other.nomeMovimento}
+              render={({ field }) => (
+                <TextInput label={'De qual movimento você fez parte?'}>
+                  <Input {...field} disabled={isFromOtherGroup} />
+                </TextInput>
+              )}
+            />
 
-              <FormField
-                control={control}
-                name="nomeMovimento"
-                defaultValue={completeForm.other.nomeMovimento}
-                render={({ field }) => (
-                  <TextInput label={'De qual movimento você fez parte?'}>
-                    <Input {...field} disabled={isFromOtherGroup} />
-                  </TextInput>
-                )}
-              />
+            <FormField
+              control={control}
+              name="restricoesAlimentares"
+              defaultValue={completeForm.other.restricoesAlimentares}
+              render={({ field }) => (
+                <TextInput label={'Restrições alimentares'}>
+                  <Input autoFocus {...field} />
+                </TextInput>
+              )}
+            />
 
-              <FormField
-                control={control}
-                name="restricoesAlimentares"
-                defaultValue={completeForm.other.restricoesAlimentares}
-                render={({ field }) => (
-                  <TextInput label={'Restrições alimentares'}>
-                    <Input {...field} />
-                  </TextInput>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="observacoes"
-                defaultValue={completeForm.other.observacoes}
-                render={({ field }) => (
-                  <TextInput label={'Observações'}>
-                    <Input {...field} />
-                  </TextInput>
-                )}
-              />
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter className="w-full p-0">
-          <div className="flex w-full justify-between">
-            <Button variant="outline" onClick={previousStep}>
-              Voltar
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              Avançar
-            </Button>
-          </div>
-        </CardFooter>
+            <FormField
+              control={control}
+              name="observacoes"
+              defaultValue={completeForm.other.observacoes}
+              render={({ field }) => (
+                <TextInput label={'Observações'}>
+                  <Input {...field} />
+                </TextInput>
+              )}
+            />
+          </CardSection>
+        </CardParticipe>
       </form>
     </Form>
   )

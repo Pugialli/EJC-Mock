@@ -57,7 +57,7 @@ export default function Login() {
       redirect: false,
     })
     if (result?.ok === false) {
-      toast.error('Seu usuário ou senha estão incorretos')
+      toast.error('Seu usuário ou senha estão incorretos.')
     } else {
       router.replace('/admin/externa')
     }
@@ -67,7 +67,7 @@ export default function Login() {
     <div className="flex h-auto items-center justify-center bg-primary py-11">
       <FormProvider {...form}>
         <form id="loginForm" onSubmit={handleSubmit(handleLogIn)}>
-          <Card className="flex w-96 flex-col items-center gap-8 p-8 text-zinc-700">
+          <Card className="flex w-auto flex-col items-center gap-8 p-8 text-zinc-700 lg:w-96">
             <CardHeader className="flex flex-col gap-2 p-0 text-center">
               <CardTitle className="text-3xl font-bold text-zinc-700">
                 Log In

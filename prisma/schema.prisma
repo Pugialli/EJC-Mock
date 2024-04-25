@@ -36,7 +36,7 @@ model Pessoa {
   pessoaMotorista    Carro[]         @relation("PessoaMotorista")
   pessoaCarona       Carro[]         @relation("PessoaCarona")
   carroEncontro      CarroEncontro[]
-  encontreiro        Encontreiro[]
+  encontreiro        Encontreiro?
 
   accounts Account[]
   sessions Session[]
@@ -45,50 +45,54 @@ model Pessoa {
 }
 
 model Encontrista {
-  id_pessoa           String  @unique
-  id_status           String
-  id_religiao         String
-  is_autofill         String
-  end_numero          String
-  end_complemento     String
-  id_bairro_encontro  String
-  id_moracom          String
-  id_paissep          String
-  movimento_anterior  String
-  observacao          String
-  nome_contato1       String
-  tel_contato1        String
-  parentesco_contato1 String
-  nome_contato2       String?
-  tel_contato2        String?
-  parentesco_contato2 String?
+  id_pessoa            String  @id
+  id_status            String
+  id_religiao          String
+  is_autofill          Boolean
+  end_numero           String
+  end_complemento      String
+  id_bairro_encontro   String
+  id_moracom           String
+  id_statusPais        String
+  movimento_anterior   String?
+  observacao           String?
+  nome_contato1        String
+  tel_contato1         String
+  parentesco_contato1  String
+  nome_contato2        String?
+  tel_contato2         String?
+  parentesco_contato2  String?
+  indicado_por_nome    String?
+  indicado_por_apelido String?
+  indicado_por_tel     String?
+  indicado_por_email   String?
 
   created_at  DateTime @default(now())
   modified_at DateTime @updatedAt
 
-  pessoa         Pessoa               @relation(fields: [id_pessoa], references: [id])
+  pessoa         Pessoa               @relation(fields: [id_pessoa], references: [id], onDelete: Cascade)
   status         DomainStatus         @relation(fields: [id_status], references: [id])
   religiao       DomainReligiao       @relation(fields: [id_religiao], references: [id])
   bairroEncontro DomainBairroEncontro @relation(fields: [id_bairro_encontro], references: [value])
   moraCom        DomainMoraCom        @relation(fields: [id_moracom], references: [id])
-  statusPais     DomainStatusPais     @relation(fields: [id_paissep], references: [id])
+  statusPais     DomainStatusPais     @relation(fields: [id_statusPais], references: [id])
 
   @@map("encontristas")
 }
 
 model Encontreiro {
-  id_pessoa           String  @unique
+  id_pessoa           String  @id
   nascimento          String
-  instagram           String
+  instagram           String?
   restricao_alimentar String?
-  id_tamanho_camisa   String
-  id_encontro         String
+  id_tamanho_camisa   String?
+  id_encontro         String?
   id_circulo          String?
 
-  pessoa        Pessoa              @relation(fields: [id_pessoa], references: [id])
-  encontro      Encontro            @relation(fields: [id_encontro], references: [id])
-  tamanhoCamisa DomainTamanhoCamisa @relation(fields: [id_tamanho_camisa], references: [id])
-  circulo       Circulo?            @relation(fields: [id_circulo], references: [id])
+  pessoa        Pessoa               @relation(fields: [id_pessoa], references: [id], onDelete: Cascade)
+  encontro      Encontro?            @relation(fields: [id_encontro], references: [id])
+  tamanhoCamisa DomainTamanhoCamisa? @relation(fields: [id_tamanho_camisa], references: [id])
+  circulo       Circulo?             @relation(fields: [id_circulo], references: [id])
 
   @@map("encontreiros")
 }
@@ -129,7 +133,7 @@ model Circulo {
 }
 
 model Endereco {
-  cep    String @id @unique
+  cep    String @id
   estado String
   cidade String
   bairro String

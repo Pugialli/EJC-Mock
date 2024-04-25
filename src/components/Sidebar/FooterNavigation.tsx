@@ -25,7 +25,6 @@ export function FooterNavigation() {
   }, [])
 
   async function logout() {
-    console.log('teste')
     await signOut()
   }
 

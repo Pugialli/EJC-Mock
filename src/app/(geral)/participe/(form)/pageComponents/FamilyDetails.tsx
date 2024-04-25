@@ -42,8 +42,12 @@ const familyFormScheme = z.object({
   telFamiliar: z
     .string()
     .min(13, { message: 'O número de telefone está incompleto' }),
+  parentescoFamiliar: z
+    .string()
+    .min(2, { message: 'O grau de parentesco é obrigatório' }),
   nomeFamiliar2: z.string(),
   telFamiliar2: z.string(),
+  parentescoFamiliar2: z.string(),
 })
 
 export type FamilyFormDataInput = z.infer<typeof familyFormScheme>
@@ -210,6 +214,17 @@ export function FamilyDetails() {
 
             <FormField
               control={control}
+              name="parentescoFamiliar"
+              defaultValue={completeForm.family.parentescoFamiliar}
+              render={({ field }) => (
+                <TextInput label={'Grau de parentesco *'}>
+                  <Input {...field} />
+                </TextInput>
+              )}
+            />
+
+            <FormField
+              control={control}
               name="nomeFamiliar2"
               defaultValue={completeForm.family.nomeFamiliar2}
               render={({ field }) => (
@@ -234,6 +249,17 @@ export function FamilyDetails() {
                   </TextInput>
                 )
               }}
+            />
+
+            <FormField
+              control={control}
+              name="parentescoFamiliar2"
+              defaultValue={completeForm.family.parentescoFamiliar2}
+              render={({ field }) => (
+                <TextInput label={'Grau de parentesco com o outro familiar *'}>
+                  <Input {...field} />
+                </TextInput>
+              )}
             />
           </CardSection>
         </CardParticipe>

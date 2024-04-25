@@ -1,3 +1,6 @@
+'use client'
+
+import { CreateEncontristaData } from '@/app/api/encontrista/route'
 import { api } from '@/lib/axios'
 import { ReactNode, createContext, useState } from 'react'
 
@@ -9,7 +12,7 @@ export interface PersonalFormData {
   celular: string
   email: string
   apelido?: string | undefined
-  religiao?:
+  religiao:
     | 'catolica'
     | 'evangelica'
     | 'espirita'
@@ -17,7 +20,6 @@ export interface PersonalFormData {
     | 'judaica'
     | 'nao_tenho'
     | 'outra'
-    | undefined
   telefone?: string | undefined
   instagram?: string | undefined
 }
@@ -31,7 +33,7 @@ export interface AddressFormData {
   numero: string
   complemento: string
   dormiraEmCasa: 'sim' | 'nao'
-  bairroDuranteOEncontro?: 'botafogo' | 'copacabana'
+  bairroDuranteOEncontro?: string
 }
 
 export interface FamilyFormData {
@@ -39,8 +41,10 @@ export interface FamilyFormData {
   statusPais: 'sim' | 'nao' | 'na'
   nomeFamiliar: string
   telFamiliar: string
-  nomeFamiliar2: string
-  telFamiliar2: string
+  parentescoFamiliar: string
+  nomeFamiliar2?: string
+  telFamiliar2?: string
+  parentescoFamiliar2?: string
 }
 
 export interface NominationFormData {
@@ -69,18 +73,12 @@ interface FormData {
     | undefined
 }
 
-interface CreateEncontristaData {
-  personal: PersonalFormData
-  address: AddressFormData
-  family: FamilyFormData
-  nomination: NominationFormData
-  other: OtherFormData
-}
-
 interface EncontristaContextType {
   completeForm: CreateEncontristaData
+  userCreated: 'not sent' | 'created' | 'error'
   updateData: ({ data, step }: FormData) => void
   clearForm: () => void
+  createNewEncontrista: () => void
 }
 
 export const CreateEncontristaContext = createContext(
@@ -144,6 +142,10 @@ export function CreateEncontristaContextProvider({
   const [completeForm, setCompleteForm] =
     useState<CreateEncontristaData>(initialState)
 
+  const [userCreated, setUserCreated] = useState<
+    'not sent' | 'created' | 'error'
+  >('not sent')
+
   function updateData({ data, step }: FormData) {
     if (step === 1) {
       const newEncontrista = {
@@ -190,13 +192,14 @@ export function CreateEncontristaContextProvider({
         other: data,
       } as CreateEncontristaData
       setCompleteForm(newEncontrista)
-      createNewEncontrista(completeForm)
     }
   }
 
-  function createNewEncontrista(data: CreateEncontristaData) {
-    api.post('/encontrista', data)
-    console.log(data) // criar o encontrista
+  async function createNewEncontrista() {
+    await api
+      .post('/encontrista', completeForm)
+      .then(() => setUserCreated('created'))
+      .catch(() => setUserCreated('error'))
   }
 
   const clearForm = () => {
@@ -207,8 +210,10 @@ export function CreateEncontristaContextProvider({
     <CreateEncontristaContext.Provider
       value={{
         completeForm,
+        userCreated,
         updateData,
         clearForm,
+        createNewEncontrista,
       }}
     >
       {children}

@@ -21,6 +21,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useWizard } from 'react-use-wizard'
+import { toast } from 'sonner'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
 import { CardParticipe } from '../components/CardParticipe'
@@ -75,6 +76,13 @@ async function getReligioes() {
   return selectData
 }
 
+async function checkPessoa(email: string) {
+  return await api
+    .get(`encontrista/email?email=${email}`)
+    .then(() => true)
+    .catch(() => false)
+}
+
 export function PersonalDetails() {
   const { completeForm, updateData } = useContext(CreateEncontristaContext)
   const { nextStep, handleStep, activeStep } = useWizard()
@@ -97,16 +105,25 @@ export function PersonalDetails() {
 
   const registerWithMask = useHookFormMask(register)
 
-  function handleNextFormStep(formDataInput: PersonalFormDataInput) {
+  async function handleNextFormStep(formDataInput: PersonalFormDataInput) {
     // const dataNascimentoCorrigido = stringToDate(formDataInput.dataNascimento)
     // await new Promise((resolve) => setTimeout(resolve, Math.random() * 3000))
-
     const personalData = formDataInput as PersonalFormData
 
-    handleStep(() => {
-      updateData({ data: personalData, step: activeStep })
-    })
-    nextStep()
+    const isAlreadyOnDB = await checkPessoa(personalData.email)
+
+    if (isAlreadyOnDB) {
+      toast.warning('Este email já está cadastrado', {
+        description:
+          'Caso queira alterar alguma informação procure quem te indicou ou um de nossos dirigentes.',
+        duration: 20000,
+      })
+    } else {
+      handleStep(() => {
+        updateData({ data: personalData, step: activeStep })
+      })
+      nextStep()
+    }
   }
 
   return (

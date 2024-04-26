@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { SearchInput } from '@/components/ui/search-input'
 import { BarChart4, Download, Filter, Plus } from 'lucide-react'
 import Link from 'next/link'
+import { EncontristasTable } from './(table-encontristas)/pageComponents/encontristas'
 
 export default function Externa() {
   return (
@@ -59,7 +60,7 @@ export default function Externa() {
           </AccordionItem>
         </Accordion>
       </div>
-      <p className="w-full bg-secondary text-white">Tabela</p>
+      <EncontristasTable />
     </div>
   )
 }

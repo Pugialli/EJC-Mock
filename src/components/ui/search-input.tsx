@@ -1,20 +1,14 @@
 import { cn } from '@/lib/utils'
-import { EyeIcon, EyeOffIcon, Search } from 'lucide-react'
-import { forwardRef, useState } from 'react'
+import { Search } from 'lucide-react'
+import { forwardRef } from 'react'
 
 export interface SearchInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   prefix?: string
-  hidable?: boolean
 }
 
 const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ prefix, className, type, hidable = false, ...props }, ref) => {
-    const [isHidden, setIsHidden] = useState(hidable)
-
-    function toggleHidden() {
-      setIsHidden((state) => !state)
-    }
+  ({ prefix, className, ...props }, ref) => {
     return (
       <div
         aria-invalid={props['aria-invalid']}
@@ -31,7 +25,6 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         <Search className="h-6 w-6 text-zinc-500" />
         {prefix && <span className="text-zinc-400">{prefix}</span>}
         <input
-          type={isHidden ? 'password' : type}
           className={cn(
             'flex-1 border-0 bg-transparent p-0 text-zinc-700 placeholder-zinc-400 outline-none',
             'dark:text-zinc-100 dark:placeholder-zinc-400',
@@ -42,15 +35,6 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           ref={ref}
           {...props}
         />
-        {hidable && (
-          <button type="button" onClick={toggleHidden}>
-            {isHidden ? (
-              <EyeOffIcon className="text-zinc-500" />
-            ) : (
-              <EyeIcon className="text-zinc-500" />
-            )}
-          </button>
-        )}
       </div>
     )
   },

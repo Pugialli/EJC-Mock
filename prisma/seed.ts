@@ -1028,6 +1028,29 @@ async function main() {
     ],
   })
 
+  const adminEndereco = await prisma.endereco.create({
+    data: {
+      cep: '22270-000',
+      estado: 'RJ',
+      cidade: 'Rio de Janeiro',
+      bairro: 'Botafogo',
+      rua: 'Rua Voluntários da Pátria',
+    },
+  })
+
+  const admin = await prisma.pessoa.create({
+    data: {
+      nome: 'João Paulo',
+      sobrenome: 'Pugialli da Silva Souza',
+      celular: '(21) 99719-8998',
+      email: 'joaopugialli@gmail.com',
+      endereco_cep: adminEndereco.cep,
+      password: '$2a$08$71STWfM30xVPYaBV7jnQpOCfrmwUWbbazG0gb41FmtMJE7AZjA0ZG',
+      avatar_url:
+        'https://res.cloudinary.com/ejc-nsdp/image/upload/people/53_bvinkk.jpg',
+    },
+  })
+
   console.log({
     status,
     religioes,
@@ -1036,6 +1059,8 @@ async function main() {
     statusPais,
     tamanhosCamisa,
     cores,
+    adminEndereco,
+    admin,
   })
 }
 main()

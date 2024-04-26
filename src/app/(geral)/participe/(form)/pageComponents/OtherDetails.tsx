@@ -25,6 +25,7 @@ import { useWizard } from 'react-use-wizard'
 import { z } from 'zod'
 import { CardParticipe } from '../components/CardParticipe'
 import { CardSection } from '../components/CardSection'
+import { Textarea } from '@/components/ui/textarea'
 
 const otherFormScheme = z.object({
   tamanhoCamisa: z.enum(['p', 'm', 'g', 'gg', 'xgg', 'outro']).optional(),
@@ -172,7 +173,7 @@ export function OtherDetails() {
               defaultValue={completeForm.other.observacoes}
               render={({ field }) => (
                 <TextInput label={'Observações'}>
-                  <Input {...field} />
+                  <Textarea {...field} />
                 </TextInput>
               )}
             />

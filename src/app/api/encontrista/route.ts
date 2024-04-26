@@ -149,3 +149,30 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(pessoa, { status: 201 })
 }
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const email = searchParams.get('email')
+
+  if (!email) {
+    const encontristas = await prisma.encontrista.findMany({
+      include: {
+        pessoa: {},
+      },
+    })
+
+    return NextResponse.json(encontristas)
+  }
+
+  const personFound = await prisma.pessoa.findFirst({
+    where: {
+      email,
+    },
+  })
+
+  if (!personFound) {
+    return NextResponse.json(null, { status: 204 })
+  }
+
+  return NextResponse.json(personFound, { status: 208 })
+}

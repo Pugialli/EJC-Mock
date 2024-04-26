@@ -30,16 +30,17 @@ model Pessoa {
   modified_at DateTime @updatedAt
 
   cep                Endereco        @relation(fields: [endereco_cep], references: [cep])
-  encontrista        Encontrista?
   tioAparenteCirculo Circulo?        @relation("TioAparente")
   tioSecretoCirculo  Circulo?        @relation("TioSecreto")
   pessoaMotorista    Carro[]         @relation("PessoaMotorista")
   pessoaCarona       Carro[]         @relation("PessoaCarona")
   carroEncontro      CarroEncontro[]
   encontreiro        Encontreiro?
+  Encontrista        Encontrista?
 
-  accounts Account[]
-  sessions Session[]
+  accounts           Account[]
+  sessions           Session[]
+  ResponsavelExterna ResponsavelExterna[]
 
   @@map("pessoas")
 }
@@ -70,12 +71,13 @@ model Encontrista {
   created_at  DateTime @default(now())
   modified_at DateTime @updatedAt
 
-  pessoa         Pessoa               @relation(fields: [id_pessoa], references: [id], onDelete: Cascade)
-  status         DomainStatus         @relation(fields: [id_status], references: [id])
-  religiao       DomainReligiao       @relation(fields: [id_religiao], references: [id])
-  bairroEncontro DomainBairroEncontro @relation(fields: [id_bairro_encontro], references: [value])
-  moraCom        DomainMoraCom        @relation(fields: [id_moracom], references: [id])
-  statusPais     DomainStatusPais     @relation(fields: [id_statusPais], references: [id])
+  pessoa             Pessoa               @relation(fields: [id_pessoa], references: [id], onDelete: Cascade)
+  status             DomainStatus         @relation(fields: [id_status], references: [id])
+  religiao           DomainReligiao       @relation(fields: [id_religiao], references: [id])
+  bairroEncontro     DomainBairroEncontro @relation(fields: [id_bairro_encontro], references: [value])
+  moraCom            DomainMoraCom        @relation(fields: [id_moracom], references: [id])
+  statusPais         DomainStatusPais     @relation(fields: [id_statusPais], references: [id])
+  responsavelExterna ResponsavelExterna?
 
   @@map("encontristas")
 }
@@ -107,10 +109,11 @@ model Encontro {
   tema_fantasia   String
   numero_circulos Int
 
-  local         Local           @relation(fields: [id_local], references: [id])
-  encontreiro   Encontreiro[]
-  circulo       Circulo[]
-  carroEncontro CarroEncontro[]
+  local              Local                @relation(fields: [id_local], references: [id])
+  encontreiro        Encontreiro[]
+  circulo            Circulo[]
+  carroEncontro      CarroEncontro[]
+  ResponsavelExterna ResponsavelExterna[]
 
   @@map("encontros")
 }
@@ -188,6 +191,19 @@ model CarroEncontro {
 
   @@id([id_carro, id_encontrista, id_encontro])
   @@map("carro_encontro")
+}
+
+model ResponsavelExterna {
+  id_externa     String
+  id_encontrista String @unique
+  id_encontro    String
+
+  externa     Pessoa       @relation(fields: [id_externa], references: [id])
+  encontrista Encontrista? @relation(fields: [id_encontrista], references: [id_pessoa])
+  encontro    Encontro     @relation(fields: [id_encontro], references: [id])
+
+  @@id([id_encontrista, id_encontro])
+  @@map("responsavel_externa")
 }
 
 //Domains

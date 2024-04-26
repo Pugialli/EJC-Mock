@@ -78,7 +78,7 @@ async function getReligioes() {
 
 async function checkPessoa(email: string) {
   return await api
-    .get(`encontrista/email?email=${email}`)
+    .get(`encontrista?email=${email}`)
     .then(() => true)
     .catch(() => false)
 }

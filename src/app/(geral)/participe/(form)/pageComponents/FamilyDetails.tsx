@@ -256,7 +256,7 @@ export function FamilyDetails() {
               name="parentescoFamiliar2"
               defaultValue={completeForm.family.parentescoFamiliar2}
               render={({ field }) => (
-                <TextInput label={'Grau de parentesco com o outro familiar *'}>
+                <TextInput label={'Grau de parentesco com o outro familiar'}>
                   <Input {...field} />
                 </TextInput>
               )}

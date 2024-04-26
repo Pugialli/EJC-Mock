@@ -118,8 +118,10 @@ const initialState = {
     statusPais: 'nao',
     nomeFamiliar: '',
     telFamiliar: '',
-    nomeFamiliar2: '',
-    telFamiliar2: '',
+    parentescoFamiliar: '',
+    nomeFamiliar2: undefined,
+    telFamiliar2: undefined,
+    parentescoFamiliar2: undefined,
   },
   nomination: {
     indicadoPorNome: undefined,
@@ -196,6 +198,9 @@ export function CreateEncontristaContextProvider({
   }
 
   async function createNewEncontrista() {
+    if (completeForm.personal.nome === initialState.personal.nome) {
+      return
+    }
     await api
       .post('/encontrista', completeForm)
       .then(() => setUserCreated('created'))

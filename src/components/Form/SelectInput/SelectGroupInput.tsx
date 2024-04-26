@@ -13,7 +13,7 @@ import {
 } from '../../ui/select'
 
 export interface SelectGroupInputProps {
-  label: string
+  label?: string
   value: string | undefined
   description?: string
   placeholder?: string
@@ -34,7 +34,7 @@ export function SelectGroupInput({
   return (
     <FormItem>
       <label>
-        <FormLabel>{label}</FormLabel>
+        {label && <FormLabel>{label}</FormLabel>}
         <Select disabled={disabled} onValueChange={onChange} value={value}>
           <FormControl>
             <SelectTrigger className="outline-none">

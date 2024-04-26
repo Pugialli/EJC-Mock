@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import ReactQueryProvider from '@/lib/providers/ReactQueryProvider'
 import NextAuthSessionProvider from '@/lib/providers/SessionProvider'
 import type { Metadata } from 'next'
@@ -30,7 +31,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <ReactQueryProvider>
-              {children}
+              <TooltipProvider>{children}</TooltipProvider>
               <Toaster richColors />
             </ReactQueryProvider>
           </ThemeProvider>

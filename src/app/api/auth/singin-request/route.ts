@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     surname: userExists.sobrenome,
     email: userExists.email,
     id: userExists.id,
-    avatar_url: userExists.avatar_url ? userExists.avatar_url : undefined,
+    avatar_url: userExists.avatarUrl ? userExists.avatarUrl : undefined,
   }
   const response: AuthResponse = {
     user,

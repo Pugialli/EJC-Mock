@@ -1,31 +1,10 @@
-import { prisma } from '@/lib/prisma'
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
+import { createEncontro, type EncontroProps } from './create-encontro'
 
-export type EncontroData = {
-  numero_encontro: number
-  data_inicio: string
-  data_tema: string
-  tema_espiritual: string
-  tema_fantasia: string
-  numero_circulos: number
-  local: {
-    nome_local: string
-    numero_local: string
-  }
-}
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
+export async function POST(request: NextRequest) {
+  const requestedData: EncontroProps = await request.json()
 
-  const numero = Number(searchParams.get('encontro'))
+  const encontro = await createEncontro(requestedData)
 
-  const encontro = await prisma.encontro.findUnique({
-    include: {
-      local: true,
-    },
-    where: {
-      numero_encontro: numero,
-    },
-  })
-
-  return NextResponse.json(encontro)
+  return NextResponse.json(encontro, { status: 201 })
 }

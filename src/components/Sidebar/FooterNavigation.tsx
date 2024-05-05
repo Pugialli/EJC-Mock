@@ -29,7 +29,7 @@ export function FooterNavigation() {
   }
 
   return (
-    <div className="group flex items-center justify-between rounded-xl py-3">
+    <div className="group flex items-center justify-between rounded-xl px-4 py-3">
       <div className="flex items-center gap-4">
         {avatarFallback === '' ? (
           <Skeleton className="h-10 w-10 rounded-full" />

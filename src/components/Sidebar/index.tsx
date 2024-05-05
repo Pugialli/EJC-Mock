@@ -13,9 +13,8 @@ import { FooterNavigation } from './FooterNavigation'
 import { MainNavigation } from './MainNavigation'
 
 export function Sidebar() {
-  // fixed left-0 right-0 top-0  lg:right-auto lg:w-auto
   return (
-    <Collapsible className="z-20 flex flex-col gap-12 bg-tertiary p-4 lg:h-full lg:min-h-screen lg:px-8 lg:py-12 ">
+    <Collapsible className="z-20 flex flex-col gap-12 bg-tertiary p-4 lg:h-full lg:min-h-screen lg:px-2 lg:py-12 ">
       <div className="flex items-center justify-between lg:justify-center">
         <LogoEJCColorido />
         <CollapsibleTrigger asChild className="lg:hidden">

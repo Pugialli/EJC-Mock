@@ -1,6 +1,6 @@
 'use client'
 
-import { CreateEncontristaData } from '@/app/api/encontrista/route'
+import type { CreateEncontristaProps } from '@/app/api/encontrista/create-encontrista'
 import { api } from '@/lib/axios'
 import { ReactNode, createContext, useState } from 'react'
 
@@ -74,7 +74,7 @@ interface FormData {
 }
 
 interface EncontristaContextType {
-  completeForm: CreateEncontristaData
+  completeForm: CreateEncontristaProps
   userCreated: 'not sent' | 'created' | 'error'
   updateData: ({ data, step }: FormData) => void
   clearForm: () => void
@@ -136,13 +136,13 @@ const initialState = {
     restricoesAlimentares: undefined,
     observacoes: undefined,
   },
-} as CreateEncontristaData
+} as CreateEncontristaProps
 
 export function CreateEncontristaContextProvider({
   children,
 }: CreateEncontristaContextProviderProps) {
   const [completeForm, setCompleteForm] =
-    useState<CreateEncontristaData>(initialState)
+    useState<CreateEncontristaProps>(initialState)
 
   const [userCreated, setUserCreated] = useState<
     'not sent' | 'created' | 'error'
@@ -156,7 +156,7 @@ export function CreateEncontristaContextProvider({
         family: completeForm.family,
         nomination: completeForm.nomination,
         other: completeForm.other,
-      } as CreateEncontristaData
+      } as CreateEncontristaProps
       setCompleteForm(newEncontrista)
     } else if (step === 2) {
       const newEncontrista = {
@@ -165,7 +165,7 @@ export function CreateEncontristaContextProvider({
         family: completeForm.family,
         nomination: completeForm.nomination,
         other: completeForm.other,
-      } as CreateEncontristaData
+      } as CreateEncontristaProps
       setCompleteForm(newEncontrista)
     } else if (step === 3) {
       const newEncontrista = {
@@ -174,7 +174,7 @@ export function CreateEncontristaContextProvider({
         family: data,
         nomination: completeForm.nomination,
         other: completeForm.other,
-      } as CreateEncontristaData
+      } as CreateEncontristaProps
       setCompleteForm(newEncontrista)
     } else if (step === 4) {
       const newEncontrista = {
@@ -183,7 +183,7 @@ export function CreateEncontristaContextProvider({
         family: completeForm.family,
         nomination: data,
         other: completeForm.other,
-      } as CreateEncontristaData
+      } as CreateEncontristaProps
       setCompleteForm(newEncontrista)
     } else if (step === 5) {
       const newEncontrista = {
@@ -192,7 +192,7 @@ export function CreateEncontristaContextProvider({
         family: completeForm.family,
         nomination: completeForm.nomination,
         other: data,
-      } as CreateEncontristaData
+      } as CreateEncontristaProps
       setCompleteForm(newEncontrista)
     }
   }

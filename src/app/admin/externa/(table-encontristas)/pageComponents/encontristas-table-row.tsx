@@ -1,9 +1,10 @@
-import { Pencil, X } from 'lucide-react'
+import { MessageSquareMore, Pencil, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 
-import { BairrosRJ } from '@/app/api/domains/bairrosRJ/route'
+import type { BairrosRJ } from '@/app/api/domains/bairrosRJ/get-bairros-rj'
+import type { EncontristaSummaryData } from '@/app/api/encontrista/get-encontristas-summary'
 import { EncontristaExterna } from '@/components/Table/encontrista-externa'
 import { EncontristaStatus } from '@/components/Table/encontrista-status'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -13,8 +14,9 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { api } from '@/lib/axios'
-import { textEllipsis } from '@/utils/ellipsis-text'
-import { formatDate } from 'date-fns'
+import { stringToDate } from '@/utils/string-to-date'
+import type { Value_Status as valueStatus } from '@prisma/client'
+import { differenceInCalendarYears, formatDate } from 'date-fns'
 import { useEffect, useState } from 'react'
 
 export interface Encontrista {
@@ -23,7 +25,7 @@ export interface Encontrista {
   end_numero: string
   id_bairro_encontro: string
   id_moracom: string
-  id_status: EncontristaStatus
+  id_status: valueStatus
   modified_at: string
   observacao: string
   pessoa: {
@@ -36,12 +38,12 @@ export interface Encontrista {
 }
 
 interface EncontristaTableRowProps {
-  encontrista: Encontrista
+  encontrista: EncontristaSummaryData
 }
 
 async function getBairro(bairroValue: string) {
   const response = await api
-    .get(`domains/bairrosRJ?bairro=${bairroValue}`)
+    .get(`domains/bairrosRJ/${bairroValue}`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
@@ -106,26 +108,31 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
   //     },
   //   })
 
-  const dataInscricao = formatDate(
-    new Date(encontrista.pessoa.created_at),
-    'dd/MM/yy',
-  )
-  const nomeCompleto = `${encontrista.pessoa.nome} ${encontrista.pessoa.sobrenome}`
+  const dataInscricao = formatDate(new Date(encontrista.createdAt), 'dd/MM/yy')
+  const nomeCompleto = `${encontrista.nome} ${encontrista.sobrenome}`
+  const dataNascimento = stringToDate(encontrista.nascimento)
+  const idade = differenceInCalendarYears(new Date(), dataNascimento)
 
   useEffect(() => {
     async function fetchBairroName() {
-      const bairro: BairrosRJ = await getBairro(encontrista.id_bairro_encontro)
+      const bairro: BairrosRJ = await getBairro(encontrista.idBairroEncontro)
 
       setBairroEncontro(bairro.bairro)
     }
     fetchBairroName()
-  }, [encontrista.id_bairro_encontro])
+  }, [encontrista.idBairroEncontro])
   return (
-    <TableRow className="text-sm">
-      <TableCell className="text-xs font-medium">{dataInscricao}</TableCell>
-      <TableCell className="">{nomeCompleto}</TableCell>
-      <TableCell>
-        <EncontristaStatus status={encontrista.id_status} />
+    <TableRow>
+      <TableCell className="w-7 text-nowrap rounded-tl-xl pl-4 font-medium lg:w-[73px]">
+        {dataInscricao}
+      </TableCell>
+      <TableCell>{nomeCompleto}</TableCell>
+      <TableCell>{idade}</TableCell>
+      <TableCell className="w-7 lg:w-[178px]">
+        <EncontristaStatus
+          status={encontrista.idStatus}
+          idEncontrista={encontrista.id}
+        />
       </TableCell>
       <TableCell>
         {bairroEncontro === undefined ? (
@@ -134,37 +141,49 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
           <p>{bairroEncontro}</p>
         )}
       </TableCell>
-      <TableCell className="text-xs">{encontrista.pessoa.celular}</TableCell>
-      <TableCell className="text-xs">
+      <TableCell>{encontrista.celular}</TableCell>
+      <TableCell className="w-7 lg:w-[178px]">
         <EncontristaExterna
-          idResponsavel={encontrista.id_responsavel_externa}
+          idResponsavel={encontrista.idExterna}
+          idEncontrista={encontrista.id}
         />
       </TableCell>
-      <TableCell className="text-sm">
-        <Tooltip>
-          <TooltipTrigger>
-            {textEllipsis(encontrista.observacao, 25)}
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{encontrista.observacao}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TableCell>
-      <TableCell>
+      <TableCell className="w-7 lg:w-16">
         <div className="flex gap-2">
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                // onClick={() => approveOrderFn({ orderId: order.orderId })}
+                // disabled={isApprovingOrder}
+                variant="ghost"
+                className="p-0"
+              >
+                <MessageSquareMore className="h-4 w-4 text-zinc-400" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="w-72 text-center">
+              {encontrista.observacoes ? (
+                <span>{encontrista.observacoes}</span>
+              ) : (
+                <span className="text-zinc-400">Não tem observação</span>
+              )}
+            </TooltipContent>
+          </Tooltip>
           <Button
             // onClick={() => approveOrderFn({ orderId: order.orderId })}
             // disabled={isApprovingOrder}
-            variant="outline"
+            variant="ghost"
+            className="p-0"
           >
-            <Pencil className="h-3 w-3" />
+            <Pencil className="h-4 w-4 text-zinc-400" />
           </Button>
           <Button
             // onClick={() => dispatchOrderFn({ orderId: order.orderId })}
             // disabled={isDispatchingOrder}
-            variant="outline"
+            variant="ghost"
+            className="p-0"
           >
-            <X className="h-3 w-3" />
+            <Trash2 className="h-4 w-4 text-red-400" />
           </Button>
         </div>
       </TableCell>

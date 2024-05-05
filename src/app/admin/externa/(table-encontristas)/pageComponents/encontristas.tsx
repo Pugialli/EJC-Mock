@@ -6,15 +6,18 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import type { EncontristaSummary } from '@/app/api/encontrista/get-encontristas-summary'
 import { api } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
+import { useSearchParams } from 'next/navigation'
+import { z } from 'zod'
 import { EncontristaTableFilters } from './encontristas-table-filters'
-import { Encontrista, EncontristaTableRow } from './encontristas-table-row'
+import { EncontristaTableRow } from './encontristas-table-row'
 import { EncontristaTableSkeleton } from './encontristas-table-skeleton'
 
-async function getEncontrista() {
+async function getEncontrista(pageIndex: number) {
   const response = await api
-    .get('encontrista')
+    .get(`/encontrista?page=${pageIndex}`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
@@ -22,34 +25,35 @@ async function getEncontrista() {
 }
 
 export function EncontristasTable() {
-  // const [searchParams, setSearchParams] = useSearchParams()
+  const searchParams = useSearchParams()
 
   // const orderId = searchParams.get('orderId')
   // const customerName = searchParams.get('customerName')
   // const status = searchParams.get('status')
 
-  // const pageIndex = z.coerce
-  //   .number()
-  //   .transform((page) => page - 1)
-  //   .parse(searchParams.get('page') ?? '1')
+  const pageIndex = z.coerce
+    .number()
+    .transform((page) => page - 1)
+    .parse(searchParams.get('page') ?? '1')
 
-  const { data: result, isLoading: isLoadingEncontrista } = useQuery<
-    Encontrista[]
-  >({
-    queryKey: ['encontristas'],
-    queryFn: () => getEncontrista(),
-  })
-
-  // const { data: result, isLoading: isLoadingOrders } = useQuery({
-  //   queryKey: ['encontristas', pageIndex, orderId, customerName, status],
+  // const { data: result, isLoading: isLoadingEncontrista } = useQuery<
+  //   Encontrista[]
+  // >({
+  //   queryKey: ['encontristas'],
   //   queryFn: () => getEncontrista(),
-  //   {
-  //   pageIndex,
-  //   orderId,
-  //   customerName,
-  //   status: status === 'all' ? null : status,
-  // }
   // })
+
+  const { data: result, isLoading: isLoadingEncontrista } =
+    useQuery<EncontristaSummary>({
+      queryKey: ['encontristas', pageIndex],
+      queryFn: () => getEncontrista(pageIndex),
+      // {
+      // pageIndex
+      // orderId,
+      // customerName,
+      // status: status === 'all' ? null : status,
+      // }
+    })
 
   // function handlePaginate(pageIndex: number) {
   //   setSearchParams((state) => {
@@ -66,19 +70,21 @@ export function EncontristasTable() {
           <EncontristaTableFilters />
 
           <div className="rounded-xl border bg-zinc-100/50 shadow-2xl">
-            <Table>
+            <Table className="text-xs">
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-7 rounded-tl-xl lg:w-14">
-                    Inscrito
+                <TableRow className="px-2">
+                  <TableHead className="w-7 text-nowrap rounded-tl-xl pl-4 lg:w-[73px]">
+                    Inscrito em
                   </TableHead>
                   <TableHead>Nome</TableHead>
-                  <TableHead className="w-7 lg:w-14">Status</TableHead>
-                  <TableHead className="w-7 lg:w-14">Bairro</TableHead>
-                  <TableHead className="w-7 lg:w-14">Celular</TableHead>
-                  <TableHead className="w-7 lg:w-14">Responsável</TableHead>
-                  <TableHead className="w-7 lg:w-20">Observações</TableHead>
-                  <TableHead className="w-7 rounded-tr-xl lg:w-14">
+                  <TableHead>Idade</TableHead>
+                  <TableHead className="w-7 lg:w-[178px]">Status</TableHead>
+                  <TableHead>Bairro</TableHead>
+                  <TableHead>Celular</TableHead>
+                  <TableHead className="w-7 lg:w-[178px]">
+                    Responsável
+                  </TableHead>
+                  <TableHead className="w-7 rounded-tr-xl lg:w-16">
                     Ações
                   </TableHead>
                 </TableRow>
@@ -86,10 +92,10 @@ export function EncontristasTable() {
               <TableBody className="bg-transparent">
                 {isLoadingEncontrista && <EncontristaTableSkeleton />}
                 {result &&
-                  result.map((encontrista) => {
+                  result.encontristas.map((encontrista) => {
                     return (
                       <EncontristaTableRow
-                        key={encontrista.id_pessoa}
+                        key={encontrista.id}
                         encontrista={encontrista}
                       />
                     )

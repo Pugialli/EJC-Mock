@@ -1,6 +1,6 @@
 'use client'
 
-import { ReligiaoData } from '@/app/api/domains/religiao/route'
+import type { Religiao } from '@/app/api/domains/religiao/get-religiao'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -61,7 +61,7 @@ const personalFormScheme = z.object({
 export type PersonalFormDataInput = z.infer<typeof personalFormScheme>
 
 async function getReligioes() {
-  const response: ReligiaoData[] = await api
+  const response: Religiao[] = await api
     .get('domains/religiao')
     .then((response) => response.data)
     .catch((err) => console.error(err))
@@ -78,7 +78,7 @@ async function getReligioes() {
 
 async function checkPessoa(email: string) {
   return await api
-    .get(`encontrista?email=${email}`)
+    .get(`encontrista/check-email/${email}`)
     .then(() => true)
     .catch(() => false)
 }

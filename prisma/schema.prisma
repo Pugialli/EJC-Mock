@@ -14,102 +14,149 @@ datasource db {
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
+//Enums
+enum Value_Status {
+  confirmado
+  confirmado_sem_sexta
+  desistiu
+  ligar
+  lista_espera
+  nao_atende
+  prox_encontro
+  vai_pensar
+}
+
+enum Value_Religiao {
+  catolica
+  evangelica
+  espirita
+  matriz_africana
+  judaica
+  nao_tenho
+  outra
+}
+
+enum Value_MoraCom {
+  sozinho
+  conjuge
+  familiar
+  amigos
+}
+
+enum Value_StatusPais {
+  sim
+  nao
+  na
+}
+
+enum Value_TamanhoCamisa {
+  p
+  m
+  g
+  gg
+  xgg
+  outro
+}
+
 model Pessoa {
-  id           String  @id @default(uuid())
-  nome         String
-  sobrenome    String
-  apelido      String?
-  endereco_cep String
-  celular      String
-  telefone     String?
-  email        String  @unique
-  password     String?
-  avatar_url   String?
+  id          String  @id @default(uuid())
+  nome        String
+  sobrenome   String
+  apelido     String?
+  enderecoCep String  @map("endereco_cep")
+  celular     String
+  telefone    String?
+  email       String  @unique
+  password    String?
+  avatarUrl   String? @map("avatar_url")
 
-  created_at  DateTime @default(now())
-  modified_at DateTime @updatedAt
+  createdAt  DateTime @default(now()) @map("created_at")
+  modifiedAt DateTime @updatedAt @map("modified_at")
 
-  cep                Endereco        @relation(fields: [endereco_cep], references: [cep])
+  endereco           Endereco        @relation(fields: [enderecoCep], references: [cep])
   tioAparenteCirculo Circulo?        @relation("TioAparente")
   tioSecretoCirculo  Circulo?        @relation("TioSecreto")
   pessoaMotorista    Carro[]         @relation("PessoaMotorista")
   pessoaCarona       Carro[]         @relation("PessoaCarona")
   carroEncontro      CarroEncontro[]
   encontreiro        Encontreiro?
-  Encontrista        Encontrista?
+  encontrista        Encontrista?
 
   accounts           Account[]
   sessions           Session[]
-  ResponsavelExterna ResponsavelExterna[]
+  responsavelExterna ResponsavelExterna[]
 
   @@map("pessoas")
 }
 
 model Encontrista {
-  id_pessoa            String  @id
-  id_status            String
-  id_religiao          String
-  is_autofill          Boolean
-  end_numero           String
-  end_complemento      String
-  id_bairro_encontro   String
-  id_moracom           String
-  id_statusPais        String
-  movimento_anterior   String?
-  observacao           String?
-  nome_contato1        String
-  tel_contato1         String
-  parentesco_contato1  String
-  nome_contato2        String?
-  tel_contato2         String?
-  parentesco_contato2  String?
-  indicado_por_nome    String?
-  indicado_por_apelido String?
-  indicado_por_tel     String?
-  indicado_por_email   String?
+  idPessoa           String           @id @map("id_pessoa")
+  idStatus           Value_Status     @map("id_status")
+  idReligiao         Value_Religiao   @map("id_religiao")
+  isAutofill         Boolean          @map("is_autofill")
+  endNumero          Int              @map("end_numero")
+  endComplemento     String           @map("end_complemento")
+  idBairroEncontro   String           @map("id_bairro_encontro")
+  idMoracom          Value_MoraCom    @map("id_moracom")
+  idStatusPais       Value_StatusPais @map("id_statusPais")
+  movimentoAnterior  String?          @map("movimento_anterior")
+  observacao         String?
+  nomeContato1       String           @map("nome_contato1")
+  telContato1        String           @map("tel_contato1")
+  parentescoContato1 String           @map("parentesco_contato1")
+  nomeContato2       String?          @map("nome_contato2")
+  telContato2        String?          @map("tel_contato2")
+  parentescoContato2 String?          @map("parentesco_contato2")
+  indicadoPorNome    String?          @map("indicado_por_nome")
+  indicadoPorApelido String?          @map("indicado_por_apelido")
+  indicadoPorTel     String?          @map("indicado_por_tel")
+  indicadoPorEmail   String?          @map("indicado_por_email")
 
-  created_at  DateTime @default(now())
-  modified_at DateTime @updatedAt
+  createdAt  DateTime @default(now()) @map("created_at")
+  modifiedAt DateTime @updatedAt @map("modified_at")
 
-  pessoa             Pessoa               @relation(fields: [id_pessoa], references: [id], onDelete: Cascade)
-  status             DomainStatus         @relation(fields: [id_status], references: [id])
-  religiao           DomainReligiao       @relation(fields: [id_religiao], references: [id])
-  bairroEncontro     DomainBairroEncontro @relation(fields: [id_bairro_encontro], references: [value])
-  moraCom            DomainMoraCom        @relation(fields: [id_moracom], references: [id])
-  statusPais         DomainStatusPais     @relation(fields: [id_statusPais], references: [id])
+  pessoa             Pessoa               @relation(fields: [idPessoa], references: [id], onDelete: Cascade)
+  status             DomainStatus         @relation(fields: [idStatus], references: [id])
+  religiao           DomainReligiao       @relation(fields: [idReligiao], references: [id])
+  bairroEncontro     DomainBairroEncontro @relation(fields: [idBairroEncontro], references: [value])
+  moraCom            DomainMoraCom        @relation(fields: [idMoracom], references: [id])
+  statusPais         DomainStatusPais     @relation(fields: [idStatusPais], references: [id])
   responsavelExterna ResponsavelExterna?
 
   @@map("encontristas")
 }
 
 model Encontreiro {
-  id_pessoa           String  @id
-  nascimento          String
-  instagram           String?
-  restricao_alimentar String?
-  id_tamanho_camisa   String?
-  id_encontro         String?
-  id_circulo          String?
+  idPessoa           String               @id @map("id_pessoa")
+  nascimento         String
+  instagram          String?
+  restricaoAlimentar String?              @map("restricao_alimentar")
+  idTamanhoCamisa    Value_TamanhoCamisa? @map("id_tamanho_camisa")
+  idEncontro         String?              @map("id_encontro")
+  idCirculo          String?              @map("id_circulo")
 
-  pessoa        Pessoa               @relation(fields: [id_pessoa], references: [id], onDelete: Cascade)
-  encontro      Encontro?            @relation(fields: [id_encontro], references: [id])
-  tamanhoCamisa DomainTamanhoCamisa? @relation(fields: [id_tamanho_camisa], references: [id])
-  circulo       Circulo?             @relation(fields: [id_circulo], references: [id])
+  pessoa        Pessoa               @relation(fields: [idPessoa], references: [id], onDelete: Cascade)
+  encontro      Encontro?            @relation(fields: [idEncontro], references: [id])
+  tamanhoCamisa DomainTamanhoCamisa? @relation(fields: [idTamanhoCamisa], references: [id])
+  circulo       Circulo?             @relation(fields: [idCirculo], references: [id])
 
   @@map("encontreiros")
 }
 
 model Encontro {
-  id              String   @id @default(cuid())
-  numero_encontro Int      @unique
-  data_inicio     DateTime @unique
-  data_tema       DateTime @unique
-  id_local        String
-  tema_espiritual String
-  tema_fantasia   String
-  numero_circulos Int
+  id             String   @id @default(uuid())
+  numeroEncontro Int      @unique @map("numero_encontro")
+  dataInicio     DateTime @unique @map("data_inicio")
+  dataTema       DateTime @unique @map("data_tema")
+  idLocal        String   @map("id_local")
+  temaEspiritual String?  @map("tema_espiritual")
+  temaFantasia   String?  @map("tema_fantasia")
+  numeroCirculos Int      @map("numero_circulos")
 
-  local              Local                @relation(fields: [id_local], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+  modifiedAt DateTime @updatedAt @map("modified_at")
+
+  local              Local                @relation(fields: [idLocal], references: [id])
   encontreiro        Encontreiro[]
   circulo            Circulo[]
   carroEncontro      CarroEncontro[]
@@ -119,17 +166,17 @@ model Encontro {
 }
 
 model Circulo {
-  id                  String @id @default(cuid())
-  id_cor_circulo      Int
-  id_tio_aparente     String @unique
-  id_tio_secreto      String @unique
-  numero_encontristas Int
-  id_encontro         String
+  id                 String @id @default(uuid())
+  idCorCirculo       Int    @map("id_cor_circulo")
+  idTioAparente      String @unique @map("id_tio_aparente")
+  idTioSecreto       String @unique @map("id_tio_secreto")
+  numeroEncontristas Int    @map("numero_encontristas")
+  idEncontro         String @map("id_encontro")
 
-  encontro    Encontro         @relation(fields: [id_encontro], references: [id])
-  corCirculo  DomainCorCirculo @relation(fields: [id_cor_circulo], references: [id])
-  tioAparente Pessoa?          @relation("TioAparente", fields: [id_tio_aparente], references: [id])
-  tioSecreto  Pessoa?          @relation("TioSecreto", fields: [id_tio_secreto], references: [id])
+  encontro    Encontro         @relation(fields: [idEncontro], references: [id])
+  corCirculo  DomainCorCirculo @relation(fields: [idCorCirculo], references: [id])
+  tioAparente Pessoa?          @relation("TioAparente", fields: [idTioAparente], references: [id])
+  tioSecreto  Pessoa?          @relation("TioSecreto", fields: [idTioSecreto], references: [id])
   encontreiro Encontreiro[]
 
   @@map("circulos")
@@ -142,8 +189,8 @@ model Endereco {
   bairro String
   rua    String
 
-  created_at  DateTime @default(now())
-  modified_at DateTime @updatedAt
+  createdAt  DateTime @default(now()) @map("created_at")
+  modifiedAt DateTime @updatedAt @map("modified_at")
 
   pessoa Pessoa[]
   local  Local[]
@@ -152,78 +199,78 @@ model Endereco {
 }
 
 model Local {
-  id           String @id @default(uuid())
-  endereco_cep String
-  nome_local   String
-  numero_local String
+  id          String @id @default(uuid())
+  enderecoCep String @map("endereco_cep")
+  nomeLocal   String @map("nome_local")
+  numeroLocal String @map("numero_local")
 
-  endereco Endereco   @relation(fields: [endereco_cep], references: [cep])
+  endereco Endereco   @relation(fields: [enderecoCep], references: [cep])
   encontro Encontro[]
 
   @@map("locais")
 }
 
 model Carro {
-  id                   String  @id @default(cuid())
-  id_motorista         String
-  id_carona            String?
-  modelo_carro         String
-  placa_carro          String
-  lugares_carro        Int
-  observacao_motorista String
+  id                  String  @id @default(uuid())
+  idMotorista         String  @map("id_motorista")
+  idCarona            String? @map("id_carona")
+  modeloCarro         String  @map("modelo_carro")
+  placaCarro          String  @map("placa_carro")
+  lugaresCarro        Int     @map("lugares_carro")
+  observacaoMotorista String  @map("observacao_motorista")
 
-  pessoaMotorista Pessoa          @relation("PessoaMotorista", fields: [id_motorista], references: [id])
-  pessoaCarona    Pessoa?         @relation("PessoaCarona", fields: [id_carona], references: [id])
+  pessoaMotorista Pessoa          @relation("PessoaMotorista", fields: [idMotorista], references: [id])
+  pessoaCarona    Pessoa?         @relation("PessoaCarona", fields: [idCarona], references: [id])
   carroEncontro   CarroEncontro[]
 
-  @@unique([id_motorista, placa_carro])
+  @@unique([idMotorista, placaCarro])
   @@map("carros")
 }
 
 model CarroEncontro {
-  id_carro       String
-  id_encontrista String
-  id_encontro    String
+  idCarro       String @map("id_carro")
+  idEncontrista String @map("id_encontrista")
+  idEncontro    String @map("id_encontro")
 
-  carro       Carro    @relation(fields: [id_carro], references: [id])
-  encontrista Pessoa   @relation(fields: [id_encontrista], references: [id])
-  encontro    Encontro @relation(fields: [id_encontro], references: [id])
+  carro       Carro    @relation(fields: [idCarro], references: [id])
+  encontrista Pessoa   @relation(fields: [idEncontrista], references: [id])
+  encontro    Encontro @relation(fields: [idEncontro], references: [id])
 
-  @@id([id_carro, id_encontrista, id_encontro])
+  @@id([idCarro, idEncontrista, idEncontro])
   @@map("carro_encontro")
 }
 
 model ResponsavelExterna {
-  id_externa     String
-  id_encontrista String @unique
-  id_encontro    String
+  idExterna     String @map("id_externa")
+  idEncontrista String @unique @map("id_encontrista")
+  idEncontro    String @map("id_encontro")
 
-  externa     Pessoa       @relation(fields: [id_externa], references: [id])
-  encontrista Encontrista? @relation(fields: [id_encontrista], references: [id_pessoa])
-  encontro    Encontro     @relation(fields: [id_encontro], references: [id])
+  externa     Pessoa      @relation(fields: [idExterna], references: [id])
+  encontrista Encontrista @relation(fields: [idEncontrista], references: [idPessoa])
+  encontro    Encontro    @relation(fields: [idEncontro], references: [id])
 
-  @@id([id_encontrista, id_encontro])
+  @@id([idEncontrista, idEncontro])
   @@map("responsavel_externa")
 }
 
 //Domains
 
 model DomainStatus {
-  id     String @id @unique
-  status String @unique
+  id     Value_Status @id @unique
+  status String       @unique
 
   encontrista Encontrista[]
 
-  @@map("domainStatus")
+  @@map("@status")
 }
 
 model DomainReligiao {
-  id       String @id @unique
-  religiao String @unique
+  id       Value_Religiao @id @unique
+  religiao String         @unique
 
   encontrista Encontrista[]
 
-  @@map("domainReligiao")
+  @@map("@religiao")
 }
 
 model DomainBairroEncontro {
@@ -234,34 +281,34 @@ model DomainBairroEncontro {
 
   encontrista Encontrista[]
 
-  @@map("domainBairroEncontro")
+  @@map("@bairro_encontro")
 }
 
 model DomainMoraCom {
-  id       String @id @unique
-  mora_com String @unique
+  id      Value_MoraCom @id @unique
+  moraCom String        @unique @map("mora_com")
 
   encontrista Encontrista[]
 
-  @@map("domainMoraCom")
+  @@map("@mora_com")
 }
 
 model DomainStatusPais {
-  id          String @id @unique
-  status_pais String @unique
+  id         Value_StatusPais @id @unique
+  statusPais String           @unique @map("status_pais")
 
   encontrista Encontrista[]
 
-  @@map("domainStatusPais")
+  @@map("@status_pais")
 }
 
 model DomainTamanhoCamisa {
-  id             String @id @unique
-  tamanho_camisa String @unique
+  id            Value_TamanhoCamisa @id @unique
+  tamanhoCamisa String              @unique @map("tamanho_camisa")
 
   encontreiro Encontreiro[]
 
-  @@map("domainTamanhoCamisa")
+  @@map("@tamanho_camisa")
 }
 
 model DomainCorCirculo {
@@ -270,42 +317,42 @@ model DomainCorCirculo {
 
   circulo Circulo[]
 
-  @@map("domainCorCirculo")
+  @@map("@cor_circulo")
 }
 
 //Next-Auth/Prisma Adapter
 
 model Account {
-  user_id             String
-  type                String
-  provider            String
-  provider_account_id String
-  refresh_token       String?
-  access_token        String?
-  expires_at          Int?
-  token_type          String?
-  scope               String?
-  id_token            String?
-  session_state       String?
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refreshToken      String? @map("refresh_token")
+  accessToken       String? @map("access_token")
+  expiresAt         Int?    @map("expires_at")
+  tokenType         String? @map("token_type")
+  scope             String?
+  idToken           String? @map("id_token")
+  sessionState      String? @map("session_state")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  user Pessoa @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user Pessoa @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([provider, provider_account_id])
+  @@id([provider, providerAccountId])
   @@map("accounts")
 }
 
 model Session {
-  session_token String   @unique
-  user_id       String
-  expires       DateTime
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  user Pessoa @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user Pessoa @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }

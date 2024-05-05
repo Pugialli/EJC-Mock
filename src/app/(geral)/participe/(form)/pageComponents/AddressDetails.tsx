@@ -1,6 +1,6 @@
 'use client'
 
-import { BairrosRJ } from '@/app/api/domains/bairrosRJ/route'
+import type { BairrosRJ } from '@/app/api/domains/bairrosRJ/get-bairros-rj'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -242,7 +242,7 @@ export function AddressDetails() {
                       bairros.map((item) => {
                         return (
                           <SelectItem
-                            key={item.id}
+                            key={item.value}
                             value={item.value}
                             text={item.bairro}
                           />

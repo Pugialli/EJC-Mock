@@ -1,6 +1,5 @@
 'use client'
 
-import { TamanhoCamisaData } from '@/app/api/domains/tamanho_camisa/route'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -10,8 +9,10 @@ import {
 } from '@/components/Form/SelectInput/SelectItem'
 import { TextInput } from '@/components/Form/TextInput'
 
+import type { TamanhoCamisa } from '@/app/api/domains/tamanho_camisa/get-tamanho-camisa'
 import { Form, FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import {
   CreateEncontristaContext,
   OtherFormData,
@@ -25,7 +26,6 @@ import { useWizard } from 'react-use-wizard'
 import { z } from 'zod'
 import { CardParticipe } from '../components/CardParticipe'
 import { CardSection } from '../components/CardSection'
-import { Textarea } from '@/components/ui/textarea'
 
 const otherFormScheme = z.object({
   tamanhoCamisa: z.enum(['p', 'm', 'g', 'gg', 'xgg', 'outro']).optional(),
@@ -41,7 +41,7 @@ const otherFormScheme = z.object({
 export type OtherFormDataInput = z.infer<typeof otherFormScheme>
 
 async function getTamanhoCamisa() {
-  const response: TamanhoCamisaData[] = await api
+  const response: TamanhoCamisa[] = await api
     .get('domains/tamanho_camisa')
     .then((response) => response.data)
     .catch((err) => console.error(err))
@@ -49,7 +49,7 @@ async function getTamanhoCamisa() {
   const selectData: SelectArray[] = []
   response.forEach((item) => {
     const selectItem: SelectArray = {
-      label: item.tamanho_camisa,
+      label: item.tamanhoCamisa,
       value: item.id,
     }
 

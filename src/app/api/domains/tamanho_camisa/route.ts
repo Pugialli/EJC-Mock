@@ -1,13 +1,8 @@
-import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
-
-export type TamanhoCamisaData = {
-  id: string
-  tamanho_camisa: string
-}
+import { getTamanhoCamisa } from './get-tamanho-camisa'
 
 export async function GET() {
-  const tamanhoCamisa = await prisma.domainTamanhoCamisa.findMany()
+  const tamanhoCamisa = await getTamanhoCamisa()
 
   return NextResponse.json(tamanhoCamisa)
 }

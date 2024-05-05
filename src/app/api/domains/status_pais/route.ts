@@ -1,13 +1,8 @@
-import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
-
-export type StatusPaisData = {
-  id: string
-  status_pais: string
-}
+import { getStatusPais } from './get-status-pais'
 
 export async function GET() {
-  const statusPais = await prisma.domainStatusPais.findMany()
+  const statusPais = await getStatusPais()
 
   return NextResponse.json(statusPais)
 }

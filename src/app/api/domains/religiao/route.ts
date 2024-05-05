@@ -1,13 +1,8 @@
-import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
-
-export type ReligiaoData = {
-  id: string
-  religiao: string
-}
+import { getReligiao } from './get-religiao'
 
 export async function GET() {
-  const religioes = await prisma.domainReligiao.findMany()
+  const religiao = await getReligiao()
 
-  return NextResponse.json(religioes)
+  return NextResponse.json(religiao)
 }

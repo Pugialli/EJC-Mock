@@ -1,7 +1,7 @@
 'use client'
 
-import { MoraComData } from '@/app/api/domains/mora_com/route'
-import { StatusPaisData } from '@/app/api/domains/status_pais/route'
+import type { MoraCom } from '@/app/api/domains/mora_com/get-mora-com'
+import type { StatusPais } from '@/app/api/domains/status_pais/get-status-pais'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -53,14 +53,14 @@ const familyFormScheme = z.object({
 export type FamilyFormDataInput = z.infer<typeof familyFormScheme>
 
 async function getMoraCom() {
-  const response: MoraComData[] = await api
+  const response: MoraCom[] = await api
     .get('domains/mora_com')
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
   const selectData: SelectArray[] = []
   response.forEach((item) => {
-    const selectItem: SelectArray = { label: item.mora_com, value: item.id }
+    const selectItem: SelectArray = { label: item.moraCom, value: item.id }
 
     selectData.push(selectItem)
   })
@@ -69,14 +69,14 @@ async function getMoraCom() {
 }
 
 async function getStatusPais() {
-  const response: StatusPaisData[] = await api
+  const response: StatusPais[] = await api
     .get('domains/status_pais')
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
   const selectData: SelectArray[] = []
   response.forEach((item) => {
-    const selectItem: SelectArray = { label: item.status_pais, value: item.id }
+    const selectItem: SelectArray = { label: item.statusPais, value: item.id }
 
     selectData.push(selectItem)
   })

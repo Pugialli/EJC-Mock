@@ -1,13 +1,8 @@
-import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
-
-export type MoraComData = {
-  id: string
-  mora_com: string
-}
+import { getMoraCom } from './get-mora-com'
 
 export async function GET() {
-  const moraCom = await prisma.domainMoraCom.findMany()
+  const moraCom = await getMoraCom()
 
   return NextResponse.json(moraCom)
 }

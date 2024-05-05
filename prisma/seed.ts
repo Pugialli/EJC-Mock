@@ -1,5 +1,19 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
+
+export function stringToDate(string: string) {
+  const correctedString =
+    string.split('/')[1] +
+    '/' +
+    string.split('/')[0] +
+    '/' +
+    string.split('/')[2]
+
+  const date = new Date(correctedString)
+
+  return date
+}
+
 async function main() {
   const status = await prisma.domainStatus.createMany({
     data: [
@@ -996,26 +1010,27 @@ async function main() {
   })
   const moraCom = await prisma.domainMoraCom.createMany({
     data: [
-      { id: 'sozinho', mora_com: 'Sozinho' },
-      { id: 'conjuge', mora_com: 'Cônjuge' },
-      { id: 'familiar', mora_com: 'Familiar' },
+      { id: 'sozinho', moraCom: 'Sozinho' },
+      { id: 'conjuge', moraCom: 'Cônjuge' },
+      { id: 'familiar', moraCom: 'Familiar' },
+      { id: 'amigos', moraCom: 'Amigos' },
     ],
   })
   const statusPais = await prisma.domainStatusPais.createMany({
     data: [
-      { id: 'sim', status_pais: 'Sim' },
-      { id: 'nao', status_pais: 'Não' },
-      { id: 'na', status_pais: 'Não se aplica' },
+      { id: 'sim', statusPais: 'Sim' },
+      { id: 'nao', statusPais: 'Não' },
+      { id: 'na', statusPais: 'Não se aplica' },
     ],
   })
   const tamanhosCamisa = await prisma.domainTamanhoCamisa.createMany({
     data: [
-      { id: 'p', tamanho_camisa: 'P' },
-      { id: 'm', tamanho_camisa: 'M' },
-      { id: 'g', tamanho_camisa: 'G' },
-      { id: 'gg', tamanho_camisa: 'GG' },
-      { id: 'xgg', tamanho_camisa: 'XGG' },
-      { id: 'outro', tamanho_camisa: 'Outro' },
+      { id: 'p', tamanhoCamisa: 'P' },
+      { id: 'm', tamanhoCamisa: 'M' },
+      { id: 'g', tamanhoCamisa: 'G' },
+      { id: 'gg', tamanhoCamisa: 'GG' },
+      { id: 'xgg', tamanhoCamisa: 'XGG' },
+      { id: 'outro', tamanhoCamisa: 'Outro' },
     ],
   })
   const cores = await prisma.domainCorCirculo.createMany({
@@ -1028,14 +1043,23 @@ async function main() {
     ],
   })
 
-  const adminEndereco = await prisma.endereco.create({
-    data: {
-      cep: '22270-000',
-      estado: 'RJ',
-      cidade: 'Rio de Janeiro',
-      bairro: 'Botafogo',
-      rua: 'Rua Voluntários da Pátria',
-    },
+  const endereco = await prisma.endereco.createMany({
+    data: [
+      {
+        cep: '22270-000',
+        estado: 'RJ',
+        cidade: 'Rio de Janeiro',
+        bairro: 'Botafogo',
+        rua: 'Rua Voluntários da Pátria',
+      },
+      {
+        cep: '22460-012',
+        estado: 'RJ',
+        cidade: 'Rio de Janeiro',
+        bairro: 'Jardim Botânico',
+        rua: 'Rua Lopes Quintas',
+      },
+    ],
   })
 
   const admin = await prisma.pessoa.create({
@@ -1044,10 +1068,33 @@ async function main() {
       sobrenome: 'Pugialli da Silva Souza',
       celular: '(21) 99719-8998',
       email: 'joaopugialli@gmail.com',
-      endereco_cep: adminEndereco.cep,
+      enderecoCep: '22270-000',
       password: '$2a$08$71STWfM30xVPYaBV7jnQpOCfrmwUWbbazG0gb41FmtMJE7AZjA0ZG',
-      avatar_url:
+      avatarUrl:
         'https://res.cloudinary.com/ejc-nsdp/image/upload/people/53_bvinkk.jpg',
+    },
+  })
+
+  const local = await prisma.local.create({
+    data: {
+      enderecoCep: '22460-012',
+      nomeLocal: 'Paróquia Divina Providência',
+      numeroLocal: '274',
+    },
+  })
+
+  const inicio = stringToDate('24/05/2024')
+  const tema = stringToDate('24/03/2024')
+
+  const encontro = await prisma.encontro.create({
+    data: {
+      dataInicio: inicio,
+      dataTema: tema,
+      numeroCirculos: 5,
+      numeroEncontro: 71,
+      idLocal: local.id,
+      temaFantasia: 'Madagascar',
+      temaEspiritual: 'O amor de Cristo nos uniu.',
     },
   })
 
@@ -1059,8 +1106,10 @@ async function main() {
     statusPais,
     tamanhosCamisa,
     cores,
-    adminEndereco,
+    endereco,
     admin,
+    local,
+    encontro,
   })
 }
 main()

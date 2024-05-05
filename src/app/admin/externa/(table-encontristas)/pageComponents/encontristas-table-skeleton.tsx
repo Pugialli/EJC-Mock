@@ -6,19 +6,16 @@ export function EncontristaTableSkeleton() {
     return (
       <TableRow key={i}>
         <TableCell>
-          <Skeleton className="h-4 w-14" />
+          <Skeleton className="h-4 w-11" />
         </TableCell>
         <TableCell>
-          <Skeleton className="h-4 w-56" />
+          <Skeleton className="h-4 w-52" />
         </TableCell>
         <TableCell>
-          <Skeleton className="h-4 w-14" />
+          <Skeleton className="h-4 w-7" />
         </TableCell>
         <TableCell>
-          <Skeleton className="h-4 w-14" />
-        </TableCell>
-        <TableCell>
-          <Skeleton className="h-4 w-14" />
+          <Skeleton className="h-4 w-32" />
         </TableCell>
         <TableCell>
           <Skeleton className="h-4 w-14" />
@@ -27,7 +24,10 @@ export function EncontristaTableSkeleton() {
           <Skeleton className="h-4 w-14" />
         </TableCell>
         <TableCell>
-          <Skeleton className="h-4 w-14" />
+          <Skeleton className="h-4 w-32" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-4 w-11" />
         </TableCell>
       </TableRow>
     )

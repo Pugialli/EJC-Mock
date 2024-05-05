@@ -37,7 +37,7 @@ export function SelectGroupInput({
         {label && <FormLabel>{label}</FormLabel>}
         <Select disabled={disabled} onValueChange={onChange} value={value}>
           <FormControl>
-            <SelectTrigger className="outline-none">
+            <SelectTrigger className="houtline-none">
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
           </FormControl>

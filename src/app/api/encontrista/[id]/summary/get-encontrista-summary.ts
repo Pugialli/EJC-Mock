@@ -25,16 +25,16 @@ export async function getEncontristaSummary(id: string) {
         select: {
           idStatus: true,
           idBairroEncontro: true,
+          responsavelExterna: {
+            select: {
+              idExterna: true,
+            },
+          },
         },
       },
       encontreiro: {
         select: {
           nascimento: true,
-        },
-      },
-      responsavelExterna: {
-        select: {
-          idExterna: true,
         },
       },
     },
@@ -57,7 +57,9 @@ export async function getEncontristaSummary(id: string) {
     idStatus: encontrista.encontrista!.idStatus,
     nascimento: encontrista.encontreiro!.nascimento,
     idBairroEncontro: encontrista.encontrista!.idBairroEncontro,
-    idExterna: encontrista.responsavelExterna[0].idExterna,
+    idExterna: encontrista.encontrista!.responsavelExterna
+      ? encontrista.encontrista!.responsavelExterna.idExterna
+      : null,
   }
 
   return encontristaResponse

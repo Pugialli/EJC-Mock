@@ -19,6 +19,18 @@ import { toast } from 'sonner'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
 
+export async function generateStaticParams({
+  params,
+}: {
+  params: { id: string }
+}) {
+  const encontrista = await fetch(
+    `${process.env.NEXTAUTH_URL}/api/encontrista/${params.id}`,
+  ).then((res) => res.json())
+
+  return encontrista
+}
+
 const editFormScheme = z.object({
   nome: z
     .string({ required_error: 'O nome é obrigatório.' })

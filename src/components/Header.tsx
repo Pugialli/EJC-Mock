@@ -4,6 +4,7 @@
 // import { useTheme } from 'next-themes'
 import LogoEJCColorido from '@/assets/LogoEJCColorido'
 import Link from 'next/link'
+import { Button } from './ui/button'
 
 export function Header() {
   // const { resolvedTheme } = useTheme()
@@ -15,7 +16,9 @@ export function Header() {
         {/* <LogoEJC isDark={isDark} colored={true} /> */}
         <LogoEJCColorido />
       </Link>
-
+      <Link href="/login">
+        <Button>Login</Button>
+      </Link>
       {/* <ModeToggle /> */}
     </div>
   )

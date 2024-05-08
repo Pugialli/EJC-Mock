@@ -50,7 +50,9 @@ export default function Externa() {
                 <span className="font-bold text-zinc-700">Gráficos</span>
               </div>
             </AccordionTrigger>
-            <AccordionContent>Aqui entram os Gráficos</AccordionContent>
+            <AccordionContent>
+              Em breve teremos os Gráficos aqui
+            </AccordionContent>
           </AccordionItem>
         </Accordion>
       </div>

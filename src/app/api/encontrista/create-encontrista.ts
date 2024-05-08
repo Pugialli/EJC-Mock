@@ -75,7 +75,7 @@ export async function createEncontrista({
         idStatus: 'ligar',
         idReligiao: personal.religiao,
         isAutofill: personal.paraVoce === 'sim',
-        endNumero: address.numero,
+        endNumero: Number(address.numero),
         endComplemento: address.complemento,
         idBairroEncontro: bairroEncontro,
         idMoracom: family.moraCom,

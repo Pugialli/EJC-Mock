@@ -32,7 +32,7 @@ export function FooterNavigation() {
     <div className="group flex items-center justify-between rounded-xl px-4 py-3">
       <div className="flex items-center gap-4">
         {avatarFallback === '' ? (
-          <Skeleton className="h-10 w-10 rounded-full" />
+          <Skeleton className="h-8 w-8 rounded-full" />
         ) : (
           <Avatar>
             <AvatarImage src={avatar} />

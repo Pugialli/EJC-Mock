@@ -1,5 +1,8 @@
+import type { EncontristaSummary } from '@/app/api/encontrista/get-encontristas-summary'
+import { api } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Value_Status as valueStatus } from '@prisma/client'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   ArrowRightFromLine,
   Check,
@@ -17,8 +20,15 @@ import { Select, SelectContent, SelectTrigger, SelectValue } from '../ui/select'
 import { SelectItemIcon, type SelectItemIconProps } from './select-item-icon'
 
 interface EncontristaStatusProps {
+  encontristaId: string
   status: valueStatus
-  idEncontrista: string
+}
+
+export async function changeStatus({
+  encontristaId,
+  status,
+}: EncontristaStatusProps) {
+  await api.patch(`/encontrista/${encontristaId}/change-status/${status}`)
 }
 
 const encontristaStatusSchema = z.object({
@@ -79,23 +89,58 @@ const statusData: SelectItemIconProps[] = [
 ]
 
 export function EncontristaStatus({
+  encontristaId,
   status,
-  idEncontrista,
 }: EncontristaStatusProps) {
   const form = useForm<encontristaStatusFormInput>({
     resolver: zodResolver(encontristaStatusSchema),
   })
 
-  function changeStatus(selectData: encontristaStatusFormInput) {
-    console.log(selectData.statusValue, idEncontrista)
+  const queryClient = useQueryClient()
+
+  function updateEncontristaStatusOnCache(
+    encontristaId: string,
+    status: valueStatus,
+  ) {
+    const encontristaListCache = queryClient.getQueriesData<EncontristaSummary>(
+      { queryKey: ['encontristas'] },
+    )
+
+    encontristaListCache.forEach(([cacheKey, cacheData]) => {
+      if (!cacheData) return
+
+      queryClient.setQueryData<EncontristaSummary>(cacheKey, {
+        ...cacheData,
+        encontristas: cacheData.encontristas.map((encontrista) => {
+          if (encontrista.id === encontristaId) {
+            return { ...encontrista, status }
+          }
+          return encontrista
+        }),
+      })
+    })
+  }
+
+  const { mutateAsync: statusEncontristaFn } = useMutation({
+    mutationFn: changeStatus,
+    onSuccess: (_, { encontristaId, status }) => {
+      updateEncontristaStatusOnCache(encontristaId, status)
+    },
+  })
+
+  function handleChangeStatus(selectData: encontristaStatusFormInput) {
+    const status = selectData.statusValue as valueStatus
+    statusEncontristaFn({
+      encontristaId,
+      status,
+    })
   }
 
   return (
     <Form {...form}>
       <form
-        // onSubmit={handleSubmit(handleFilter)}
-        onChange={form.handleSubmit(changeStatus)}
-        className="flex  items-center gap-2"
+        onChange={form.handleSubmit(handleChangeStatus)}
+        className="flex items-center gap-2"
       >
         <FormField
           control={form.control}
@@ -131,14 +176,6 @@ export function EncontristaStatus({
           }}
         />
       </form>
-      {/* <span
-        role="status"
-        aria-label={encontristaStatusMap[status].value}
-        className={cn('h-2 w-2 rounded-full', encontristaStatusMap[status])}
-      />
-      <span className="text-muted-foreground font-medium">
-        {encontristaStatusMap[status].value}
-      </span> */}
     </Form>
   )
 }

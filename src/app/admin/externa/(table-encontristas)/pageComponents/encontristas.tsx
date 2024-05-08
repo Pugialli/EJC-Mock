@@ -1,67 +1,89 @@
 import {
   Table,
   TableBody,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
 
-import type { EncontristaSummary } from '@/app/api/encontrista/get-encontristas-summary'
+import type {
+  EncontristaSummary,
+  EncontristaSummaryData,
+} from '@/app/api/encontrista/get-encontristas-summary'
+import { Pagination } from '@/components/Table/pagination'
 import { api } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
-import { useSearchParams } from 'next/navigation'
+import { compareAsc } from 'date-fns'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 import { EncontristaTableFilters } from './encontristas-table-filters'
 import { EncontristaTableRow } from './encontristas-table-row'
 import { EncontristaTableSkeleton } from './encontristas-table-skeleton'
 
-async function getEncontrista(pageIndex: number) {
-  const response = await api
-    .get(`/encontrista?page=${pageIndex}`)
+interface SearchProps {
+  pageIndex: number
+  encontristaName: string | null
+  encontristaStatus: string | null
+}
+
+function compareDate(a: EncontristaSummaryData, b: EncontristaSummaryData) {
+  return compareAsc(a.createdAt, b.createdAt)
+}
+
+async function getEncontrista({
+  pageIndex,
+  encontristaName,
+  encontristaStatus,
+}: SearchProps) {
+  const nameSearch = encontristaName ? `name=${encontristaName}&` : ''
+  const statusSearch = encontristaStatus ? `status=${encontristaStatus}&` : ''
+
+  const path = `/encontrista?${nameSearch}${statusSearch}page=${pageIndex}`
+
+  const response: EncontristaSummary = await api
+    .get(path)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
+  response.encontristas.sort(compareDate)
   return response
 }
 
 export function EncontristasTable() {
   const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
 
-  // const orderId = searchParams.get('orderId')
-  // const customerName = searchParams.get('customerName')
-  // const status = searchParams.get('status')
+  const encontristaName = searchParams.get('encontristaName')
+  const encontristaStatus = searchParams.get('encontristaStatus')
 
   const pageIndex = z.coerce
     .number()
     .transform((page) => page - 1)
     .parse(searchParams.get('page') ?? '1')
 
-  // const { data: result, isLoading: isLoadingEncontrista } = useQuery<
-  //   Encontrista[]
-  // >({
-  //   queryKey: ['encontristas'],
-  //   queryFn: () => getEncontrista(),
-  // })
-
   const { data: result, isLoading: isLoadingEncontrista } =
     useQuery<EncontristaSummary>({
-      queryKey: ['encontristas', pageIndex],
-      queryFn: () => getEncontrista(pageIndex),
-      // {
-      // pageIndex
-      // orderId,
-      // customerName,
-      // status: status === 'all' ? null : status,
-      // }
+      queryKey: [
+        'encontristas',
+        { pageIndex, encontristaName, encontristaStatus },
+      ],
+      queryFn: () =>
+        getEncontrista({ pageIndex, encontristaName, encontristaStatus }),
     })
 
-  // function handlePaginate(pageIndex: number) {
-  //   setSearchParams((state) => {
-  //     state.set('page', (pageIndex + 1).toString())
+  function handlePaginate(pageIndex: number) {
+    const newSearch = new URLSearchParams()
+    if (encontristaName)
+      newSearch.append('encontristaName', encontristaName.toString())
 
-  //     return state
-  //   })
-  // }
+    if (encontristaStatus)
+      newSearch.append('encontristaStatus', encontristaStatus.toString())
+
+    newSearch.append('page', (pageIndex + 1).toString())
+    router.push(`${pathname}?${newSearch}`)
+  }
 
   return (
     <>
@@ -101,17 +123,18 @@ export function EncontristasTable() {
                     )
                   })}
               </TableBody>
+              <TableFooter>
+                {result && (
+                  <Pagination
+                    pageIndex={result.pageIndex}
+                    totalCount={result.totalCount}
+                    perPage={result.perPage}
+                    onPageChange={handlePaginate}
+                  />
+                )}
+              </TableFooter>
             </Table>
           </div>
-          {/* 
-          {result && (
-            <Pagination
-              pageIndex={result.meta.pageIndex}
-              totalCount={result.meta.totalCount}
-              perPage={result.meta.perPage}
-              onPageChange={handlePaginate}
-            />
-          )} */}
         </div>
       </div>
     </>

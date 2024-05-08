@@ -1,41 +1,32 @@
+import type { EncontristaSummary } from '@/app/api/encontrista/get-encontristas-summary'
+import type { MembroExterna } from '@/app/api/externa/get-equipe-externa'
+import { api } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem } from '../ui/form'
 import { Select, SelectContent, SelectTrigger, SelectValue } from '../ui/select'
+import { SelectItemAvatar } from './select-item-avatar'
 
 interface EncontristaExternaProps {
-  idResponsavel: string | null
+  idExterna: string | null
   idEncontrista: string
+  equipe: MembroExterna[] | undefined
 }
 
-function getResponsavel(idResponsavel: string) {
-  console.log(idResponsavel)
-  return {
-    avatar_url:
-      'https://res.cloudinary.com/ejc-nsdp/image/upload/people/53_bvinkk.jpg',
-    nome: 'João Paulo',
-  }
+interface EncontristaResponsavelProps {
+  encontristaId: string
+  responsavelId: string
 }
 
-
-function getEquipeExterna(idResponsavel: string) {
-  console.log(idResponsavel)
-  return [{
-    avatar_url:
-      'https://res.cloudinary.com/ejc-nsdp/image/upload/people/53_bvinkk.jpg',
-    nome: 'João Paulo',
-  },
-  {
-    avatar_url:
-      'https://res.cloudinary.com/ejc-nsdp/image/upload/people/53_bvinkk.jpg',
-    nome: 'João Paulo',
-  },
-  {
-    avatar_url:
-      'https://res.cloudinary.com/ejc-nsdp/image/upload/people/53_bvinkk.jpg',
-    nome: 'João Paulo',
-  }]
+export async function changeResponsavel({
+  encontristaId,
+  responsavelId,
+}: EncontristaResponsavelProps) {
+  await api.patch(
+    `/encontrista/${encontristaId}/change-responsavel/${responsavelId}`,
+  )
 }
 
 const encontristaResponsavelSchema = z.object({
@@ -47,29 +38,65 @@ type encontristaResponsavelFormInput = z.infer<
 >
 
 export function EncontristaExterna({
-  idResponsavel,
+  idExterna,
   idEncontrista,
+  equipe,
 }: EncontristaExternaProps) {
-  const responsavel = idResponsavel ? getResponsavel(idResponsavel) : null
   const form = useForm<encontristaResponsavelFormInput>({
     resolver: zodResolver(encontristaResponsavelSchema),
   })
 
-  function changeResponsavel(selectData: encontristaResponsavelFormInput) {
-    console.log(selectData.idResponsavel, idEncontrista)
+  const queryClient = useQueryClient()
+
+  function updateEncontristaStatusOnCache(
+    encontristaId: string,
+    idResponsavel: string,
+  ) {
+    const encontristaListCache = queryClient.getQueriesData<EncontristaSummary>(
+      { queryKey: ['encontristas'] },
+    )
+
+    encontristaListCache.forEach(([cacheKey, cacheData]) => {
+      if (!cacheData) return
+
+      queryClient.setQueryData<EncontristaSummary>(cacheKey, {
+        ...cacheData,
+        encontristas: cacheData.encontristas.map((encontrista) => {
+          if (encontrista.id === encontristaId) {
+            return { ...encontrista, idResponsavel }
+          }
+          return encontrista
+        }),
+      })
+    })
+  }
+
+  const { mutateAsync: responsavelEncontristaFn } = useMutation({
+    mutationFn: changeResponsavel,
+    onSuccess: (_, { encontristaId, responsavelId }) => {
+      updateEncontristaStatusOnCache(encontristaId, responsavelId)
+    },
+  })
+
+  function handleChangeResponsavel(
+    selectData: encontristaResponsavelFormInput,
+  ) {
+    responsavelEncontristaFn({
+      encontristaId: idEncontrista,
+      responsavelId: selectData.idResponsavel,
+    })
   }
 
   return (
     <Form {...form}>
       <form
-        // onSubmit={handleSubmit(handleFilter)}
-        onChange={form.handleSubmit(changeResponsavel)}
-        className="flex  items-center gap-2"
+        onChange={form.handleSubmit(handleChangeResponsavel)}
+        className="flex items-center gap-2"
       >
         <FormField
           control={form.control}
           name="idResponsavel"
-          // defaultValue={status}
+          defaultValue={idExterna || ''}
           render={({ field }) => {
             return (
               <div className="w-full">
@@ -81,17 +108,18 @@ export function EncontristaExterna({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {statusData.map((statusItem) => {
-                        return (
-                          <SelectItemAvatar
-                            key={statusItem.value}
-                            color={statusItem.color}
-                            icon={statusItem.icon}
-                            label={statusItem.label}
-                            value={statusItem.value}
-                          />
-                        )
-                      })}
+                      {equipe &&
+                        equipe.map((membroExterna) => {
+                          return (
+                            <SelectItemAvatar
+                              key={membroExterna.id}
+                              name={membroExterna.name}
+                              id={membroExterna.id}
+                              avatarFallback={membroExterna.avatarFallback}
+                              avatarUrl={membroExterna.avatarUrl}
+                            />
+                          )
+                        })}
                     </SelectContent>
                   </Select>
                 </FormItem>
@@ -100,27 +128,6 @@ export function EncontristaExterna({
           }}
         />
       </form>
-      {/* <div className="flex items-center gap-2">
-      {responsavel ? (
-        <>
-          <Avatar className="h-9 w-9">
-            <AvatarImage src={responsavel.avatar_url} />
-            <AvatarFallback>JP</AvatarFallback>
-          </Avatar>
-          <span className="text-muted-foreground font-medium">
-            {responsavel.nome}
-          </span>
-        </>
-      ) : (
-        <>
-          <Avatar className="h-9 w-9">
-            <AvatarFallback>JP</AvatarFallback>
-          </Avatar>
-          <span className="text-muted-foreground font-medium">Teste</span>
-        </>
-      )}
-    </div>
- */}
     </Form>
   )
 }

@@ -5,15 +5,15 @@ import { SelectItem } from '../ui/select'
 
 export interface SelectItemIconProps {
   value: valueStatus
-  icon: ElementType
   label: string
+  icon: ElementType
   color: string
 }
 
 export function SelectItemIcon({
   value,
-  icon: Icon,
   label,
+  icon: Icon,
   color,
 }: SelectItemIconProps) {
   return (

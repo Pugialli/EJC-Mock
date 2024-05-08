@@ -25,6 +25,7 @@ async function main() {
       { id: 'nao_atende', status: 'Não Atende' },
       { id: 'prox_encontro', status: 'Próximo Encontrão' },
       { id: 'vai_pensar', status: 'Vai Pensar' },
+      { id: 'delete', status: 'Deletado' },
     ],
   })
   const religioes = await prisma.domainReligiao.createMany({
@@ -40,6 +41,12 @@ async function main() {
   })
   const bairrosRJ = await prisma.domainBairroEncontro.createMany({
     data: [
+      {
+        id: 0,
+        value: 'nao_encontrado',
+        bairro: 'Não Encontrado',
+        zona: 'nenhuma',
+      },
       {
         id: 82,
         value: 'abolicao',
@@ -1072,6 +1079,7 @@ async function main() {
       password: '$2a$08$71STWfM30xVPYaBV7jnQpOCfrmwUWbbazG0gb41FmtMJE7AZjA0ZG',
       avatarUrl:
         'https://res.cloudinary.com/ejc-nsdp/image/upload/people/53_bvinkk.jpg',
+      role: 'ADMIN',
     },
   })
 

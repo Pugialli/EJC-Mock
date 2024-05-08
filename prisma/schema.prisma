@@ -24,6 +24,7 @@ enum Value_Status {
   nao_atende
   prox_encontro
   vai_pensar
+  delete
 }
 
 enum Value_Religiao {
@@ -58,6 +59,17 @@ enum Value_TamanhoCamisa {
   outro
 }
 
+enum Role {
+  ADMIN
+  DIRIGENTE
+  ENCONTREIRO
+  COORDENADOR
+  EXTERNA
+  SECRETARIA
+  ENCONTRISTA
+  TIOEXTERNA
+}
+
 model Pessoa {
   id          String  @id @default(uuid())
   nome        String
@@ -69,6 +81,7 @@ model Pessoa {
   email       String  @unique
   password    String?
   avatarUrl   String? @map("avatar_url")
+  role        Role    @default(ENCONTRISTA)
 
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @updatedAt @map("modified_at")
@@ -82,9 +95,8 @@ model Pessoa {
   encontreiro        Encontreiro?
   encontrista        Encontrista?
 
-  accounts           Account[]
-  sessions           Session[]
-  responsavelExterna ResponsavelExterna[]
+  accounts Account[]
+  sessions Session[]
 
   @@map("pessoas")
 }
@@ -135,10 +147,11 @@ model Encontreiro {
   idEncontro         String?              @map("id_encontro")
   idCirculo          String?              @map("id_circulo")
 
-  pessoa        Pessoa               @relation(fields: [idPessoa], references: [id], onDelete: Cascade)
-  encontro      Encontro?            @relation(fields: [idEncontro], references: [id])
-  tamanhoCamisa DomainTamanhoCamisa? @relation(fields: [idTamanhoCamisa], references: [id])
-  circulo       Circulo?             @relation(fields: [idCirculo], references: [id])
+  pessoa             Pessoa               @relation(fields: [idPessoa], references: [id], onDelete: Cascade)
+  encontro           Encontro?            @relation(fields: [idEncontro], references: [id])
+  tamanhoCamisa      DomainTamanhoCamisa? @relation(fields: [idTamanhoCamisa], references: [id])
+  circulo            Circulo?             @relation(fields: [idCirculo], references: [id])
+  responsavelExterna ResponsavelExterna[]
 
   @@map("encontreiros")
 }
@@ -245,8 +258,8 @@ model ResponsavelExterna {
   idEncontrista String @unique @map("id_encontrista")
   idEncontro    String @map("id_encontro")
 
-  externa     Pessoa      @relation(fields: [idExterna], references: [id])
-  encontrista Encontrista @relation(fields: [idEncontrista], references: [idPessoa])
+  externa     Encontreiro @relation(fields: [idExterna], references: [idPessoa])
+  encontrista Encontrista @relation(fields: [idEncontrista], references: [idPessoa], onDelete: Cascade)
   encontro    Encontro    @relation(fields: [idEncontro], references: [id])
 
   @@id([idEncontrista, idEncontro])

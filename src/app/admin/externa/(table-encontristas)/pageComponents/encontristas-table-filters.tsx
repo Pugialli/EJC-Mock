@@ -1,4 +1,4 @@
-import { Search, X } from 'lucide-react'
+import { Search, SearchX } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -35,7 +35,7 @@ export function EncontristaTableFilters() {
 
   const { handleSubmit, control, reset } = form
 
-  function handleFilter({
+  async function handleFilter({
     encontristaName,
     encontristaStatus,
   }: encontristaFiltersFormInput) {
@@ -52,12 +52,10 @@ export function EncontristaTableFilters() {
     } else {
       newSearch.delete('encontristaStatus')
     }
+
     newSearch.append('page', '1')
 
-    const search = newSearch.toString()
-    const query = search ? `?${search}` : ''
-
-    router.push(`${pathname}${query}`)
+    router.push(`${pathname}?${newSearch.toString()}`)
   }
 
   function handleClearFilters() {
@@ -108,11 +106,15 @@ export function EncontristaTableFilters() {
 
         <Button type="submit" variant="secondary">
           <Search className="mr-2 h-4 w-4" />
-          Filtrar resultados
+          Buscar
         </Button>
-        <Button onClick={handleClearFilters} type="button" variant="outline">
-          <X className="mr-2 h-4 w-4" />
-          Remover filtros
+        <Button
+          onClick={handleClearFilters}
+          type="button"
+          variant="destructive"
+        >
+          <SearchX className="mr-2 h-4 w-4" />
+          Limpar busca
         </Button>
       </form>
     </Form>

@@ -13,19 +13,19 @@ export type EncontristaData = {
   pessoa: {
     nome: string
     sobrenome: string
-    apelido: string | null
+    apelido: string
     celular: string
-    telefone: string | null
+    telefone: string
     email: string
     idStatus: enumStatus
     idReligiao: enumReligiao
     isAutofill: boolean
-    movimentoAnterior: string | null
-    observacao: string | null
+    movimentoAnterior: string
+    observacao: string
     nascimento: string
-    instagram: string | null
-    restricaoAlimentar: string | null
-    idTamanhoCamisa: enumTamanhoCamisa | null
+    instagram: string
+    restricaoAlimentar: string
+    idTamanhoCamisa: enumTamanhoCamisa
   }
   endereco: {
     cep: string
@@ -43,15 +43,15 @@ export type EncontristaData = {
     nomeContato1: string
     telContato1: string
     parentescoContato1: string
-    nomeContato2: string | null
-    telContato2: string | null
-    parentescoContato2: string | null
+    nomeContato2: string
+    telContato2: string
+    parentescoContato2: string
   }
   indicacao: {
-    indicadoPorNome: string | null
-    indicadoPorApelido: string | null
-    indicadoPorTel: string | null
-    indicadoPorEmail: string | null
+    indicadoPorNome: string
+    indicadoPorApelido: string
+    indicadoPorTel: string
+    indicadoPorEmail: string
   }
 }
 
@@ -124,19 +124,20 @@ export async function getEncontrista(id: string) {
     pessoa: {
       nome: encontrista.nome,
       sobrenome: encontrista.sobrenome,
-      apelido: encontrista.apelido,
+      apelido: String(encontrista.apelido),
       celular: encontrista.celular,
-      telefone: encontrista.telefone,
+      telefone: String(encontrista.telefone),
       email: encontrista.email,
       idStatus: encontrista.encontrista!.idStatus,
       idReligiao: encontrista.encontrista!.idReligiao,
       isAutofill: encontrista.encontrista!.isAutofill,
-      movimentoAnterior: encontrista.encontrista!.movimentoAnterior,
-      observacao: encontrista.encontrista!.observacao,
+      movimentoAnterior: String(encontrista.encontrista!.movimentoAnterior),
+      observacao: String(encontrista.encontrista!.observacao),
       nascimento: encontrista.encontreiro!.nascimento,
-      instagram: encontrista.encontreiro!.instagram,
-      restricaoAlimentar: encontrista.encontreiro!.restricaoAlimentar,
-      idTamanhoCamisa: encontrista.encontreiro!.idTamanhoCamisa,
+      instagram: String(encontrista.encontreiro!.instagram),
+      restricaoAlimentar: String(encontrista.encontreiro!.restricaoAlimentar),
+      idTamanhoCamisa: encontrista.encontreiro!
+        .idTamanhoCamisa as enumTamanhoCamisa,
     },
     endereco: {
       cep: encontrista.endereco.cep,
@@ -144,7 +145,7 @@ export async function getEncontrista(id: string) {
       cidade: encontrista.endereco.cidade,
       bairro: encontrista.endereco.bairro,
       rua: encontrista.endereco.rua,
-      numero: encontrista.encontrista!.endNumero,
+      numero: String(encontrista.encontrista!.endNumero),
       complemento: encontrista.encontrista!.endComplemento,
       idBairroEncontro: encontrista.encontrista!.idBairroEncontro,
     },
@@ -154,15 +155,15 @@ export async function getEncontrista(id: string) {
       nomeContato1: encontrista.encontrista!.nomeContato1,
       telContato1: encontrista.encontrista!.telContato1,
       parentescoContato1: encontrista.encontrista!.parentescoContato1,
-      nomeContato2: encontrista.encontrista!.nomeContato2,
-      telContato2: encontrista.encontrista!.telContato2,
-      parentescoContato2: encontrista.encontrista!.parentescoContato2,
+      nomeContato2: String(encontrista.encontrista!.nomeContato2),
+      telContato2: String(encontrista.encontrista!.telContato2),
+      parentescoContato2: String(encontrista.encontrista!.parentescoContato2),
     },
     indicacao: {
-      indicadoPorNome: encontrista.encontrista!.indicadoPorNome,
-      indicadoPorApelido: encontrista.encontrista!.indicadoPorApelido,
-      indicadoPorTel: encontrista.encontrista!.indicadoPorTel,
-      indicadoPorEmail: encontrista.encontrista!.indicadoPorEmail,
+      indicadoPorNome: String(encontrista.encontrista!.indicadoPorNome),
+      indicadoPorApelido: String(encontrista.encontrista!.indicadoPorApelido),
+      indicadoPorTel: String(encontrista.encontrista!.indicadoPorTel),
+      indicadoPorEmail: String(encontrista.encontrista!.indicadoPorEmail),
     },
   }
 

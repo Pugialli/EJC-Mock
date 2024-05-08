@@ -7,35 +7,26 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { SearchInput } from '@/components/ui/search-input'
-import { BarChart4, Download, Filter, Plus } from 'lucide-react'
+import { BarChart4, Download, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { EncontristasTable } from './(table-encontristas)/pageComponents/encontristas'
 
 export default function Externa() {
   return (
     <div className="w-ful h-full">
-      <div>
-        <div className="pb-8">
-          <h1 className="text-2xl font-bold text-tertiary">Encontrista</h1>
-          <p className="text-base font-normal text-zinc-500">
-            Lista de todos os encontristas
-          </p>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <SearchInput placeholder="Buscar por..." />
+      <div className="pb-4">
+        <div className="flex items-center justify-between pb-8">
+          <div className="">
+            <h1 className="text-2xl font-bold text-tertiary">Encontrista</h1>
+            <span className="text-base font-normal text-zinc-500">
+              Lista de todos os encontristas
+            </span>
+          </div>
           <div className="flex items-center gap-2">
             <Button variant="secondary">
               <div className="flex items-center gap-2">
                 <Download className="h-4 w-4 text-tertiary" />
                 <span>Gerar PDF</span>
-              </div>
-            </Button>
-            <Button variant="secondary">
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-tertiary" />
-                <span>Filtros</span>
               </div>
             </Button>
             <Link href="/">
@@ -49,7 +40,10 @@ export default function Externa() {
           </div>
         </div>
         <Accordion type="single" collapsible>
-          <AccordionItem value="graficos">
+          <AccordionItem
+            value="graficos"
+            className="rounded-xl border-none bg-white px-4"
+          >
             <AccordionTrigger>
               <div className="flex items-center gap-4">
                 <BarChart4 className="h-6 w-6 text-zinc-700" />

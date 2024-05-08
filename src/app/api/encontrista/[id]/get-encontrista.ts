@@ -33,7 +33,7 @@ export type EncontristaData = {
     cidade: string
     bairro: string
     rua: string
-    numero: string
+    numero: number
     complemento: string
     idBairroEncontro: string
   }
@@ -145,7 +145,7 @@ export async function getEncontrista(id: string) {
       cidade: encontrista.endereco.cidade,
       bairro: encontrista.endereco.bairro,
       rua: encontrista.endereco.rua,
-      numero: String(encontrista.encontrista!.endNumero),
+      numero: encontrista.encontrista!.endNumero,
       complemento: encontrista.encontrista!.endComplemento,
       idBairroEncontro: encontrista.encontrista!.idBairroEncontro,
     },

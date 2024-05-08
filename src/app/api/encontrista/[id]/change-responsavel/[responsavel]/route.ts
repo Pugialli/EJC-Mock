@@ -8,15 +8,16 @@ export async function PATCH(
   request: Request,
   context: { params: changeResponsavelRouteProps },
 ) {
-  console.log(context.params)
-
   const updated = await changeResponsavel(context.params)
+
+  if (!updated) {
+    return NextResponse.json({ status: 400 })
+  }
 
   const infoPatched = {
     id: updated.idEncontrista,
     responsavel: updated.idExterna,
   }
 
-  console.log(infoPatched)
   return NextResponse.json(infoPatched, { status: 201 })
 }

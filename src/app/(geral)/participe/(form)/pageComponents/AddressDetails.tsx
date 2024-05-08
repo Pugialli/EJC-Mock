@@ -12,8 +12,8 @@ import {
   AddressFormData,
   CreateEncontristaContext,
 } from '@/context/CreateEncontristaContext'
-import { api } from '@/lib/axios'
 import { CEPResponse, getCEPData } from '@/lib/fetch-cep'
+import { getBairros } from '@/utils/fetch-domains'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
 import { useContext, useEffect } from 'react'
@@ -43,15 +43,6 @@ const addressFormScheme = z.object({
 })
 
 export type AddressFormDataInput = z.infer<typeof addressFormScheme>
-
-async function getBairros() {
-  const response = await api
-    .get('domains/bairrosRJ')
-    .then((response) => response.data)
-    .catch((err) => console.error(err))
-
-  return response
-}
 
 export function AddressDetails() {
   const { data: bairros } = useQuery<BairrosRJ[]>({

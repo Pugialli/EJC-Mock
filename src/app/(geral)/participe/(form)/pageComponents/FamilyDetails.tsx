@@ -1,7 +1,5 @@
 'use client'
 
-import type { MoraCom } from '@/app/api/domains/mora_com/get-mora-com'
-import type { StatusPais } from '@/app/api/domains/status_pais/get-status-pais'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -16,7 +14,7 @@ import {
   CreateEncontristaContext,
   FamilyFormData,
 } from '@/context/CreateEncontristaContext'
-import { api } from '@/lib/axios'
+import { getMoraCom, getStatusPais } from '@/utils/fetch-domains'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
@@ -28,7 +26,7 @@ import { CardParticipe } from '../components/CardParticipe'
 import { CardSection } from '../components/CardSection'
 
 const familyFormScheme = z.object({
-  moraCom: z.enum(['sozinho', 'conjuge', 'familiar'], {
+  moraCom: z.enum(['sozinho', 'conjuge', 'familiar', 'amigos'], {
     required_error: 'Este campo é obrigatório',
   }),
   statusPais: z.enum(['sim', 'nao', 'na'], {
@@ -51,38 +49,6 @@ const familyFormScheme = z.object({
 })
 
 export type FamilyFormDataInput = z.infer<typeof familyFormScheme>
-
-async function getMoraCom() {
-  const response: MoraCom[] = await api
-    .get('domains/mora_com')
-    .then((response) => response.data)
-    .catch((err) => console.error(err))
-
-  const selectData: SelectArray[] = []
-  response.forEach((item) => {
-    const selectItem: SelectArray = { label: item.moraCom, value: item.id }
-
-    selectData.push(selectItem)
-  })
-
-  return selectData
-}
-
-async function getStatusPais() {
-  const response: StatusPais[] = await api
-    .get('domains/status_pais')
-    .then((response) => response.data)
-    .catch((err) => console.error(err))
-
-  const selectData: SelectArray[] = []
-  response.forEach((item) => {
-    const selectItem: SelectArray = { label: item.statusPais, value: item.id }
-
-    selectData.push(selectItem)
-  })
-
-  return selectData
-}
 
 export function FamilyDetails() {
   const { completeForm, updateData } = useContext(CreateEncontristaContext)

@@ -9,7 +9,6 @@ import {
 } from '@/components/Form/SelectInput/SelectItem'
 import { TextInput } from '@/components/Form/TextInput'
 
-import type { TamanhoCamisa } from '@/app/api/domains/tamanho_camisa/get-tamanho-camisa'
 import { Form, FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -17,7 +16,7 @@ import {
   CreateEncontristaContext,
   OtherFormData,
 } from '@/context/CreateEncontristaContext'
-import { api } from '@/lib/axios'
+import { getTamanhoCamisa } from '@/utils/fetch-domains'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
@@ -39,25 +38,6 @@ const otherFormScheme = z.object({
 })
 
 export type OtherFormDataInput = z.infer<typeof otherFormScheme>
-
-async function getTamanhoCamisa() {
-  const response: TamanhoCamisa[] = await api
-    .get('domains/tamanho_camisa')
-    .then((response) => response.data)
-    .catch((err) => console.error(err))
-
-  const selectData: SelectArray[] = []
-  response.forEach((item) => {
-    const selectItem: SelectArray = {
-      label: item.tamanhoCamisa,
-      value: item.id,
-    }
-
-    selectData.push(selectItem)
-  })
-
-  return selectData
-}
 
 export function OtherDetails() {
   const { completeForm, updateData } = useContext(CreateEncontristaContext)

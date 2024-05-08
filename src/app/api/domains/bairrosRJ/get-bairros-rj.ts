@@ -13,6 +13,9 @@ export async function getBairrosRJ() {
       bairro: true,
       zona: true,
     },
+    where: {
+      NOT: { id: 0 },
+    },
   })
 
   return bairrosRJ

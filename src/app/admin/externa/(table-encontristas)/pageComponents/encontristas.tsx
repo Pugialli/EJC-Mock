@@ -12,6 +12,7 @@ import type {
   EncontristaSummaryData,
 } from '@/app/api/encontrista/get-encontristas-summary'
 import { Pagination } from '@/components/Table/pagination'
+import { PaginationSkeleton } from '@/components/Table/pagination-skeleton'
 import { api } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
 import { compareAsc } from 'date-fns'
@@ -87,54 +88,51 @@ export function EncontristasTable() {
 
   return (
     <>
-      <div className="flex flex-col gap-4 rounded-xl bg-transparent py-1">
-        <div className="space-y-2.5">
-          <EncontristaTableFilters />
+      <div className="flex flex-col gap-4 py-1">
+        <EncontristaTableFilters />
 
-          <div className="rounded-xl border bg-zinc-100/50 shadow-2xl">
-            <Table className="text-xs">
-              <TableHeader>
-                <TableRow className="px-2">
-                  <TableHead className="w-7 text-nowrap rounded-tl-xl pl-4 lg:w-[73px]">
-                    Inscrito em
-                  </TableHead>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Idade</TableHead>
-                  <TableHead className="w-7 lg:w-[178px]">Status</TableHead>
-                  <TableHead>Bairro</TableHead>
-                  <TableHead>Celular</TableHead>
-                  <TableHead className="w-7 lg:w-[178px]">
-                    Responsável
-                  </TableHead>
-                  <TableHead className="w-7 rounded-tr-xl lg:w-16">
-                    Ações
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="bg-transparent">
-                {isLoadingEncontrista && <EncontristaTableSkeleton />}
-                {result &&
-                  result.encontristas.map((encontrista) => {
-                    return (
-                      <EncontristaTableRow
-                        key={encontrista.id}
-                        encontrista={encontrista}
-                      />
-                    )
-                  })}
-              </TableBody>
-              <TableFooter>
-                {result && (
-                  <Pagination
-                    pageIndex={result.pageIndex}
-                    totalCount={result.totalCount}
-                    perPage={result.perPage}
-                    onPageChange={handlePaginate}
-                  />
-                )}
-              </TableFooter>
-            </Table>
-          </div>
+        <div className="bg-transparent">
+          <Table className="text-xs">
+            <TableHeader>
+              <TableRow className="px-2">
+                <TableHead className="w-7 text-nowrap rounded-tl-xl pl-4 lg:w-[73px]">
+                  Inscrito em
+                </TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Idade</TableHead>
+                <TableHead className="w-7 lg:w-[178px]">Status</TableHead>
+                <TableHead>Bairro</TableHead>
+                <TableHead>Celular</TableHead>
+                <TableHead className="w-7 lg:w-[178px]">Responsável</TableHead>
+                <TableHead className="w-7 rounded-tr-xl lg:w-16">
+                  Ações
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="bg-transparent">
+              {isLoadingEncontrista && <EncontristaTableSkeleton />}
+              {result &&
+                result.encontristas.map((encontrista) => {
+                  return (
+                    <EncontristaTableRow
+                      key={encontrista.id}
+                      encontrista={encontrista}
+                    />
+                  )
+                })}
+            </TableBody>
+            <TableFooter>
+              {isLoadingEncontrista && <PaginationSkeleton />}
+              {result && (
+                <Pagination
+                  pageIndex={result.pageIndex}
+                  totalCount={result.totalCount}
+                  perPage={result.perPage}
+                  onPageChange={handlePaginate}
+                />
+              )}
+            </TableFooter>
+          </Table>
         </div>
       </div>
     </>

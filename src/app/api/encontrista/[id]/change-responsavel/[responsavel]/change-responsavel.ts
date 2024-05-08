@@ -14,26 +14,24 @@ export async function changeResponsavel({
     },
   })
 
-  const update = await prisma.responsavelExterna.update({
-    data: {
-      idExterna: responsavel,
-    },
-    where: {
-      idEncontrista: id,
-    },
-  })
-
-  if (!update) {
-    if (encontro) {
-      return await prisma.responsavelExterna.create({
-        data: {
-          idExterna: responsavel,
-          idEncontrista: id,
-          idEncontro: encontro.id,
-        },
-      })
-    }
-  }
-
-  return update
+  return await prisma.responsavelExterna
+    .update({
+      data: {
+        idExterna: responsavel,
+      },
+      where: {
+        idEncontrista: id,
+      },
+    })
+    .catch(async () => {
+      if (encontro) {
+        return await prisma.responsavelExterna.create({
+          data: {
+            idExterna: responsavel,
+            idEncontrista: id,
+            idEncontro: encontro.id,
+          },
+        })
+      }
+    })
 }

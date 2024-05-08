@@ -4,8 +4,8 @@ import { TableCell, TableRow } from '../ui/table'
 
 export interface PaginationProps {
   pageIndex: number
-  totalCount: number
   perPage: number
+  totalCount: number
   onPageChange: (pageIndex: number) => Promise<void> | void
 }
 
@@ -26,12 +26,12 @@ export function Pagination({
 
   return (
     <TableRow>
-      <TableCell colSpan={4} className="h-10 rounded-bl-xl">
+      <TableCell colSpan={4} className="rounded-bl-xl">
         <span className="text-muted-foreground text-sm">
           {firstOnPage}-{lastOnPage} de {totalCount}
         </span>
       </TableCell>
-      <TableCell colSpan={4} className="h-10 rounded-br-xl">
+      <TableCell colSpan={4} className="rounded-br-xl">
         <div className="flex h-10 items-center justify-between">
           <Button
             onClick={() => onPageChange(page - 1)}
@@ -73,50 +73,6 @@ export function Pagination({
             <span className="font-medium text-tertiary">Próximo</span>
             <ChevronRight className="h-4 w-4 text-tertiary" />
           </Button>
-          {/* 
-        <div className="flex items-center gap-6 lg:gap-8">
-          <div className="text-sm font-medium">
-            Página {pageIndex + 1} de {pages}
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => onPageChange(0)}
-              variant="outline"
-              className="h-8 w-8 p-0"
-              disabled={pageIndex === 0}
-            >
-              <ChevronsLeft className="h-4 w-4" />
-              <span className="sr-only">Primeira página</span>
-            </Button>
-            <Button
-              onClick={() => onPageChange(pageIndex - 1)}
-              variant="outline"
-              className="h-8 w-8 p-0"
-              disabled={pageIndex === 0}
-            >
-              <ChevronLeft className="h-4 w-4" />
-              <span className="sr-only">Página anterior</span>
-            </Button>
-            <Button
-              onClick={() => onPageChange(pageIndex + 1)}
-              variant="outline"
-              className="h-8 w-8 p-0"
-              disabled={pages <= pageIndex + 1}
-            >
-              <ChevronRight className="h-4 w-4" />
-              <span className="sr-only">Próxima página</span>
-            </Button>
-            <Button
-              onClick={() => onPageChange(pages - 1)}
-              variant="outline"
-              className="h-8 w-8 p-0"
-              disabled={pages <= pageIndex + 1}
-            >
-              <ChevronsRight className="h-4 w-4" />
-              <span className="sr-only">Última página</span>
-            </Button>
-          </div>
-        </div> */}
         </div>
       </TableCell>
     </TableRow>

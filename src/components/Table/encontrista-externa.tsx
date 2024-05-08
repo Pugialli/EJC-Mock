@@ -63,7 +63,7 @@ export function EncontristaExterna({
         ...cacheData,
         encontristas: cacheData.encontristas.map((encontrista) => {
           if (encontrista.id === encontristaId) {
-            return { ...encontrista, idResponsavel }
+            return { ...encontrista, idExterna: idResponsavel }
           }
           return encontrista
         }),

@@ -19,15 +19,19 @@ import { Form, FormControl, FormField, FormItem } from '../ui/form'
 import { Select, SelectContent, SelectTrigger, SelectValue } from '../ui/select'
 import { SelectItemIcon, type SelectItemIconProps } from './select-item-icon'
 
-interface EncontristaStatusProps {
+interface changeStatusProps {
   encontristaId: string
   status: valueStatus
 }
 
+interface EncontristaStatusProps {
+  encontristaId: string
+  status: valueStatus
+}
 export async function changeStatus({
   encontristaId,
   status,
-}: EncontristaStatusProps) {
+}: changeStatusProps) {
   await api.patch(`/encontrista/${encontristaId}/change-status/${status}`)
 }
 
@@ -113,7 +117,7 @@ export function EncontristaStatus({
         ...cacheData,
         encontristas: cacheData.encontristas.map((encontrista) => {
           if (encontrista.id === encontristaId) {
-            return { ...encontrista, status }
+            return { ...encontrista, idStatus: status }
           }
           return encontrista
         }),
@@ -130,10 +134,7 @@ export function EncontristaStatus({
 
   function handleChangeStatus(selectData: encontristaStatusFormInput) {
     const status = selectData.statusValue as valueStatus
-    statusEncontristaFn({
-      encontristaId,
-      status,
-    })
+    statusEncontristaFn({ encontristaId, status })
   }
 
   return (

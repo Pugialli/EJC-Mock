@@ -8,7 +8,7 @@ import { DeleteDialog } from '@/components/Table/delete-dialog'
 import { EncontristaExterna } from '@/components/Table/encontrista-externa'
 import { EncontristaStatus } from '@/components/Table/encontrista-status'
 import type { SelectItemAvatarProps } from '@/components/Table/select-item-avatar'
-import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Tooltip,
@@ -21,6 +21,7 @@ import type { Value_Status as valueStatus } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 import { differenceInCalendarYears, formatDate } from 'date-fns'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export interface Encontrista {
   id_pessoa: string
@@ -54,6 +55,8 @@ async function getEquipeExterna() {
 }
 
 export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
+  const [open, setOpen] = useState(false)
+
   const router = useRouter()
 
   const dataInscricao = formatDate(new Date(encontrista.createdAt), 'dd/MM/yy')
@@ -67,8 +70,8 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
   })
 
   return (
-    <Dialog>
-      <TableRow>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <TableRow className="bg-white">
         <TableCell className="w-7 text-nowrap pl-4 font-medium lg:w-[73px]">
           {dataInscricao}
         </TableCell>
@@ -108,13 +111,15 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
               </TooltipContent>
             </Tooltip>
             <Button
-              onClick={() => router.push(`/admin/externa/${encontrista.id}`)}
+              onClick={() =>
+                router.push(`/admin/externa/${encontrista.id}/edit`)
+              }
               variant="ghost"
               className="p-0"
             >
               <Pencil className="h-4 w-4 text-zinc-400 hover:text-zinc-500" />
             </Button>
-            <DialogTrigger asChild>
+            <AlertDialogTrigger asChild>
               <Button
                 // onClick={() => dispatchOrderFn({ orderId: order.orderId })}
                 // disabled={isDispatchingOrder}
@@ -123,7 +128,7 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
               >
                 <Trash2 className="h-4 w-4 text-red-400 hover:text-red-500" />
               </Button>
-            </DialogTrigger>
+            </AlertDialogTrigger>
           </div>
         </TableCell>
       </TableRow>
@@ -131,7 +136,8 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
       <DeleteDialog
         idEncontrista={encontrista.id}
         nomeEncontrista={`${encontrista.nome} ${encontrista.sobrenome}`}
+        openFn={setOpen}
       />
-    </Dialog>
+    </AlertDialog>
   )
 }

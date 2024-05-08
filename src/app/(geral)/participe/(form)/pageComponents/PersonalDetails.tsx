@@ -1,6 +1,5 @@
 'use client'
 
-import type { Religiao } from '@/app/api/domains/religiao/get-religiao'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
@@ -16,6 +15,7 @@ import {
   PersonalFormData,
 } from '@/context/CreateEncontristaContext'
 import { api } from '@/lib/axios'
+import { getReligioes } from '@/utils/fetch-domains'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
@@ -59,22 +59,6 @@ const personalFormScheme = z.object({
 })
 
 export type PersonalFormDataInput = z.infer<typeof personalFormScheme>
-
-async function getReligioes() {
-  const response: Religiao[] = await api
-    .get('domains/religiao')
-    .then((response) => response.data)
-    .catch((err) => console.error(err))
-
-  const selectData: SelectArray[] = []
-  response.forEach((item) => {
-    const selectItem: SelectArray = { label: item.religiao, value: item.id }
-
-    selectData.push(selectItem)
-  })
-
-  return selectData
-}
 
 async function checkPessoa(email: string) {
   return await api

@@ -12,7 +12,7 @@ export default function ExternaLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="bg-zinc-50 lg:grid lg:grid-cols-12">
+    <div className="scroll-smooth bg-zinc-50 lg:grid lg:grid-cols-12">
       <div className="bg-blue-600 lg:col-span-2">
         <Sidebar />
       </div>

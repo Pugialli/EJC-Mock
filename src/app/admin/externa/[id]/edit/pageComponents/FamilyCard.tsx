@@ -32,7 +32,7 @@ export function FamilyCard() {
 
   return (
     <CardForm title="Família" sectionId="family-section">
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
         <CardFormSection>
           <FormField
             control={control}
@@ -65,7 +65,7 @@ export function FamilyCard() {
             name="nomeFamiliar"
             render={({ field }) => (
               <TextInput label={'Nome de um familiar *'}>
-                <Input autoFocus {...field} />
+                <Input {...field} />
               </TextInput>
             )}
           />

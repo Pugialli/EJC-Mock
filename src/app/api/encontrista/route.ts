@@ -30,7 +30,7 @@ export async function GET(request: Request) {
 
   const encontristaStatus = encontristaStatusParams
     ? (encontristaStatusParams as enumStatus)
-    : 'all'
+    : null
 
   const encontristas = await getEncontristasSummary({
     page,

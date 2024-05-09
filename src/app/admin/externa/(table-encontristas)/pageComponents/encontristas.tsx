@@ -26,6 +26,7 @@ interface SearchProps {
   pageIndex: number
   encontristaName: string | null
   encontristaStatus: string | null
+  responsavelExterna: string | null
 }
 
 function compareDate(a: EncontristaSummaryData, b: EncontristaSummaryData) {
@@ -36,11 +37,15 @@ async function getEncontrista({
   pageIndex,
   encontristaName,
   encontristaStatus,
+  responsavelExterna,
 }: SearchProps) {
   const nameSearch = encontristaName ? `name=${encontristaName}&` : ''
   const statusSearch = encontristaStatus ? `status=${encontristaStatus}&` : ''
+  const externaSearch = responsavelExterna
+    ? `idExterna=${responsavelExterna}&`
+    : ''
 
-  const path = `/encontrista?${nameSearch}${statusSearch}page=${pageIndex}`
+  const path = `/encontrista?${nameSearch}${statusSearch}${externaSearch}page=${pageIndex}`
 
   const response: EncontristaSummary = await api
     .get(path)
@@ -58,6 +63,7 @@ export function EncontristasTable() {
 
   const encontristaName = searchParams.get('encontristaName')
   const encontristaStatus = searchParams.get('encontristaStatus')
+  const responsavelExterna = searchParams.get('responsavelExterna')
 
   const pageIndex = z.coerce
     .number()
@@ -68,10 +74,15 @@ export function EncontristasTable() {
     useQuery<EncontristaSummary>({
       queryKey: [
         'encontristas',
-        { pageIndex, encontristaName, encontristaStatus },
+        { pageIndex, encontristaName, encontristaStatus, responsavelExterna },
       ],
       queryFn: () =>
-        getEncontrista({ pageIndex, encontristaName, encontristaStatus }),
+        getEncontrista({
+          pageIndex,
+          encontristaName,
+          encontristaStatus,
+          responsavelExterna,
+        }),
     })
 
   function handlePaginate(pageIndex: number) {
@@ -82,6 +93,9 @@ export function EncontristasTable() {
     if (encontristaStatus)
       newSearch.append('encontristaStatus', encontristaStatus.toString())
 
+    if (responsavelExterna)
+      newSearch.append('responsavelExterna', responsavelExterna.toString())
+
     newSearch.append('page', (pageIndex + 1).toString())
     router.push(`${pathname}?${newSearch}`)
   }
@@ -90,7 +104,6 @@ export function EncontristasTable() {
     <>
       <div className="flex flex-col gap-4 py-1">
         <EncontristaTableFilters />
-
         <div className="bg-transparent">
           <Table className="text-xs">
             <TableHeader>

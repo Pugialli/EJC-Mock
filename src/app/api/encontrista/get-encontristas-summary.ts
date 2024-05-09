@@ -26,7 +26,7 @@ type getEncontristasSummaryProps = {
   page: number
   responsavelExterna: string | null
   encontristaName: string | null
-  encontristaStatus: enumStatus | 'all'
+  encontristaStatus: enumStatus | null
 }
 
 type getEncontritasProps = {
@@ -34,13 +34,13 @@ type getEncontritasProps = {
   perPage: number
   responsavelExterna: string | null
   encontristaName: string | null
-  encontristaStatus: enumStatus | 'all'
+  encontristaStatus: enumStatus | null
 }
 
 type getTotalEncontristasProps = {
   responsavelExterna: string | null
   encontristaName: string | null
-  encontristaStatus: enumStatus | 'all'
+  encontristaStatus: enumStatus | null
 }
 
 async function getEncontritas({
@@ -52,10 +52,373 @@ async function getEncontritas({
 }: getEncontritasProps) {
   const skipData = page * perPage
 
-  console.log(responsavelExterna)
+  if (responsavelExterna) {
+    if (encontristaName) {
+      if (encontristaStatus) {
+        if (encontristaStatus === 'confirmado') {
+          return await prisma.pessoa.findMany({
+            skip: skipData,
+            take: perPage,
+            select: {
+              id: true,
+              createdAt: true,
+              nome: true,
+              sobrenome: true,
+              celular: true,
+              encontrista: {
+                select: {
+                  idStatus: true,
+                  idBairroEncontro: true,
+                  observacao: true,
+                  responsavelExterna: {
+                    select: {
+                      idExterna: true,
+                    },
+                  },
+                },
+              },
+              encontreiro: {
+                select: {
+                  nascimento: true,
+                },
+              },
+            },
+            where: {
+              role: 'ENCONTRISTA',
+              OR: [
+                { nome: { contains: encontristaName } },
+                { sobrenome: { contains: encontristaName } },
+              ],
+              encontrista: {
+                OR: [
+                  { idStatus: 'confirmado' },
+                  { idStatus: 'confirmado_sem_sexta' },
+                ],
+                responsavelExterna: {
+                  idExterna: responsavelExterna,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: 'asc',
+            },
+          })
+        } else {
+          return await prisma.pessoa.findMany({
+            skip: skipData,
+            take: perPage,
+            select: {
+              id: true,
+              createdAt: true,
+              nome: true,
+              sobrenome: true,
+              celular: true,
+              encontrista: {
+                select: {
+                  idStatus: true,
+                  idBairroEncontro: true,
+                  observacao: true,
+                  responsavelExterna: {
+                    select: {
+                      idExterna: true,
+                    },
+                  },
+                },
+              },
+              encontreiro: {
+                select: {
+                  nascimento: true,
+                },
+              },
+            },
+            where: {
+              role: 'ENCONTRISTA',
+              OR: [
+                { nome: { contains: encontristaName } },
+                { sobrenome: { contains: encontristaName } },
+              ],
+              encontrista: {
+                idStatus: encontristaStatus,
+                responsavelExterna: {
+                  idExterna: responsavelExterna,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: 'asc',
+            },
+          })
+        }
+      } else {
+        return await prisma.pessoa.findMany({
+          skip: skipData,
+          take: perPage,
+          select: {
+            id: true,
+            createdAt: true,
+            nome: true,
+            sobrenome: true,
+            celular: true,
+            encontrista: {
+              select: {
+                idStatus: true,
+                idBairroEncontro: true,
+                observacao: true,
+                responsavelExterna: {
+                  select: {
+                    idExterna: true,
+                  },
+                },
+              },
+            },
+            encontreiro: {
+              select: {
+                nascimento: true,
+              },
+            },
+          },
+          where: {
+            role: 'ENCONTRISTA',
+            OR: [
+              { nome: { contains: encontristaName } },
+              { sobrenome: { contains: encontristaName } },
+            ],
+            encontrista: {
+              NOT: { idStatus: 'delete' },
+              responsavelExterna: {
+                idExterna: responsavelExterna,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        })
+      }
+    } else {
+      if (encontristaStatus) {
+        if (encontristaStatus === 'confirmado') {
+          return await prisma.pessoa.findMany({
+            skip: skipData,
+            take: perPage,
+            select: {
+              id: true,
+              createdAt: true,
+              nome: true,
+              sobrenome: true,
+              celular: true,
+              encontrista: {
+                select: {
+                  idStatus: true,
+                  idBairroEncontro: true,
+                  observacao: true,
+                  responsavelExterna: {
+                    select: {
+                      idExterna: true,
+                    },
+                  },
+                },
+              },
+              encontreiro: {
+                select: {
+                  nascimento: true,
+                },
+              },
+            },
+            where: {
+              role: 'ENCONTRISTA',
+              encontrista: {
+                OR: [
+                  { idStatus: 'confirmado' },
+                  { idStatus: 'confirmado_sem_sexta' },
+                ],
+                responsavelExterna: {
+                  idExterna: responsavelExterna,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: 'asc',
+            },
+          })
+        } else {
+          return await prisma.pessoa.findMany({
+            skip: skipData,
+            take: perPage,
+            select: {
+              id: true,
+              createdAt: true,
+              nome: true,
+              sobrenome: true,
+              celular: true,
+              encontrista: {
+                select: {
+                  idStatus: true,
+                  idBairroEncontro: true,
+                  observacao: true,
+                  responsavelExterna: {
+                    select: {
+                      idExterna: true,
+                    },
+                  },
+                },
+              },
+              encontreiro: {
+                select: {
+                  nascimento: true,
+                },
+              },
+            },
+            where: {
+              role: 'ENCONTRISTA',
+              encontrista: {
+                idStatus: encontristaStatus,
+                responsavelExterna: {
+                  idExterna: responsavelExterna,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: 'asc',
+            },
+          })
+        }
+      } else {
+        return await prisma.pessoa.findMany({
+          skip: skipData,
+          take: perPage,
+          select: {
+            id: true,
+            createdAt: true,
+            nome: true,
+            sobrenome: true,
+            celular: true,
+            encontrista: {
+              select: {
+                idStatus: true,
+                idBairroEncontro: true,
+                observacao: true,
+                responsavelExterna: {
+                  select: {
+                    idExterna: true,
+                  },
+                },
+              },
+            },
+            encontreiro: {
+              select: {
+                nascimento: true,
+              },
+            },
+          },
+          where: {
+            role: 'ENCONTRISTA',
+            encontrista: {
+              NOT: { idStatus: 'delete' },
+              responsavelExterna: {
+                idExterna: responsavelExterna,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        })
+      }
+    }
+  }
 
   if (encontristaName) {
-    if (encontristaStatus === 'all') {
+    if (encontristaStatus) {
+      if (encontristaStatus === 'confirmado') {
+        return await prisma.pessoa.findMany({
+          skip: skipData,
+          take: perPage,
+          select: {
+            id: true,
+            createdAt: true,
+            nome: true,
+            sobrenome: true,
+            celular: true,
+            encontrista: {
+              select: {
+                idStatus: true,
+                idBairroEncontro: true,
+                observacao: true,
+                responsavelExterna: {
+                  select: {
+                    idExterna: true,
+                  },
+                },
+              },
+            },
+            encontreiro: {
+              select: {
+                nascimento: true,
+              },
+            },
+          },
+          where: {
+            role: 'ENCONTRISTA',
+            OR: [
+              { nome: { contains: encontristaName } },
+              { sobrenome: { contains: encontristaName } },
+            ],
+            encontrista: {
+              OR: [
+                { idStatus: 'confirmado' },
+                { idStatus: 'confirmado_sem_sexta' },
+              ],
+            },
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        })
+      } else {
+        return await prisma.pessoa.findMany({
+          skip: skipData,
+          take: perPage,
+          select: {
+            id: true,
+            createdAt: true,
+            nome: true,
+            sobrenome: true,
+            celular: true,
+            encontrista: {
+              select: {
+                idStatus: true,
+                idBairroEncontro: true,
+                observacao: true,
+                responsavelExterna: {
+                  select: {
+                    idExterna: true,
+                  },
+                },
+              },
+            },
+            encontreiro: {
+              select: {
+                nascimento: true,
+              },
+            },
+          },
+          where: {
+            role: 'ENCONTRISTA',
+            OR: [
+              { nome: { contains: encontristaName } },
+              { sobrenome: { contains: encontristaName } },
+            ],
+            encontrista: {
+              idStatus: encontristaStatus,
+            },
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        })
+      }
+    } else {
       return await prisma.pessoa.findMany({
         skip: skipData,
         take: perPage,
@@ -92,92 +455,6 @@ async function getEncontritas({
           encontrista: {
             NOT: { idStatus: 'delete' },
           },
-        },
-        orderBy: {
-          createdAt: 'asc',
-        },
-      })
-    }
-    if (encontristaStatus === 'confirmado') {
-      return await prisma.pessoa.findMany({
-        skip: skipData,
-        take: perPage,
-        select: {
-          id: true,
-          createdAt: true,
-          nome: true,
-          sobrenome: true,
-          celular: true,
-          encontrista: {
-            select: {
-              idStatus: true,
-              idBairroEncontro: true,
-              observacao: true,
-              responsavelExterna: {
-                select: {
-                  idExterna: true,
-                },
-              },
-            },
-          },
-          encontreiro: {
-            select: {
-              nascimento: true,
-            },
-          },
-        },
-        where: {
-          role: 'ENCONTRISTA',
-          OR: [
-            { nome: { contains: encontristaName } },
-            { sobrenome: { contains: encontristaName } },
-          ],
-          encontrista: {
-            OR: [
-              { idStatus: 'confirmado' },
-              { idStatus: 'confirmado_sem_sexta' },
-            ],
-          },
-        },
-        orderBy: {
-          createdAt: 'asc',
-        },
-      })
-    } else {
-      return await prisma.pessoa.findMany({
-        skip: skipData,
-        take: perPage,
-        select: {
-          id: true,
-          createdAt: true,
-          nome: true,
-          sobrenome: true,
-          celular: true,
-          encontrista: {
-            select: {
-              idStatus: true,
-              idBairroEncontro: true,
-              observacao: true,
-              responsavelExterna: {
-                select: {
-                  idExterna: true,
-                },
-              },
-            },
-          },
-          encontreiro: {
-            select: {
-              nascimento: true,
-            },
-          },
-        },
-        where: {
-          role: 'ENCONTRISTA',
-          OR: [
-            { nome: { contains: encontristaName } },
-            { sobrenome: { contains: encontristaName } },
-          ],
-          encontrista: { idStatus: encontristaStatus },
         },
         orderBy: {
           createdAt: 'asc',
@@ -187,46 +464,6 @@ async function getEncontritas({
   }
 
   if (encontristaStatus) {
-    if (encontristaStatus === 'all') {
-      return await prisma.pessoa.findMany({
-        skip: skipData,
-        take: perPage,
-        select: {
-          id: true,
-          createdAt: true,
-          nome: true,
-          sobrenome: true,
-          celular: true,
-          encontrista: {
-            select: {
-              idStatus: true,
-              idBairroEncontro: true,
-              observacao: true,
-              responsavelExterna: {
-                select: {
-                  idExterna: true,
-                },
-              },
-            },
-          },
-          encontreiro: {
-            select: {
-              nascimento: true,
-            },
-          },
-        },
-        where: {
-          role: 'ENCONTRISTA',
-          encontrista: {
-            NOT: { idStatus: 'delete' },
-          },
-        },
-        orderBy: {
-          createdAt: 'asc',
-        },
-      })
-    }
-
     if (encontristaStatus === 'confirmado') {
       return await prisma.pessoa.findMany({
         skip: skipData,
@@ -298,7 +535,9 @@ async function getEncontritas({
         },
         where: {
           role: 'ENCONTRISTA',
-          encontrista: { idStatus: encontristaStatus },
+          encontrista: {
+            idStatus: encontristaStatus,
+          },
         },
         orderBy: {
           createdAt: 'asc',
@@ -351,10 +590,141 @@ async function getTotal({
   encontristaName,
   encontristaStatus,
 }: getTotalEncontristasProps) {
-  console.log(responsavelExterna)
+  if (responsavelExterna) {
+    if (encontristaName) {
+      if (encontristaStatus) {
+        if (encontristaStatus === 'confirmado') {
+          return await prisma.pessoa.count({
+            where: {
+              role: 'ENCONTRISTA',
+              OR: [
+                { nome: { contains: encontristaName } },
+                { sobrenome: { contains: encontristaName } },
+              ],
+              encontrista: {
+                OR: [
+                  { idStatus: 'confirmado' },
+                  { idStatus: 'confirmado_sem_sexta' },
+                ],
+                responsavelExterna: {
+                  idExterna: responsavelExterna,
+                },
+              },
+            },
+          })
+        } else {
+          return await prisma.pessoa.count({
+            where: {
+              role: 'ENCONTRISTA',
+              OR: [
+                { nome: { contains: encontristaName } },
+                { sobrenome: { contains: encontristaName } },
+              ],
+              encontrista: {
+                idStatus: encontristaStatus,
+                responsavelExterna: {
+                  idExterna: responsavelExterna,
+                },
+              },
+            },
+          })
+        }
+      } else {
+        return await prisma.pessoa.count({
+          where: {
+            role: 'ENCONTRISTA',
+            OR: [
+              { nome: { contains: encontristaName } },
+              { sobrenome: { contains: encontristaName } },
+            ],
+            encontrista: {
+              NOT: { idStatus: 'delete' },
+              responsavelExterna: {
+                idExterna: responsavelExterna,
+              },
+            },
+          },
+        })
+      }
+    } else {
+      if (encontristaStatus) {
+        if (encontristaStatus === 'confirmado') {
+          return await prisma.pessoa.count({
+            where: {
+              role: 'ENCONTRISTA',
+              encontrista: {
+                OR: [
+                  { idStatus: 'confirmado' },
+                  { idStatus: 'confirmado_sem_sexta' },
+                ],
+                responsavelExterna: {
+                  idExterna: responsavelExterna,
+                },
+              },
+            },
+          })
+        } else {
+          return await prisma.pessoa.count({
+            where: {
+              role: 'ENCONTRISTA',
+              encontrista: {
+                idStatus: encontristaStatus,
+                responsavelExterna: {
+                  idExterna: responsavelExterna,
+                },
+              },
+            },
+          })
+        }
+      } else {
+        return await prisma.pessoa.count({
+          where: {
+            role: 'ENCONTRISTA',
+            encontrista: {
+              NOT: { idStatus: 'delete' },
+              responsavelExterna: {
+                idExterna: responsavelExterna,
+              },
+            },
+          },
+        })
+      }
+    }
+  }
 
   if (encontristaName) {
-    if (encontristaStatus === 'all') {
+    if (encontristaStatus) {
+      if (encontristaStatus === 'confirmado') {
+        return await prisma.pessoa.count({
+          where: {
+            role: 'ENCONTRISTA',
+            OR: [
+              { nome: { contains: encontristaName } },
+              { sobrenome: { contains: encontristaName } },
+            ],
+            encontrista: {
+              OR: [
+                { idStatus: 'confirmado' },
+                { idStatus: 'confirmado_sem_sexta' },
+              ],
+            },
+          },
+        })
+      } else {
+        return await prisma.pessoa.count({
+          where: {
+            role: 'ENCONTRISTA',
+            OR: [
+              { nome: { contains: encontristaName } },
+              { sobrenome: { contains: encontristaName } },
+            ],
+            encontrista: {
+              idStatus: encontristaStatus,
+            },
+          },
+        })
+      }
+    } else {
       return await prisma.pessoa.count({
         where: {
           role: 'ENCONTRISTA',
@@ -367,37 +737,10 @@ async function getTotal({
           },
         },
       })
-    } else if (encontristaStatus === 'confirmado') {
-      return await prisma.pessoa.count({
-        where: {
-          role: 'ENCONTRISTA',
-          OR: [
-            { nome: { contains: encontristaName } },
-            { sobrenome: { contains: encontristaName } },
-          ],
-          encontrista: {
-            OR: [
-              { idStatus: 'confirmado' },
-              { idStatus: 'confirmado_sem_sexta' },
-            ],
-          },
-        },
-      })
-    } else {
-      return await prisma.pessoa.count({
-        where: {
-          role: 'ENCONTRISTA',
-          OR: [
-            { nome: { contains: encontristaName } },
-            { sobrenome: { contains: encontristaName } },
-          ],
-          encontrista: { idStatus: encontristaStatus },
-        },
-      })
     }
   }
 
-  if (encontristaStatus && encontristaStatus !== 'all') {
+  if (encontristaStatus) {
     if (encontristaStatus === 'confirmado') {
       return await prisma.pessoa.count({
         where: {
@@ -414,7 +757,9 @@ async function getTotal({
       return await prisma.pessoa.count({
         where: {
           role: 'ENCONTRISTA',
-          encontrista: { idStatus: encontristaStatus },
+          encontrista: {
+            idStatus: encontristaStatus,
+          },
         },
       })
     }

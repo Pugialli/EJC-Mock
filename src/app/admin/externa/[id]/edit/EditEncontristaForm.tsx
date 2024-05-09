@@ -184,12 +184,12 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
                       Salvar Mudanças
                     </span>
                   </div>
-                  <div className="grid grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
                     <div className="px-0 py-5 text-lg lg:py-7">
                       Lembre-se de salvar qualquer mudança realizada nessa
                       página.
                     </div>
-                    <div className="flex items-center justify-center gap-5 px-0 py-5 text-lg lg:gap-7 lg:py-7">
+                    <div className="flex items-center justify-center gap-5 px-0 py-5 text-lg lg:flex-row lg:gap-7 lg:py-7">
                       <Button
                         onClick={() => {
                           router.push('/admin/externa')

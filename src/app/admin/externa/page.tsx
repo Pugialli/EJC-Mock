@@ -22,18 +22,21 @@ export default function Externa() {
               Lista de todos os encontristas
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="secondary">
-              <div className="flex items-center gap-2">
-                <Download className="h-4 w-4 text-tertiary" />
-                <span>Gerar PDF</span>
-              </div>
-            </Button>
+          <div className="flex flex-col items-center gap-2 lg:flex-row">
+            <Link href="/api/export/encontrista">
+              <Button variant="secondary">
+                <div className="flex items-center justify-center gap-2 lg:w-40">
+                  <Download className="h-4 w-4 text-tertiary" />
+                  <span className="hidden lg:flex">Gerar XLSX</span>
+                </div>
+              </Button>
+            </Link>
+
             <Link href="/">
               <Button>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-2 lg:w-40">
                   <Plus className="h-4 w-4" />
-                  <span>Novo Encontrista</span>
+                  <span className="hidden lg:flex">Novo Encontrista</span>
                 </div>
               </Button>
             </Link>

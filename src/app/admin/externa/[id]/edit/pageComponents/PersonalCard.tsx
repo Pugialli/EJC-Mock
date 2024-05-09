@@ -33,7 +33,7 @@ export function PersonalCard() {
 
   return (
     <CardForm title="Dados Pessoais" sectionId="personal-section">
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
         <CardFormSection>
           <FormField
             control={control}

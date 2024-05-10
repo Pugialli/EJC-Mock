@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 
 export async function checkEmailExists(email: string) {
-  const personFound = await prisma.pessoa.findUniqueOrThrow({
+  const result = await prisma.pessoa.findUnique({
     select: {
       id: true,
       email: true,
@@ -11,5 +11,8 @@ export async function checkEmailExists(email: string) {
     },
   })
 
-  return personFound
+  if (!result) {
+    return false
+  }
+  return true
 }

@@ -65,7 +65,7 @@ export default function Login() {
   }
 
   return (
-    <div className="flex h-auto items-center justify-center bg-primary py-11">
+    <div className="flex items-center justify-center py-11">
       <FormProvider {...form}>
         <form id="loginForm" onSubmit={handleSubmit(handleLogIn)}>
           <Card className="flex w-auto flex-col items-center gap-8 p-8 text-zinc-700 lg:w-96">

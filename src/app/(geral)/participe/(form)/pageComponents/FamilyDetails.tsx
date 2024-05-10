@@ -43,9 +43,9 @@ const familyFormScheme = z.object({
   parentescoFamiliar: z
     .string()
     .min(2, { message: 'O grau de parentesco é obrigatório' }),
-  nomeFamiliar2: z.string(),
-  telFamiliar2: z.string(),
-  parentescoFamiliar2: z.string(),
+  nomeFamiliar2: z.string().optional(),
+  telFamiliar2: z.string().optional(),
+  parentescoFamiliar2: z.string().optional(),
 })
 
 export type FamilyFormDataInput = z.infer<typeof familyFormScheme>

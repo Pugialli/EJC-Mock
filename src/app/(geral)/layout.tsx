@@ -6,7 +6,8 @@ export default function GeneralLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="h-screen bg-primary">
+    // <div className="from-gradient-primary to-gradient-secondary h-auto bg-gradient-to-r">
+    <div className="h-auto bg-primary">
       <Header />
       {children}
     </div>

@@ -61,10 +61,9 @@ const personalFormScheme = z.object({
 export type PersonalFormDataInput = z.infer<typeof personalFormScheme>
 
 async function checkPessoa(email: string) {
-  return await api
-    .get(`encontrista/check-email/${email}`)
-    .then(() => true)
-    .catch(() => false)
+  const response = await api.get(`encontrista/check-email/${email}`)
+
+  return response.data
 }
 
 export function PersonalDetails() {
@@ -95,6 +94,8 @@ export function PersonalDetails() {
     const personalData = formDataInput as PersonalFormData
 
     const isAlreadyOnDB = await checkPessoa(personalData.email)
+
+    console.log(isAlreadyOnDB)
 
     if (isAlreadyOnDB) {
       toast.warning('Este email já está cadastrado', {

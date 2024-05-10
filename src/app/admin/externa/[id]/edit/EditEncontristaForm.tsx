@@ -81,9 +81,9 @@ const editFormScheme = z.object({
   parentescoFamiliar: z
     .string()
     .min(2, { message: 'O grau de parentesco é obrigatório' }),
-  nomeFamiliar2: z.string(),
-  telFamiliar2: z.string(),
-  parentescoFamiliar2: z.string(),
+  nomeFamiliar2: z.string().optional(),
+  telFamiliar2: z.string().optional(),
+  parentescoFamiliar2: z.string().optional(),
   indicadoPorNome: z.string().optional(),
   indicadoApelido: z.string().optional(),
   indicadoTelefone: z.string().optional(),
@@ -107,12 +107,12 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
       nome: data.pessoa.nome,
       sobrenome: data.pessoa.sobrenome,
       dataNascimento: data.pessoa.nascimento,
-      apelido: data.pessoa.apelido,
+      apelido: data.pessoa.apelido !== 'null' ? data.pessoa.apelido : '',
       religiao: data.pessoa.idReligiao,
       celular: data.pessoa.celular,
       telefone: data.pessoa.telefone,
       email: data.pessoa.email,
-      instagram: data.pessoa.instagram,
+      instagram: data.pessoa.instagram !== 'null' ? data.pessoa.instagram : '',
       paraVoce: data.pessoa.isAutofill ? 'sim' : 'nao',
       cep: data.endereco.cep,
       estado: data.endereco.estado,
@@ -127,17 +127,37 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
       nomeFamiliar: data.familia.nomeContato1,
       telFamiliar: data.familia.telContato1,
       parentescoFamiliar: data.familia.parentescoContato1,
-      nomeFamiliar2: data.familia.nomeContato2,
+      nomeFamiliar2:
+        data.familia.nomeContato2 !== 'null' ? data.familia.nomeContato2 : '',
       telFamiliar2: data.familia.telContato2,
-      parentescoFamiliar2: data.familia.parentescoContato2,
-      indicadoPorNome: data.indicacao.indicadoPorNome,
-      indicadoApelido: data.indicacao.indicadoPorApelido,
-      indicadoEmail: data.indicacao.indicadoPorEmail,
-      indicadoTelefone: data.indicacao.indicadoPorEmail,
-      nomeMovimento: data.pessoa.movimentoAnterior,
+      parentescoFamiliar2:
+        data.familia.parentescoContato2 !== 'null'
+          ? data.familia.parentescoContato2
+          : '',
+      indicadoPorNome:
+        data.indicacao.indicadoPorNome !== 'null'
+          ? data.indicacao.indicadoPorNome
+          : '',
+      indicadoApelido:
+        data.indicacao.indicadoPorApelido !== 'null'
+          ? data.indicacao.indicadoPorApelido
+          : '',
+      indicadoEmail:
+        data.indicacao.indicadoPorEmail !== 'null'
+          ? data.indicacao.indicadoPorEmail
+          : '',
+      indicadoTelefone: data.indicacao.indicadoPorTel,
+      nomeMovimento:
+        data.pessoa.movimentoAnterior !== 'null'
+          ? data.pessoa.movimentoAnterior
+          : '',
       tamanhoCamisa: data.pessoa.idTamanhoCamisa,
-      restricoesAlimentares: data.pessoa.restricaoAlimentar,
-      observacoes: data.pessoa.observacao,
+      restricoesAlimentares:
+        data.pessoa.restricaoAlimentar !== 'null'
+          ? data.pessoa.restricaoAlimentar
+          : '',
+      observacoes:
+        data.pessoa.observacao !== 'null' ? data.pessoa.observacao : '',
     },
   })
 

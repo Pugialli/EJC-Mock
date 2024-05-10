@@ -13,6 +13,8 @@ const config = {
         primary: '#7C3AED',
         secondary: '#FBBF24',
         tertiary: '#3A3440',
+        'gradient-primary': '#582C85',
+        'gradient-secondary': '#653DB0',
       },
       keyframes: {
         'accordion-down': {

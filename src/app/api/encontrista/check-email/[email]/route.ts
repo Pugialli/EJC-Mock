@@ -9,7 +9,9 @@ export async function GET(
   request: Request,
   context: { params: CheckEmailProps },
 ) {
-  const emailExists = await checkEmailExists(context.params.email)
+  const email = context.params.email.toLowerCase()
+
+  const emailExists = await checkEmailExists(email)
 
   return NextResponse.json(emailExists)
 }

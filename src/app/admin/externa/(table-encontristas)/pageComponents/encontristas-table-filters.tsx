@@ -139,7 +139,7 @@ export function EncontristaTableFilters() {
             defaultValue="all"
             render={({ field }) => {
               return (
-                <div className="lg:w-96">
+                <div className="lg:w-100">
                   <SelectGroupInput
                     onChange={field.onChange}
                     value={field.value}

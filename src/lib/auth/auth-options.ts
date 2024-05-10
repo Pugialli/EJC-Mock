@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const response = await fetch(
-          `${process.env.NEXTAUTH_URL}/api/auth/singinRequest`,
+          `${process.env.NEXTAUTH_URL}/api/auth/singin-request`,
           // 'http://localhost:3000/api/auth/singinRequest',
           {
             method: 'POST',

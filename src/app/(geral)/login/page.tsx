@@ -50,6 +50,7 @@ export default function Login() {
     // } catch {
     //   toast.error('Seu usuário ou senha estão incorretos')
     // }
+    console.log(data)
 
     const result = await signIn('credentials', {
       email: data.email,

@@ -7,6 +7,7 @@ const config = {
     extend: {
       width: {
         card: '37rem',
+        100: '28rem',
       },
       colors: {
         primary: '#7C3AED',

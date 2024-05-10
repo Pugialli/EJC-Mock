@@ -44,14 +44,6 @@ export default function Login() {
   } = form
 
   async function handleLogIn(data: loginData) {
-    // try {
-    //   await api.post('/auth/singinRequest', data)
-    //   router.replace('/admin/externa')
-    // } catch {
-    //   toast.error('Seu usuário ou senha estão incorretos')
-    // }
-    console.log(data)
-
     const result = await signIn('credentials', {
       email: data.email,
       password: data.password,

@@ -3,11 +3,11 @@ import { useForm } from 'react-hook-form'
 
 import { getEquipeExterna } from '@/app/api/externa/get-equipe-externa'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
+import { SelectItem } from '@/components/Form/SelectInput/SelectItem'
 import type { SelectItemAvatarProps } from '@/components/Table/select-item-avatar'
 import { Button } from '@/components/ui/button'
 import { Form, FormField } from '@/components/ui/form'
 import { SearchInput } from '@/components/ui/search-input'
-import { SelectItem } from '@/components/ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -115,18 +115,17 @@ export function EncontristaTableFilters() {
                     onChange={field.onChange}
                     value={field.value}
                   >
-                    <SelectItem value="all">Todos status</SelectItem>
-                    <SelectItem value="confirmado">Confirmados</SelectItem>
-                    <SelectItem value="desistiu">Desistiu</SelectItem>
-                    <SelectItem value="ligar">Ligar</SelectItem>
-                    <SelectItem value="lista_espera">
-                      Lista de Espera
-                    </SelectItem>
-                    <SelectItem value="nao_atende">Não atende</SelectItem>
-                    <SelectItem value="prox_encontro">
-                      Próximo Encontrão
-                    </SelectItem>
-                    <SelectItem value="vai_pensar">Vai Pensar</SelectItem>
+                    <SelectItem value="all" text="Todos status" />
+                    <SelectItem value="confirmado" text="Confirmados" />
+                    <SelectItem value="desistiu" text="Desistiu" />
+                    <SelectItem value="ligar" text="Ligar" />
+                    <SelectItem value="lista_espera" text="Lista de Espera" />
+                    <SelectItem value="nao_atende" text="Não atende" />
+                    <SelectItem
+                      value="prox_encontro"
+                      text="Próximo Encontrão"
+                    />
+                    <SelectItem value="vai_pensar" text="Vai Pensar" />
                   </SelectGroupInput>
                 </div>
               )
@@ -144,18 +143,19 @@ export function EncontristaTableFilters() {
                     onChange={field.onChange}
                     value={field.value}
                   >
-                    <SelectItem key="all" value="all">
-                      Todos Responsáveis
-                    </SelectItem>
+                    <SelectItem
+                      key="all"
+                      value="all"
+                      text="Todos Responsáveis"
+                    />
                     {equipeExterna &&
                       equipeExterna.map((membroExterna) => {
                         return (
                           <SelectItem
                             key={membroExterna.id}
                             value={membroExterna.id}
-                          >
-                            {membroExterna.name}
-                          </SelectItem>
+                            text={membroExterna.name}
+                          />
                         )
                       })}
                   </SelectGroupInput>

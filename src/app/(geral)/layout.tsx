@@ -7,7 +7,7 @@ export default function GeneralLayout({
 }>) {
   return (
     // <div className="from-gradient-primary to-gradient-secondary h-auto bg-gradient-to-r">
-    <div className="h-full bg-primary">
+    <div className="h-auto bg-primary pb-32">
       <Header />
       {children}
     </div>

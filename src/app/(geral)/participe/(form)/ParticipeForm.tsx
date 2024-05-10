@@ -16,7 +16,7 @@ interface ParticipeFormProps {
 
 export function ParticipeForm({ dataInicio }: ParticipeFormProps) {
   return (
-    <div className="flex items-center justify-center pb-32 pt-24">
+    <div className="flex items-center justify-center pt-24">
       <Card className="flex w-11/12 flex-col items-center gap-5 px-0 py-8 text-zinc-700 lg:w-card lg:px-8 ">
         <Wizard startIndex={0}>
           <InitialForm dataEncontro={dataInicio} />

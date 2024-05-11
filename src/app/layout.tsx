@@ -11,7 +11,13 @@ const nunito = Nunito({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'EJC NSDP',
-  description: '',
+  description:
+    'Site do Encontro de Jovens da Paróquia Nossa Senhora da Divina Providência no Jardim Botânico (RJ',
+  icons: {
+    icon: ['/favicon.ico'],
+    apple: ['/favicon.ico'],
+    shortcut: ['/favicon.ico'],
+  },
 }
 
 export default async function RootLayout({

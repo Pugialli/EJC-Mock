@@ -16,11 +16,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { api } from '@/lib/axios'
+import { getAge } from '@/utils/get-age'
 import { stringToDate } from '@/utils/string-to-date'
 import type { Value_Status as valueStatus } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
-import { differenceInCalendarYears, formatDate } from 'date-fns'
-import { useRouter } from 'next/navigation'
+import { formatDate } from 'date-fns'
+import Link from 'next/link'
 import { useState } from 'react'
 
 export interface Encontrista {
@@ -57,12 +58,10 @@ async function getEquipeExterna() {
 export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-
   const dataInscricao = formatDate(new Date(encontrista.createdAt), 'dd/MM/yy')
   const nomeCompleto = `${encontrista.nome} ${encontrista.sobrenome}`
   const dataNascimento = stringToDate(encontrista.nascimento)
-  const idade = differenceInCalendarYears(new Date(), dataNascimento)
+  const idade = getAge(dataNascimento)
 
   const { data: equipeExterna, isLoading } = useQuery<SelectItemAvatarProps[]>({
     queryFn: async () => await getEquipeExterna(),
@@ -110,15 +109,11 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
                 )}
               </TooltipContent>
             </Tooltip>
-            <Button
-              onClick={() =>
-                router.push(`/admin/externa/${encontrista.id}/edit`)
-              }
-              variant="ghost"
-              className="p-0"
-            >
-              <Pencil className="h-4 w-4 text-zinc-400 hover:text-zinc-500" />
-            </Button>
+            <Link href={`/admin/externa/${encontrista.id}/edit`}>
+              <Button variant="ghost" className="p-0">
+                <Pencil className="h-4 w-4 text-zinc-400 hover:text-zinc-500" />
+              </Button>
+            </Link>
             <AlertDialogTrigger asChild>
               <Button
                 // onClick={() => dispatchOrderFn({ orderId: order.orderId })}

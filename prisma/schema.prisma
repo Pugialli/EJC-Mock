@@ -68,6 +68,7 @@ enum Role {
   SECRETARIA
   ENCONTRISTA
   TIOEXTERNA
+  TIOSECRETO
 }
 
 model Pessoa {
@@ -81,6 +82,7 @@ model Pessoa {
   email       String  @unique
   password    String?
   avatarUrl   String? @map("avatar_url")
+  slug        String?
   role        Role    @default(ENCONTRISTA)
 
   createdAt  DateTime @default(now()) @map("created_at")
@@ -133,6 +135,7 @@ model Encontrista {
   moraCom            DomainMoraCom        @relation(fields: [idMoracom], references: [id])
   statusPais         DomainStatusPais     @relation(fields: [idStatusPais], references: [id])
   responsavelExterna ResponsavelExterna?
+  Cartas             Cartas[]
 
   @@map("encontristas")
 }
@@ -261,6 +264,17 @@ model ResponsavelExterna {
 
   @@id([idEncontrista, idEncontro])
   @@map("responsavel_externa")
+}
+
+model Cartas {
+  id            String   @id @default(uuid())
+  idEncontrista String
+  para          String
+  de            String
+  conteudo      String   @db.Text
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  encontrista Encontrista @relation(fields: [idEncontrista], references: [idPessoa])
 }
 
 //Domains

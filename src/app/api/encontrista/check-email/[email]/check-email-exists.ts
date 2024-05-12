@@ -5,6 +5,11 @@ export async function checkEmailExists(email: string) {
     select: {
       id: true,
       email: true,
+      encontrista: {
+        select: {
+          idStatus: true,
+        },
+      },
     },
     where: {
       email,
@@ -14,5 +19,14 @@ export async function checkEmailExists(email: string) {
   if (!result) {
     return false
   }
+
+  if (result.encontrista?.idStatus === 'delete') {
+    await prisma.pessoa.delete({
+      where: {
+        id: result.id,
+      },
+    })
+  }
+
   return true
 }

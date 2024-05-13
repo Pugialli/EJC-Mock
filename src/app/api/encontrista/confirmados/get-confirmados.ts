@@ -6,7 +6,7 @@ export type EncontristaConfirmadosData = {
   sobrenome: string
 }
 
-export async function getEncontristasConfirmados() {
+export async function getConfirmados() {
   // const numeroEncontro = 71
 
   return await prisma.pessoa.findMany({
@@ -16,9 +16,18 @@ export async function getEncontristasConfirmados() {
       sobrenome: true,
     },
     where: {
-      encontrista: {
-        OR: [{ idStatus: 'confirmado' }, { idStatus: 'confirmado_sem_sexta' }],
-      },
+      OR: [
+        {
+          encontrista: {
+            OR: [
+              { idStatus: 'confirmado' },
+              { idStatus: 'confirmado_sem_sexta' },
+            ],
+          },
+        },
+        { role: 'TIOSECRETO' },
+      ],
+
       // encontreiro: {
       //   encontro: {
       //     numeroEncontro,

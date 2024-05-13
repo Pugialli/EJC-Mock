@@ -135,7 +135,7 @@ model Encontrista {
   moraCom            DomainMoraCom        @relation(fields: [idMoracom], references: [id])
   statusPais         DomainStatusPais     @relation(fields: [idStatusPais], references: [id])
   responsavelExterna ResponsavelExterna?
-  Cartas             Cartas[]
+  cartas             Carta[]
 
   @@map("encontristas")
 }
@@ -266,7 +266,7 @@ model ResponsavelExterna {
   @@map("responsavel_externa")
 }
 
-model Cartas {
+model Carta {
   id            String   @id @default(uuid())
   idEncontrista String
   para          String
@@ -275,6 +275,8 @@ model Cartas {
   createdAt     DateTime @default(now()) @map("created_at")
 
   encontrista Encontrista @relation(fields: [idEncontrista], references: [idPessoa])
+
+  @@map("cartas")
 }
 
 //Domains

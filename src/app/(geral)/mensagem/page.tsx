@@ -1,6 +1,6 @@
 'use client'
 
-import type { EncontristaConfirmadosData } from '@/app/api/encontrista/confirmados/get-encontristas-confirmados'
+import type { EncontristaConfirmadosData } from '@/app/api/encontrista/confirmados/get-confirmados'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
 
 import {
@@ -23,7 +23,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { api } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 async function getConfirmados() {
@@ -57,9 +59,13 @@ export type messageData = z.infer<typeof messageScheme>
 export default function Mensagem() {
   const form = useForm<messageData>({
     resolver: zodResolver(messageScheme),
+    defaultValues: {
+      conteudo: '',
+      de: '',
+      encontrista: '',
+      para: '',
+    },
   })
-
-  // const router = useRouter()
 
   const { data: encontristas } = useQuery<SelectArray[]>({
     queryFn: async () => await getConfirmados(),
@@ -69,22 +75,35 @@ export default function Mensagem() {
   const {
     handleSubmit,
     control,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isSubmitSuccessful },
   } = form
 
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      control._reset()
+    }
+  }, [isSubmitSuccessful, control])
+
   async function handlPostMessage(data: messageData) {
-    console.log(data)
-    // if (result?.ok === false) {
-    //   toast.error('Seu usuário ou senha estão incorretos.')
-    // } else {
-    //   router.replace('/admin/externa')
-    // }
+    const message = await api.post('/mensagem', {
+      idEncontrista: data.encontrista,
+      para: data.para,
+      de: data.de,
+      conteudo: data.conteudo,
+    })
+    if (message.status === 201) {
+      toast.success('Obrigado por sua mensagem!')
+    } else {
+      toast.error(
+        'Erro ao enviar sua mensagem, por favor entre em contato com a equipe de externa.',
+      )
+    }
   }
 
   return (
     <div className="flex w-auto items-center justify-center px-4 pt-11">
       <FormProvider {...form}>
-        <form id="loginForm" onSubmit={handleSubmit(handlPostMessage)}>
+        <form id="messageForm" onSubmit={handleSubmit(handlPostMessage)}>
           <Card className="flex flex-col items-center gap-8 p-8 text-zinc-700 lg:w-auto">
             <CardHeader className="flex flex-col gap-2 p-0 text-center">
               <CardTitle className="text-3xl font-bold text-zinc-700">
@@ -121,7 +140,7 @@ export default function Mensagem() {
                   )
                 }}
               />
-              <div className="flex flex-col gap-4 border-2 border-dashed border-primary bg-amber-100/40 p-4">
+              <div className="flex flex-col gap-4 border-2 border-dashed border-primary p-4">
                 <div className="flex items-end gap-1">
                   <FormField
                     control={control}

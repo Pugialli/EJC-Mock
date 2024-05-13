@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
-import { getEncontristasConfirmados } from './get-encontristas-confirmados'
+import { getConfirmados } from './get-confirmados'
 
 export async function GET() {
-  const encontristas = await getEncontristasConfirmados()
+  const encontristas = await getConfirmados()
 
   return NextResponse.json(encontristas, { status: 201 })
 }

@@ -1,9 +1,12 @@
-import { type NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
+import { createMessage, type MensagemProps } from './create-message'
 
 export async function POST(request: NextRequest) {
-  const requestedData = await request.json()
+  const requestedData: MensagemProps = await request.json()
 
-  console.log(requestedData)
-  // const encontro = await createEncontro(requestedData)
-  // return NextResponse.json(encontro, { status: 201 })
+  const carta = await createMessage(requestedData)
+  if (!carta) {
+    return NextResponse.json({ status: 400 })
+  }
+  return NextResponse.json(carta, { status: 201 })
 }

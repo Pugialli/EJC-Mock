@@ -95,8 +95,6 @@ export function PersonalDetails() {
 
     const isAlreadyOnDB = await checkPessoa(personalData.email)
 
-    console.log(isAlreadyOnDB)
-
     if (isAlreadyOnDB) {
       toast.warning('Este email já está cadastrado', {
         description:

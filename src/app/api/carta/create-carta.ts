@@ -1,14 +1,14 @@
 import { prisma } from '@/lib/prisma'
 
 export interface CartaProps {
-  idEncontrista: string
+  slugEncontrista: string
   para: string
   de: string
   conteudo: string
 }
 
 export async function createCarta({
-  idEncontrista,
+  slugEncontrista,
   conteudo,
   de,
   para,
@@ -18,7 +18,7 @@ export async function createCarta({
       role: true,
     },
     where: {
-      id: idEncontrista,
+      slug: slugEncontrista,
     },
   })
 
@@ -30,7 +30,7 @@ export async function createCarta({
 
   return await prisma.carta.create({
     data: {
-      idEncontrista,
+      slugEncontrista,
       de,
       para,
       conteudo,

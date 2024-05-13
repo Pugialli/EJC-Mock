@@ -105,7 +105,7 @@ export function EncontristasCartasTable() {
                   console.log(encontrista)
                   return (
                     <EncontristaCartasTableRow
-                      key={encontrista.id}
+                      key={encontrista.slug}
                       encontristaCartas={encontrista}
                     />
                   )

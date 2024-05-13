@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { BarChart4, Download, Plus } from 'lucide-react'
 import Link from 'next/link'
-import { EncontristasTable } from './(table-encontristas)/pageComponents/encontristas-table'
+import { EncontristasTable } from './(table-encontristas)/encontristas-table'
 
 export default function Externa() {
   return (

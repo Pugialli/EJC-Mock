@@ -82,7 +82,7 @@ model Pessoa {
   email       String  @unique
   password    String?
   avatarUrl   String? @map("avatar_url")
-  slug        String?
+  slug        String  @unique
   role        Role    @default(ENCONTRISTA)
 
   createdAt  DateTime @default(now()) @map("created_at")
@@ -96,8 +96,9 @@ model Pessoa {
   encontreiro        Encontreiro?
   encontrista        Encontrista?
 
-  accounts Account[]
-  sessions Session[]
+  accounts       Account[]
+  sessions       Session[]
+  cartasDigitais Carta[]
 
   @@map("pessoas")
 }
@@ -136,7 +137,6 @@ model Encontrista {
   moraCom            DomainMoraCom        @relation(fields: [idMoracom], references: [id])
   statusPais         DomainStatusPais     @relation(fields: [idStatusPais], references: [id])
   responsavelExterna ResponsavelExterna?
-  cartasDigitais     Carta[]
 
   @@map("encontristas")
 }
@@ -268,14 +268,14 @@ model ResponsavelExterna {
 }
 
 model Carta {
-  id            String   @id @default(uuid())
-  idEncontrista String
-  para          String
-  de            String
-  conteudo      String   @db.Text
-  createdAt     DateTime @default(now()) @map("created_at")
+  id              String   @id @default(uuid())
+  slugEncontrista String
+  para            String
+  de              String
+  conteudo        String   @db.Text
+  createdAt       DateTime @default(now()) @map("created_at")
 
-  encontrista Encontrista @relation(fields: [idEncontrista], references: [idPessoa])
+  pessoa Pessoa @relation(fields: [slugEncontrista], references: [slug])
 
   @@map("cartas")
 }

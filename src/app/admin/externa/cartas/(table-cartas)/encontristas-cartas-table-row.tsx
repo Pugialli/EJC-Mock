@@ -7,14 +7,12 @@ import type {
   CartaSummaryData,
 } from '@/app/api/carta/get-cartas-sumary'
 import type { updateCartaFisicaRouteProps } from '@/app/api/carta/update-carta-fisica/route'
+import { PrintCartasEncontrista } from '@/components/Pdf/PrintCartasEncontrista'
 import { EncontristaCartaStatus } from '@/components/Table/encontrista-carta-status'
 import { Button } from '@/components/ui/button'
-import { TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { api } from '@/lib/axios'
-import { Tooltip } from '@radix-ui/react-tooltip'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
-  Download,
   MailCheck,
   MailWarning,
   MailX,
@@ -149,21 +147,7 @@ export function EncontristaCartasTableRow({
       </TableCell>
       <TableCell>[Em breve...]</TableCell>
       <TableCell className="flex justify-center">
-        <Tooltip>
-          <TooltipTrigger>
-            <Button
-              // onClick={() => dispatchOrderFn({ orderId: order.orderId })}
-              // disabled={isDispatchingOrder}
-              variant="ghost"
-              className="p-0"
-            >
-              <Download className="h-4 w-4 text-tertiary" />
-            </Button>
-            <TooltipContent className="w-32 text-center">
-              Baixar cartas virtuais
-            </TooltipContent>
-          </TooltipTrigger>
-        </Tooltip>
+        <PrintCartasEncontrista encontristaSlug={encontristaCartas.slug} />
       </TableCell>
     </TableRow>
   )

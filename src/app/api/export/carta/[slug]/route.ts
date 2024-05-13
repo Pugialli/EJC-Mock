@@ -11,5 +11,5 @@ export async function GET(
 ) {
   const encontristaCartas = await getEncontristaCartas(context.params.id)
 
-  return NextResponse.json(encontristaCartas)
+  return NextResponse.json(encontristaCartas, { status: 200 })
 }

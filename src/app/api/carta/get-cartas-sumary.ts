@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 
 export type CartaSummaryData = {
   id: string
+  slug: string
   nome: string
   sobrenome: string
   cartasFisicas: number
@@ -43,12 +44,13 @@ async function getEncontritas({
       take: perPage,
       select: {
         id: true,
+        slug: true,
         nome: true,
         sobrenome: true,
+        cartasDigitais: true,
         encontrista: {
           select: {
             cartasFisicas: true,
-            cartasDigitais: true,
           },
         },
       },
@@ -76,12 +78,13 @@ async function getEncontritas({
     take: perPage,
     select: {
       id: true,
+      slug: true,
       nome: true,
       sobrenome: true,
+      cartasDigitais: true,
       encontrista: {
         select: {
           cartasFisicas: true,
-          cartasDigitais: true,
         },
       },
     },
@@ -151,14 +154,13 @@ export async function getMensagensSummary({
     encontristas.map(async (encontrista) => {
       const cartaResponse: CartaSummaryData = {
         id: encontrista.id,
+        slug: encontrista.slug,
         nome: encontrista.nome,
         sobrenome: encontrista.sobrenome,
         cartasFisicas: encontrista.encontrista?.cartasFisicas
           ? encontrista.encontrista.cartasFisicas
           : 0,
-        cartasVirtuais: encontrista.encontrista
-          ? encontrista.encontrista.cartasDigitais.length
-          : 0,
+        cartasVirtuais: encontrista.cartasDigitais.length,
       }
       mensagensResponse.push(cartaResponse)
       return cartaResponse

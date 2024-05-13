@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { BarChart4, Plus } from 'lucide-react'
 import Link from 'next/link'
-import { EncontristasCartasTable } from '../(table-encontristas)/pageComponents/cartas/encontristas-cartas-table'
+import { EncontristasCartasTable } from './(table-cartas)/encontristas-cartas-table'
 
 export default function Cartas() {
   return (

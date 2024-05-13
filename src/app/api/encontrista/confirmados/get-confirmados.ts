@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 
 export type EncontristaConfirmadosData = {
-  id: string
+  slug: string
   nome: string
   sobrenome: string
 }
@@ -11,7 +11,7 @@ export async function getConfirmados() {
 
   return await prisma.pessoa.findMany({
     select: {
-      id: true,
+      slug: true,
       nome: true,
       sobrenome: true,
     },

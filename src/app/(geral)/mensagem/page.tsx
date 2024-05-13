@@ -38,7 +38,7 @@ async function getConfirmados() {
   response.forEach((item) => {
     const selectItem: SelectArray = {
       label: `${item.nome} ${item.sobrenome}`,
-      value: item.id,
+      value: item.slug,
     }
 
     selectData.push(selectItem)
@@ -86,7 +86,7 @@ export default function Mensagem() {
 
   async function handlPostMessage(data: messageData) {
     const message = await api.post('/carta', {
-      idEncontrista: data.encontrista,
+      slugEncontrista: data.encontrista,
       para: data.para,
       de: data.de,
       conteudo: data.conteudo,

@@ -1,18 +1,18 @@
 import { prisma } from '@/lib/prisma'
 
-export interface MensagemProps {
+export interface CartaProps {
   idEncontrista: string
   para: string
   de: string
   conteudo: string
 }
 
-export async function createMessage({
+export async function createCarta({
   idEncontrista,
   conteudo,
   de,
   para,
-}: MensagemProps) {
+}: CartaProps) {
   const encontrista = await prisma.pessoa.findUnique({
     select: {
       role: true,

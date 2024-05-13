@@ -85,7 +85,7 @@ export default function Mensagem() {
   }, [isSubmitSuccessful, control])
 
   async function handlPostMessage(data: messageData) {
-    const message = await api.post('/mensagem', {
+    const message = await api.post('/carta', {
       idEncontrista: data.encontrista,
       para: data.para,
       de: data.de,

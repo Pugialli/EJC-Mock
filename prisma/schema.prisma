@@ -124,6 +124,7 @@ model Encontrista {
   indicadoPorApelido String?          @map("indicado_por_apelido")
   indicadoPorTel     String?          @map("indicado_por_tel")
   indicadoPorEmail   String?          @map("indicado_por_email")
+  cartasFisicas      Int              @default(0) @map("cartas_fisicas")
 
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @updatedAt @map("modified_at")
@@ -135,7 +136,7 @@ model Encontrista {
   moraCom            DomainMoraCom        @relation(fields: [idMoracom], references: [id])
   statusPais         DomainStatusPais     @relation(fields: [idStatusPais], references: [id])
   responsavelExterna ResponsavelExterna?
-  cartas             Carta[]
+  cartasDigitais     Carta[]
 
   @@map("encontristas")
 }

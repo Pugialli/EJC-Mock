@@ -1,4 +1,4 @@
-import { SquareUserRound } from 'lucide-react'
+import { Mail, SquareUserRound } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { NavItem } from './NavItem'
@@ -44,14 +44,14 @@ export function MainNavigation() {
           icon={ListChecks}
           active={path === '/admin/externa/pendencias'}
         />
-      </Link>
+      </Link> */}
       <Link href="/admin/externa/cartas">
         <NavItem
           title="Cartas"
           icon={Mail}
           active={path === '/admin/externa/cartas'}
         />
-      </Link> */}
+      </Link>
     </nav>
   )
 }

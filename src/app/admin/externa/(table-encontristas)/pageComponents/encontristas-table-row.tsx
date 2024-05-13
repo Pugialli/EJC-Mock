@@ -68,6 +68,8 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
     queryKey: ['equipeExterna'],
   })
 
+  console.log(equipeExterna)
+
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <TableRow className="bg-white">

@@ -22,6 +22,8 @@ export async function createPessoa({
   password,
   avatarUrl,
 }: PessoaProps) {
+  // refazer
+
   const saltedPassword = password ? await hash(password, 8) : ''
 
   const pessoa = await prisma.pessoa.create({

@@ -1075,6 +1075,7 @@ async function main() {
       sobrenome: 'Pugialli da Silva Souza',
       celular: '(21) 99719-8998',
       email: 'joaopugialli@gmail.com',
+      slug: 'joaopugialli-56',
       enderecoCep: '22270-000',
       password: '$2a$08$71STWfM30xVPYaBV7jnQpOCfrmwUWbbazG0gb41FmtMJE7AZjA0ZG',
       avatarUrl:

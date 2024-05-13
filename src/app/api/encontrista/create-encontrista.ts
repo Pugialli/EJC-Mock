@@ -6,6 +6,7 @@ import {
   PersonalFormData,
 } from '@/context/CreateEncontristaContext'
 import { prisma } from '@/lib/prisma'
+import { createSlugForEncontrista } from '@/utils/create-slug'
 import { createEndereco } from '../endereco/create-endereco'
 
 export interface CreateEncontristaProps {
@@ -40,6 +41,14 @@ export async function createEncontrista({
   nomination,
   other,
 }: CreateEncontristaProps) {
+  const encontro = await prisma.encontro.findFirst({
+    orderBy: {
+      createdAt: 'desc',
+    },
+  })
+
+  const numeroEncontro = encontro ? encontro.numeroEncontro : 0
+
   const enderecoProps = {
     cep: address.cep,
     bairro: address.bairro,
@@ -50,6 +59,11 @@ export async function createEncontrista({
 
   const endereco = await createEndereco(enderecoProps)
 
+  const encontristaSlug = createSlugForEncontrista(
+    personal.email,
+    numeroEncontro,
+  )
+
   const pessoa = await prisma.pessoa.create({
     data: {
       nome: personal.nome,
@@ -59,6 +73,7 @@ export async function createEncontrista({
       celular: personal.celular,
       telefone: personal.telefone,
       email: personal.email,
+      slug: encontristaSlug,
     },
   })
 
@@ -101,6 +116,7 @@ export async function createEncontrista({
         instagram: personal.instagram,
         restricaoAlimentar: other.restricoesAlimentares,
         idTamanhoCamisa: other.tamanhoCamisa,
+        idEncontro: encontro ? encontro.id : null,
       },
     }),
   ])

@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { Button } from '../ui/button'
-import { TableCell, TableRow } from '../ui/table'
+import { Button } from '../../ui/button'
+import { TableCell, TableRow } from '../../ui/table'
 
 export interface PaginationProps {
   pageIndex: number

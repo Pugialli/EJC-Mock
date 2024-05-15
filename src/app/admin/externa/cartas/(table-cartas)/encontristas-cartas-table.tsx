@@ -1,16 +1,16 @@
 import type {
-  CartaSummary,
-  CartaSummaryData,
+    CartaSummary,
+    CartaSummaryData,
 } from '@/app/api/carta/get-cartas-sumary'
-import { Pagination } from '@/components/Table/Pagination'
+import { Pagination } from '@/components/Table/General/Pagination'
 import { PaginationSkeleton } from '@/components/Table/PaginationSkeleton'
 import {
-  Table,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from '@/components/ui/table'
 import { api } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'

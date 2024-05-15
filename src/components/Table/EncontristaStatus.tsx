@@ -17,7 +17,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem } from '../ui/form'
 import { Select, SelectContent, SelectTrigger, SelectValue } from '../ui/select'
-import { SelectItemIcon, type SelectItemIconProps } from './select-item-icon'
+import { SelectItemIcon, type SelectItemIconProps } from './SelectItemIcon'
 
 interface changeStatusProps {
   encontristaId: string

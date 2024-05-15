@@ -9,7 +9,6 @@ export interface EncontristaIdentification {
 }
 
 export async function getIdentification(slug: string) {
-  console.log(`Slug no GetIdentification: ${slug}`)
   return await prisma.pessoa.findUnique({
     select: {
       id: true,

@@ -11,8 +11,8 @@ import type {
   EncontristaSummary,
   EncontristaSummaryData,
 } from '@/app/api/encontrista/get-encontristas-summary'
-import { Pagination } from '@/components/Table/pagination'
-import { PaginationSkeleton } from '@/components/Table/pagination-skeleton'
+import { Pagination } from '@/components/Table/Pagination'
+import { PaginationSkeleton } from '@/components/Table/PaginationSkeleton'
 import { api } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
 import { compareAsc } from 'date-fns'

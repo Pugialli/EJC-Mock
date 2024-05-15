@@ -8,6 +8,12 @@ const config = {
       width: {
         card: '37rem',
         100: '28rem',
+        a4: '794px',
+        a5: '560px',
+      },
+      height: {
+        a4: '1119px',
+        a5: '790px',
       },
       colors: {
         primary: '#7C3AED',

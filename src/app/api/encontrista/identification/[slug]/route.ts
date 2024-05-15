@@ -9,8 +9,6 @@ export async function GET(
   request: Request,
   context: { params: EncontristaSumaryProps },
 ) {
-  console.log(`Slug na rota: ${context.params.slug}`)
-
   const encontrista = await getIdentification(context.params.slug)
 
   return NextResponse.json(encontrista)

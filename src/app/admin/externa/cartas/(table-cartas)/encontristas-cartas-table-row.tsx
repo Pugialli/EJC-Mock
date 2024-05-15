@@ -7,11 +7,14 @@ import type {
   CartaSummaryData,
 } from '@/app/api/carta/get-cartas-sumary'
 import type { updateCartaFisicaRouteProps } from '@/app/api/carta/update-carta-fisica/route'
-import { PrintCartasEncontrista } from '@/components/Pdf/PrintCartasEncontrista'
-import { EncontristaCartaStatus } from '@/components/Table/encontrista-carta-status'
+import type { EncontristaIdentification } from '@/app/api/encontrista/identification/[slug]/get-identification'
+import type { Carta } from '@/app/api/export/carta/[slug]/get-encontrista-cartas'
+import { PrintCartasEncontristaDocx } from '@/components/Docx/PrintCartasEncontristaDocx'
+import { EncontristaCartaStatus } from '@/components/Table/Cartas/EncontristaCartaStatus'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { api } from '@/lib/axios'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   MailCheck,
   MailWarning,
@@ -30,6 +33,26 @@ export async function changeCartasFisicas({
   cartasFisicas,
 }: updateCartaFisicaRouteProps) {
   await api.patch('/carta/update-carta-fisica/', { id, cartasFisicas })
+}
+
+async function getCartasEncontrista(slug: string) {
+  const cartas = await api.get(`export/carta/${slug}`)
+  // const cartas = await fetch(
+  //   `${process.env.NEXTAUTH_URL}/api/export/carta/${slug}`,
+  //   { cache: 'no-store' },
+  // ).then(async (res) => await res.json())
+
+  return cartas.data
+}
+
+async function getEncontristaShortData(slug: string) {
+  const encontrista = await api.get(`encontrista/identification/${slug}`)
+
+  // const encontrista = await fetch(
+  //   `${process.env.NEXTAUTH_URL}/api/encontrista/identification/${slug}`,
+  // ).then(async (res) => await res.json())
+
+  return encontrista.data
 }
 
 export interface StatusCartaProps {
@@ -60,7 +83,7 @@ export function EncontristaCartasTableRow({
   encontristaCartas,
 }: EncontristaCartasTableRowProps) {
   const totalCartas =
-    encontristaCartas.cartasFisicas + encontristaCartas.cartasVirtuais
+    encontristaCartas.cartasFisicas + encontristaCartas.cartasVirtuaisTotais
 
   const statusCartaEncontrista =
     totalCartas === 0
@@ -70,6 +93,23 @@ export function EncontristaCartasTableRow({
         : statusCarta[2]
 
   const nomeCompleto = `${encontristaCartas.nome} ${encontristaCartas.sobrenome}`
+  const slug = encontristaCartas.slug
+
+  const { data: cartas } = useQuery<Carta[]>({
+    queryKey: ['carta', { slug }],
+    queryFn: async () => await getCartasEncontrista(slug),
+  })
+
+  const { data: encontristaData } = useQuery<EncontristaIdentification>({
+    queryKey: ['encontristaShort', { slug }],
+    queryFn: async () => await getEncontristaShortData(slug),
+  })
+  // const encontristaData: EncontristaIdentification =
+  //   await getEncontristaShortData(slug)
+
+  // const header =
+  //   encontristaData &&
+  //   `${encontristaData.nome} ${encontristaData.sobrenome} - Amarelo`
 
   const queryClient = useQueryClient()
 
@@ -78,7 +118,7 @@ export function EncontristaCartasTableRow({
     cartasFisicas: number,
   ) {
     const encontristaCartaListCache = queryClient.getQueriesData<CartaSummary>({
-      queryKey: ['cartas'],
+      queryKey: ['cartasSumary'],
     })
 
     encontristaCartaListCache.forEach(([cacheKey, cacheData]) => {
@@ -135,7 +175,8 @@ export function EncontristaCartasTableRow({
         </Button>
       </TableCell>
       <TableCell className="text-center">
-        {encontristaCartas.cartasVirtuais}
+        {encontristaCartas.cartasVirtuaisImpressas} (
+        {encontristaCartas.cartasVirtuaisTotais})
       </TableCell>
       <TableCell className="text-center"> {totalCartas} </TableCell>
       <TableCell className="flex items-center gap-2">
@@ -146,8 +187,18 @@ export function EncontristaCartasTableRow({
         />
       </TableCell>
       <TableCell>[Em breve...]</TableCell>
-      <TableCell className="flex justify-center">
-        <PrintCartasEncontrista encontristaSlug={encontristaCartas.slug} />
+      <TableCell className="flex items-center justify-center gap-2">
+        {cartas && encontristaData ? (
+          <>
+            {/* <EditCartasStatus cartas={cartas} encontrista={encontristaData} /> */}
+            <PrintCartasEncontristaDocx
+              cartas={cartas}
+              encontrista={encontristaData}
+            />
+          </>
+        ) : (
+          <Skeleton className="w-5" />
+        )}
       </TableCell>
     </TableRow>
   )

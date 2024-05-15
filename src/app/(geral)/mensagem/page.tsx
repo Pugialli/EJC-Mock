@@ -49,9 +49,15 @@ async function getConfirmados() {
 
 const messageScheme = z.object({
   encontrista: z.string({ required_error: 'O encontrista é obrigatório.' }),
-  para: z.string(),
-  de: z.string(),
-  conteudo: z.string(),
+  para: z
+    .string({ required_error: 'Para quem devemos enviar?' })
+    .min(2, { message: 'Para quem deve conter pelo menos 2 letras' }),
+  de: z
+    .string({ required_error: 'Não esqueça de assinar.' })
+    .min(2, { message: 'Sua assinatura deve conter pelo menos 2 letras' }),
+  conteudo: z
+    .string({ required_error: 'Opa, faltou sua mensagem.' })
+    .min(5, { message: 'Opa, faltou sua mensagem.' }),
 })
 
 export type messageData = z.infer<typeof messageScheme>
@@ -71,6 +77,8 @@ export default function Mensagem() {
     queryFn: async () => await getConfirmados(),
     queryKey: ['encontristasConfirmados'],
   })
+
+  console.log(encontristas)
 
   const {
     handleSubmit,

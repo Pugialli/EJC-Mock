@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem } from '../ui/form'
 import { Select, SelectContent, SelectTrigger, SelectValue } from '../ui/select'
-import { SelectItemAvatar } from './select-item-avatar'
+import { SelectItemAvatar } from './SelectItemAvatar'
 
 interface EncontristaExternaProps {
   idExterna: string | null

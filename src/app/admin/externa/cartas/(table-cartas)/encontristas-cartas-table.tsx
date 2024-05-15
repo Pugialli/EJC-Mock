@@ -2,8 +2,8 @@ import type {
   CartaSummary,
   CartaSummaryData,
 } from '@/app/api/carta/get-cartas-sumary'
-import { Pagination } from '@/components/Table/pagination'
-import { PaginationSkeleton } from '@/components/Table/pagination-skeleton'
+import { Pagination } from '@/components/Table/Pagination'
+import { PaginationSkeleton } from '@/components/Table/PaginationSkeleton'
 import {
   Table,
   TableBody,
@@ -56,9 +56,9 @@ export function EncontristasCartasTable() {
     .transform((page) => page - 1)
     .parse(searchParams.get('page') ?? '1')
 
-  const { data: result, isLoading: isLoadingEncontrista } =
+  const { data: cartaSumary, isLoading: isLoadingEncontrista } =
     useQuery<CartaSummary>({
-      queryKey: ['cartas', { pageIndex, encontristaName }],
+      queryKey: ['cartasSumary', { pageIndex, encontristaName }],
       queryFn: () => getCartas({ pageIndex, encontristaName }),
     })
 
@@ -86,7 +86,7 @@ export function EncontristasCartasTable() {
                   Cartas físicas
                 </TableHead>
                 <TableHead className="w-32 text-center">
-                  Cartas virtuais
+                  Cartas virtuais impressas
                 </TableHead>
                 <TableHead className="w-36 text-center">
                   Total de Cartas
@@ -95,14 +95,15 @@ export function EncontristasCartasTable() {
                 <TableHead className="w-7 lg:w-[178px]">
                   Tio de Externa
                 </TableHead>
-                <TableHead className="w-7 rounded-tr-xl">Ações</TableHead>
+                <TableHead className="w-7 rounded-tr-xl text-center">
+                  Ações
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="bg-transparent">
               {isLoadingEncontrista && <EncontristaCartasTableSkeleton />}
-              {result &&
-                result.encontristas.map((encontrista) => {
-                  console.log(encontrista)
+              {cartaSumary &&
+                cartaSumary.encontristas.map((encontrista) => {
                   return (
                     <EncontristaCartasTableRow
                       key={encontrista.slug}
@@ -113,11 +114,11 @@ export function EncontristasCartasTable() {
             </TableBody>
             <TableFooter>
               {isLoadingEncontrista && <PaginationSkeleton />}
-              {result && (
+              {cartaSumary && (
                 <Pagination
-                  pageIndex={result.pageIndex}
-                  totalCount={result.totalCount}
-                  perPage={result.perPage}
+                  pageIndex={cartaSumary.pageIndex}
+                  totalCount={cartaSumary.totalCount}
+                  perPage={cartaSumary.perPage}
                   onPageChange={handlePaginate}
                 />
               )}

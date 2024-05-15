@@ -6,7 +6,8 @@ export type CartaSummaryData = {
   nome: string
   sobrenome: string
   cartasFisicas: number
-  cartasVirtuais: number
+  cartasVirtuaisTotais: number
+  cartasVirtuaisImpressas: number
 }
 
 export type CartaSummary = {
@@ -31,11 +32,7 @@ type getTotalEncontristasProps = {
   encontristaName: string | null
 }
 
-async function getEncontritas({
-  page,
-  perPage,
-  encontristaName,
-}: getCartaProps) {
+async function getCartas({ page, perPage, encontristaName }: getCartaProps) {
   const skipData = page * perPage
 
   if (encontristaName) {
@@ -140,18 +137,21 @@ export async function getMensagensSummary({
     encontristaName,
   })
 
-  const encontristas = await getEncontritas({
+  const cartasEncontristas = await getCartas({
     page,
     perPage,
     encontristaName,
   })
 
-  if (!encontristas) {
+  if (!cartasEncontristas) {
     return null
   }
 
   await Promise.all(
-    encontristas.map(async (encontrista) => {
+    cartasEncontristas.map(async (encontrista) => {
+      const cartasImpressas = encontrista.cartasDigitais.filter(
+        (carta) => carta.isPrinted,
+      )
       const cartaResponse: CartaSummaryData = {
         id: encontrista.id,
         slug: encontrista.slug,
@@ -160,7 +160,8 @@ export async function getMensagensSummary({
         cartasFisicas: encontrista.encontrista?.cartasFisicas
           ? encontrista.encontrista.cartasFisicas
           : 0,
-        cartasVirtuais: encontrista.cartasDigitais.length,
+        cartasVirtuaisTotais: encontrista.cartasDigitais.length,
+        cartasVirtuaisImpressas: cartasImpressas.length,
       }
       mensagensResponse.push(cartaResponse)
       return cartaResponse

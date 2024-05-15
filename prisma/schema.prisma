@@ -273,6 +273,7 @@ model Carta {
   para            String
   de              String
   conteudo        String   @db.Text
+  isPrinted       Boolean  @default(false)
   createdAt       DateTime @default(now()) @map("created_at")
 
   pessoa Pessoa @relation(fields: [slugEncontrista], references: [slug])

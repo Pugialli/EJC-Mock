@@ -10,6 +10,7 @@ import { z } from 'zod'
 
 const encontristaFiltersSchema = z.object({
   encontristaName: z.string().optional(),
+  cartaStatus: z.string().optional(),
 })
 
 type encontristaFiltersFormInput = z.infer<typeof encontristaFiltersSchema>
@@ -20,11 +21,13 @@ export function EncontristaCartasTableFilters() {
   const searchParams = useSearchParams()
 
   const searchedEncontristaName = searchParams.get('encontristaName')
+  const searchedCartaStatus = searchParams.get('cartaStatus')
 
   const form = useForm<encontristaFiltersFormInput>({
     resolver: zodResolver(encontristaFiltersSchema),
     defaultValues: {
       encontristaName: searchedEncontristaName ?? '',
+      cartaStatus: searchedCartaStatus ?? 'all',
     },
   })
 
@@ -32,6 +35,7 @@ export function EncontristaCartasTableFilters() {
 
   async function handleFilter({
     encontristaName,
+    cartaStatus,
   }: encontristaFiltersFormInput) {
     const newSearch = new URLSearchParams()
 
@@ -39,6 +43,12 @@ export function EncontristaCartasTableFilters() {
       newSearch.append('encontristaName', encontristaName)
     } else {
       newSearch.delete('encontristaName')
+    }
+
+    if (cartaStatus && cartaStatus !== 'all') {
+      newSearch.append('encontristaStatus', cartaStatus)
+    } else {
+      newSearch.delete('encontristaStatus')
     }
 
     newSearch.append('page', '1')
@@ -49,6 +59,7 @@ export function EncontristaCartasTableFilters() {
   function handleClearFilters() {
     const newSearch = new URLSearchParams()
     newSearch.delete('encontristaName')
+    newSearch.delete('cartaStatus')
     newSearch.append('page', '1')
     reset()
     router.push(`${pathname}`)
@@ -72,6 +83,30 @@ export function EncontristaCartasTableFilters() {
               />
             )}
           />
+          {/* <FormField
+            control={control}
+            name="cartaStatus"
+            defaultValue="all"
+            render={({ field }) => {
+              return (
+                <div className="lg:w-96">
+                  <SelectGroupInput
+                    onChange={field.onChange}
+                    value={field.value}
+                    disabled={true}
+                  >
+                    <SelectItem value="all" text="Todos status" />
+                    <SelectItem value="cartas_ok" text="Cartas Ok" />
+                    <SelectItem
+                      value="precisa_cartas"
+                      text="Precisa de cartas"
+                    />
+                    <SelectItem value="sem_cartas" text="Sem cartas" />
+                  </SelectGroupInput>
+                </div>
+              )
+            }}
+          /> */}
 
           <div className="flex justify-between gap-2 py-2 lg:w-96 ">
             <Button type="submit" variant="secondary">

@@ -14,6 +14,7 @@ import {
 } from 'docx'
 import { saveAs } from 'file-saver'
 import { Download } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 
@@ -49,11 +50,15 @@ export function PrintCartasEncontristaDocx({
   cartas,
   encontrista,
 }: PrintCartasEncontrista) {
-  const hasCartas = cartas.length === 0
-  const filteredCartas = hasCartas
-    ? cartas.filter((carta) => !carta.isPrinted)
-    : null
+  const [hasCartas, setHasCartas] = useState(cartas.length !== 0)
+  const [filteredCartas, setFilteredCartas] = useState<Carta[] | null>(null)
   const header = `${encontrista.nome} ${encontrista.sobrenome} - [Circulo]`
+
+  useEffect(() => {
+    const newFilteredCartas = cartas.filter((carta) => !carta.isPrinted)
+    setFilteredCartas(newFilteredCartas)
+    setHasCartas(newFilteredCartas.length !== 0)
+  }, [cartas, setHasCartas])
 
   async function getUnprintedCartas() {
     const doc: Paragraph[] = []
@@ -113,9 +118,7 @@ export function PrintCartasEncontristaDocx({
     })
 
     Packer.toBlob(document).then((blob) => {
-      console.log(blob)
       saveAs(blob, `cartas-${encontrista.nome}.docx`)
-      console.log('Document created successfully')
     })
   }
   return (
@@ -124,7 +127,7 @@ export function PrintCartasEncontristaDocx({
         <Button
           variant="ghost"
           className="p-0 disabled:cursor-auto disabled:opacity-20"
-          disabled={hasCartas}
+          disabled={!hasCartas}
           onClick={generateDocx}
         >
           <Download className="h-4 w-4 text-tertiary" />

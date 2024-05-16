@@ -1,16 +1,16 @@
 import type {
-    CartaSummary,
-    CartaSummaryData,
+  CartaSummary,
+  CartaSummaryData,
 } from '@/app/api/carta/get-cartas-sumary'
-import { Pagination } from '@/components/Table/General/Pagination'
+import { Pagination } from '@/components/Table/Pagination'
 import { PaginationSkeleton } from '@/components/Table/PaginationSkeleton'
 import {
-    Table,
-    TableBody,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table'
 import { api } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
@@ -76,7 +76,7 @@ export function EncontristasCartasTable() {
       <div className="flex flex-col gap-4 py-1">
         <EncontristaCartasTableFilters />
         <div className="bg-transparent">
-          <Table className="text-sm">
+          <Table className="text-xs">
             <TableHeader>
               <TableRow className="px-2">
                 <TableHead className="w-7 rounded-tl-xl lg:w-80">
@@ -85,7 +85,7 @@ export function EncontristasCartasTable() {
                 <TableHead className="w-32 text-center">
                   Cartas físicas
                 </TableHead>
-                <TableHead className="w-32 text-center">
+                <TableHead className="w-48 text-center">
                   Cartas virtuais impressas
                 </TableHead>
                 <TableHead className="w-36 text-center">

@@ -10,6 +10,7 @@ import type { updateCartaFisicaRouteProps } from '@/app/api/carta/update-carta-f
 import type { EncontristaIdentification } from '@/app/api/encontrista/identification/[slug]/get-identification'
 import type { Carta } from '@/app/api/export/carta/[slug]/get-encontrista-cartas'
 import { PrintCartasEncontristaDocx } from '@/components/Docx/PrintCartasEncontristaDocx'
+import { EditCartasStatus } from '@/components/Table/Cartas/EditCartasStatus'
 import { EncontristaCartaStatus } from '@/components/Table/Cartas/EncontristaCartaStatus'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -37,20 +38,12 @@ export async function changeCartasFisicas({
 
 async function getCartasEncontrista(slug: string) {
   const cartas = await api.get(`export/carta/${slug}`)
-  // const cartas = await fetch(
-  //   `${process.env.NEXTAUTH_URL}/api/export/carta/${slug}`,
-  //   { cache: 'no-store' },
-  // ).then(async (res) => await res.json())
 
   return cartas.data
 }
 
 async function getEncontristaShortData(slug: string) {
   const encontrista = await api.get(`encontrista/identification/${slug}`)
-
-  // const encontrista = await fetch(
-  //   `${process.env.NEXTAUTH_URL}/api/encontrista/identification/${slug}`,
-  // ).then(async (res) => await res.json())
 
   return encontrista.data
 }
@@ -95,7 +88,7 @@ export function EncontristaCartasTableRow({
   const nomeCompleto = `${encontristaCartas.nome} ${encontristaCartas.sobrenome}`
   const slug = encontristaCartas.slug
 
-  const { data: cartas } = useQuery<Carta[]>({
+  const { data: cartas, isLoading: isLoadingCartas } = useQuery<Carta[]>({
     queryKey: ['carta', { slug }],
     queryFn: async () => await getCartasEncontrista(slug),
   })
@@ -104,12 +97,6 @@ export function EncontristaCartasTableRow({
     queryKey: ['encontristaShort', { slug }],
     queryFn: async () => await getEncontristaShortData(slug),
   })
-  // const encontristaData: EncontristaIdentification =
-  //   await getEncontristaShortData(slug)
-
-  // const header =
-  //   encontristaData &&
-  //   `${encontristaData.nome} ${encontristaData.sobrenome} - Amarelo`
 
   const queryClient = useQueryClient()
 
@@ -153,33 +140,37 @@ export function EncontristaCartasTableRow({
   return (
     <TableRow className="bg-white">
       <TableCell>{nomeCompleto}</TableCell>
-      <TableCell className="flex items-center justify-center gap-2">
-        <Button
-          onClick={() =>
-            handleUpdateCartasFisicas(encontristaCartas.cartasFisicas - 1)
-          }
-          variant="ghost"
-          className="p-0"
-        >
-          <MinusCircle className="h-4 w-4 text-tertiary" />
-        </Button>
-        <span className="text-tertiary">{encontristaCartas.cartasFisicas}</span>
-        <Button
-          onClick={() =>
-            handleUpdateCartasFisicas(encontristaCartas.cartasFisicas + 1)
-          }
-          variant="ghost"
-          className="p-0"
-        >
-          <PlusCircle className="h-4 w-4 text-tertiary" />
-        </Button>
+      <TableCell>
+        <div className="flex items-center justify-center gap-2">
+          <Button
+            onClick={() =>
+              handleUpdateCartasFisicas(encontristaCartas.cartasFisicas - 1)
+            }
+            variant="ghost"
+            className="p-0"
+          >
+            <MinusCircle className="h-4 w-4 text-tertiary" />
+          </Button>
+          <span className="text-tertiary">
+            {encontristaCartas.cartasFisicas}
+          </span>
+          <Button
+            onClick={() =>
+              handleUpdateCartasFisicas(encontristaCartas.cartasFisicas + 1)
+            }
+            variant="ghost"
+            className="p-0"
+          >
+            <PlusCircle className="h-4 w-4 text-tertiary" />
+          </Button>
+        </div>
       </TableCell>
       <TableCell className="text-center">
         {encontristaCartas.cartasVirtuaisImpressas} (
         {encontristaCartas.cartasVirtuaisTotais})
       </TableCell>
-      <TableCell className="text-center"> {totalCartas} </TableCell>
-      <TableCell className="flex items-center gap-2">
+      <TableCell className="text-center">{totalCartas}</TableCell>
+      <TableCell>
         <EncontristaCartaStatus
           color={statusCartaEncontrista.color}
           icon={statusCartaEncontrista.icon}
@@ -187,18 +178,19 @@ export function EncontristaCartasTableRow({
         />
       </TableCell>
       <TableCell>[Em breve...]</TableCell>
-      <TableCell className="flex items-center justify-center gap-2">
-        {cartas && encontristaData ? (
-          <>
-            {/* <EditCartasStatus cartas={cartas} encontrista={encontristaData} /> */}
-            <PrintCartasEncontristaDocx
-              cartas={cartas}
-              encontrista={encontristaData}
-            />
-          </>
-        ) : (
-          <Skeleton className="w-5" />
-        )}
+      <TableCell>
+        <div className="flex items-center justify-center gap-2">
+          {isLoadingCartas && <Skeleton className="w-5" />}
+          {cartas && encontristaData && (
+            <>
+              <EditCartasStatus cartas={cartas} encontrista={encontristaData} />
+              <PrintCartasEncontristaDocx
+                cartas={cartas}
+                encontrista={encontristaData}
+              />
+            </>
+          )}
+        </div>
       </TableCell>
     </TableRow>
   )

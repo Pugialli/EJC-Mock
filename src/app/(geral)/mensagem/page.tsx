@@ -78,8 +78,6 @@ export default function Mensagem() {
     queryKey: ['encontristasConfirmados'],
   })
 
-  console.log(encontristas)
-
   const {
     handleSubmit,
     control,

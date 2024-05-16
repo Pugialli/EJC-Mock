@@ -35,7 +35,7 @@ export function EditCartasStatus({
             </Button>
           </DialogTrigger>
         </TooltipTrigger>
-        <DialogContent className="h-4/5 w-4/5 overflow-y-scroll scroll-smooth p-8 lg:w-screen">
+        <DialogContent className="h-auto w-9/10 rounded-lg p-6 lg:h-auto lg:w-screen">
           <CheckCartasVirtuaisDialog
             cartas={cartas}
             encontrista={encontrista}

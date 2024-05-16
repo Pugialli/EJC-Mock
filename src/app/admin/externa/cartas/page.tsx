@@ -15,7 +15,7 @@ export default function Cartas() {
   return (
     <div className="w-ful h-full">
       <div className="pb-4">
-        <div className="flex items-center justify-between pb-8">
+        <div className="flex items-center justify-between gap-8 pb-8">
           <div className="">
             <h1 className="text-2xl font-bold text-tertiary">
               Controle de Cartas
@@ -26,6 +26,12 @@ export default function Cartas() {
             </span>
           </div>
           <div className="flex flex-col items-center gap-2 lg:flex-row">
+            {/* <Button>
+              <div className="flex items-center justify-center gap-2 lg:w-40">
+                <Plus className="h-4 w-4" />
+                <span className="hidden lg:flex">Nova Carta</span>
+              </div>
+            </Button> */}
             <Link href="/mensagem" target="_blank">
               <Button>
                 <div className="flex items-center justify-center gap-2 lg:w-40">

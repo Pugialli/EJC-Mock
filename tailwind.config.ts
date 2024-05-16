@@ -10,10 +10,12 @@ const config = {
         100: '28rem',
         a4: '794px',
         a5: '560px',
+        '9/10': '90%',
       },
       height: {
         a4: '1119px',
         a5: '790px',
+        '9/10': '90%',
       },
       colors: {
         primary: '#7C3AED',

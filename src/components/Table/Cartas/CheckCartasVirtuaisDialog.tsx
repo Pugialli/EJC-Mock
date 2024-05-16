@@ -10,77 +10,67 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { api } from '@/lib/axios'
 import { textEllipsis } from '@/utils/ellipsis-text'
-import { Button } from '../../ui/button'
-import {
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '../../ui/dialog'
+import { formatDate } from 'date-fns'
+import { DialogDescription, DialogHeader, DialogTitle } from '../../ui/dialog'
+import { CartaCheckbox } from './CartaCheckbox'
 
 interface CheckCartasVirtuaisDialogProps {
   cartas: Carta[]
   encontrista: EncontristaIdentification
 }
 
-export async function changeCartaStatus(cartaId: string) {
-  // await new Promise((resolve) => setTimeout(resolve, Math.random() * 10000))
-
-  return await api.patch(`/carta/${cartaId}`)
-}
-
 export function CheckCartasVirtuaisDialog({
   cartas,
   encontrista,
 }: CheckCartasVirtuaisDialogProps) {
-  // const [isUpdating, setIsUpdating] = useState(false)
-
-  // async function handleUpdateStatus(idCarta: string) {
-  //   setIsUpdating(true)
-  //   await changeCartaStatus(idCarta)
-  //   setIsUpdating(false)
-  // }
-
-  console.log(encontrista)
-
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Cartas Virtuais de João Paulo</DialogTitle>
+        <DialogTitle>
+          Cartas Virtuais de {encontrista.nome} {encontrista.sobrenome}
+        </DialogTitle>
         <DialogDescription>
-          Marque as cartas que já foram impressas e adicionadas aos sacos de
+          Marque as cartas que já foram impressas e adicionadas ao saco de
           choro.
         </DialogDescription>
       </DialogHeader>
-      <div className="grid gap-4 py-4">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Enviada</TableHead>
-              <TableHead>De</TableHead>
-              <TableHead>Conteudo</TableHead>
-              <TableHead>Impressa</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {cartas.map((carta, index) => (
-              <TableRow key={index}>
-                <TableCell>12/05/2024</TableCell>
+      <Table className="text-xs">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Enviada</TableHead>
+            <TableHead>De</TableHead>
+            <TableHead>Conteudo</TableHead>
+            <TableHead className="text-center">Impressa</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {cartas.map((carta) => {
+            const dataEnvio = formatDate(new Date(carta.createdAt), 'dd/MM/yy')
+            return (
+              <TableRow key={carta.id}>
+                <TableCell>{dataEnvio}</TableCell>
                 <TableCell>{carta.de}</TableCell>
                 <TableCell className="text-nowrap">
-                  {textEllipsis(carta.conteudo, 20)}
+                  {textEllipsis(carta.conteudo, 15)}
                 </TableCell>
-                <TableCell>{carta.isPrinted}</TableCell>
+                <TableCell className="flex items-center justify-center">
+                  <CartaCheckbox
+                    id={carta.id}
+                    slug={encontrista.slug}
+                    status={carta.isPrinted}
+                  />
+                </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-      <DialogFooter>
-        <Button type="submit">Salvar</Button>
-      </DialogFooter>
+            )
+          })}
+        </TableBody>
+      </Table>
+      {/* <DialogFooter>
+        <Button type="submit" disabled={isUpdating}>
+          Salvar
+        </Button>
+      </DialogFooter> */}
     </>
   )
 }

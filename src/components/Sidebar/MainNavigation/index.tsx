@@ -1,4 +1,4 @@
-import { Mail, SquareUserRound } from 'lucide-react'
+import { Mail, Puzzle, SquareUserRound } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { NavItem } from './NavItem'
@@ -15,13 +15,14 @@ export function MainNavigation() {
           active={path === '/admin/externa'}
         />
       </Link>
-      {/* <Link href="/admin/externa/circulos">
+      <Link href="/admin/externa/circulos">
         <NavItem
           title="Montagem de Círculos"
           icon={Puzzle}
           active={path === '/admin/externa/circulos'}
         />
       </Link>
+      {/*
       <NavItemGroup title="Tios de Externa" icon={CarFront}>
         <Link href="/admin/externa/tios">
           <NavItem

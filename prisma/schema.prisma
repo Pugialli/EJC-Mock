@@ -182,12 +182,11 @@ model Encontro {
 }
 
 model Circulo {
-  id                 String @id @default(uuid())
-  idCorCirculo       Int    @map("id_cor_circulo")
-  idTioAparente      String @unique @map("id_tio_aparente")
-  idTioSecreto       String @unique @map("id_tio_secreto")
-  numeroEncontristas Int    @map("numero_encontristas")
-  idEncontro         String @map("id_encontro")
+  id            String  @id @default(uuid())
+  idCorCirculo  Int     @map("id_cor_circulo")
+  idTioAparente String? @unique @map("id_tio_aparente")
+  idTioSecreto  String? @unique @map("id_tio_secreto")
+  idEncontro    String  @map("id_encontro")
 
   encontro    Encontro         @relation(fields: [idEncontro], references: [id])
   corCirculo  DomainCorCirculo @relation(fields: [idCorCirculo], references: [id])

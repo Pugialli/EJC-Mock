@@ -36,12 +36,20 @@ export function Circulo({ idCor, aparente, secreto, encontristas }: Circulo) {
           </div>
         </CardTitle>
         <CardContent>
-          <div className="flex flex-col justify-between gap-4 lg:flex-row">
+          <div className="flex justify-between gap-4">
             {aparente && (
-              <TioCirculo nome="João Paulo" idade="31" tipo="Aparente" />
+              <TioCirculo
+                nome={aparente.nome}
+                idade={aparente.idade}
+                tipo={aparente.tipo}
+              />
             )}
             {secreto && (
-              <TioCirculo nome="Patricia Marques" idade="29" tipo="Secreto" />
+              <TioCirculo
+                nome={secreto.nome}
+                idade={secreto.idade}
+                tipo={secreto.tipo}
+              />
             )}
           </div>
           <div className="flex flex-col gap-4">

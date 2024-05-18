@@ -9,7 +9,7 @@ export interface TioCirculoProps {
 
 export function TioCirculo({ nome, idade, tipo }: TioCirculoProps) {
   return (
-    <div>
+    <div className="w-full">
       <h1>{nome}</h1>
       <Separator />
       <div className="flex flex-col justify-between p-2">

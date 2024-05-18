@@ -41,10 +41,10 @@ export default function MontagemCirculos() {
             </div>
           </Button>
         </div>
-        <div className="col-span-6">
+        <div className="col-span-9 lg:col-span-6">
           <Circulos />
         </div>
-        <div className="col-span-3">
+        <div className="col-span-9 lg:col-span-3">
           <ListaConfirmadosSemCirculo />
         </div>
       </div>

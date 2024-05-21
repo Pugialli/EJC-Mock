@@ -52,7 +52,7 @@ export function PrintCartasEncontristaDocx({
 }: PrintCartasEncontrista) {
   const [hasCartas, setHasCartas] = useState(cartas.length !== 0)
   const [filteredCartas, setFilteredCartas] = useState<Carta[] | null>(null)
-  const header = `${encontrista.nome} ${encontrista.sobrenome} - [Circulo]`
+  const header = `${encontrista.nome} ${encontrista.sobrenome} - ${encontrista.corCirculo}`
 
   useEffect(() => {
     const newFilteredCartas = cartas.filter((carta) => !carta.isPrinted)

@@ -2,6 +2,7 @@
 
 import { TableCell, TableRow } from '@/components/ui/table'
 
+import type { CoresMapProps } from '@/@types/cores-circulos'
 import type {
   CartaSummary,
   CartaSummaryData,
@@ -15,6 +16,7 @@ import { EncontristaCartaStatus } from '@/components/Table/Cartas/EncontristaCar
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { api } from '@/lib/axios'
+import { cn } from '@/lib/utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   MailCheck,
@@ -70,6 +72,14 @@ const statusCarta: StatusCartaProps[] = [
     icon: MailCheck,
     label: 'Cartas Ok',
   },
+]
+
+const coresMap: CoresMapProps[] = [
+  { index: 1, color: 'bg-yellow-400 text-yellow-400', label: 'Amarelo' },
+  { index: 2, color: 'bg-blue-400 text-blue-400', label: 'Azul' },
+  { index: 3, color: 'bg-orange-400 text-orange-400', label: 'Laranja' },
+  { index: 4, color: 'bg-emerald-400 text-emerald-400', label: 'Verde' },
+  { index: 5, color: 'bg-red-400 text-red-400', label: 'Vermelho' },
 ]
 
 export function EncontristaCartasTableRow({
@@ -136,10 +146,18 @@ export function EncontristaCartasTableRow({
       cartasFisicas,
     })
   }
+  const cor = encontristaCartas.idCor
+    ? coresMap.filter((cor) => encontristaCartas.idCor === cor.index)[0].color
+    : 'Cinza'
 
   return (
     <TableRow className="bg-white">
-      <TableCell>{nomeCompleto}</TableCell>
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <span>{nomeCompleto}</span>
+          <div className={cn('h-2 w-2 rounded-full', cor)} />
+        </div>
+      </TableCell>
       <TableCell>
         <div className="flex items-center justify-center gap-2">
           <Button

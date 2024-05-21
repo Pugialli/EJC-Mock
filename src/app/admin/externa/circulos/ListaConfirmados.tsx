@@ -1,50 +1,53 @@
 import { Card } from '@/components/ui/card'
-import { CardEncontrista, type CardEncontristaInfo } from './CardEncontristas'
+import { stringToDate } from '@/utils/string-to-date'
+import { useDroppable } from '@dnd-kit/core'
+import { useUniqueId } from '@dnd-kit/utilities'
+import { compareDesc } from 'date-fns'
+import { CardEncontrista, type SortableEncontrista } from './CardEncontristas'
 
-export function ListaConfirmadosSemCirculo() {
-  const encontristas: CardEncontristaInfo[] = [
-    {
-      id: '1',
-      nome: 'Amanda Roberta',
-      idade: '23',
-      bairro: 'Copacabana',
+interface ListaConfirmadosSemCirculoProps {
+  encontristas: SortableEncontrista[]
+}
+
+function compareDate(a: SortableEncontrista, b: SortableEncontrista) {
+  return compareDesc(
+    stringToDate(a.content.nascimento),
+    stringToDate(b.content.nascimento),
+  )
+}
+
+export function ListaConfirmadosSemCirculo({
+  encontristas,
+}: ListaConfirmadosSemCirculoProps) {
+  const encontristasWithoutCirculo = encontristas
+    .filter((encontrista) => encontrista.circuloId === '0')
+    .sort(compareDate)
+
+  const { setNodeRef } = useDroppable({
+    id: useUniqueId('EncontristaSemCirculo', '0'),
+    data: {
+      type: 'Circulo',
+      accepts: ['Encontrista'],
     },
-    {
-      id: '2',
-      nome: 'João Paulo Pugialli',
-      idade: '31',
-      bairro: 'Botafogo',
-    },
-    {
-      id: '3',
-      nome: 'Alexandre Alves',
-      idade: '18',
-      bairro: 'Vila da Penha',
-    },
-    {
-      id: '4',
-      nome: 'Maia [Adicionar]',
-      idade: '20',
-      bairro: 'Jardim Botânico',
-    },
-  ]
+  })
+
   return (
     <div className="p-4">
-      <Card className="flex flex-col gap-8 p-4 text-zinc-700 shadow-lg">
-        <h2 className="text-xl font-bold">Encontristas sem Círculo</h2>
+      <Card
+        ref={setNodeRef}
+        className="flex flex-col gap-8 p-4 text-zinc-700 shadow-lg"
+      >
+        <div className="flex items-center justify-between p-2">
+          <h2 className="text-xl font-bold">Encontristas sem Círculo</h2>
+          <span className="font-medium">
+            {encontristasWithoutCirculo.length}
+          </span>
+        </div>
+
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between rounded bg-violet-100 p-2">
-            <h2 className="text-xl font-bold">Total de Encontristas</h2>
-            <span className="font-medium">12</span>
-          </div>
-          {encontristas.map((encontrista) => {
+          {encontristasWithoutCirculo.map((encontrista) => {
             return (
-              <CardEncontrista
-                key={encontrista.id}
-                nome={encontrista.nome}
-                idade={encontrista.idade}
-                bairro={encontrista.bairro}
-              />
+              <CardEncontrista key={encontrista.id} encontrista={encontrista} />
             )
           })}
         </div>

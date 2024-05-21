@@ -1,13 +1,30 @@
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import { CardEncontrista, type CardEncontristaInfo } from './CardEncontristas'
+import { useDroppable, type UniqueIdentifier } from '@dnd-kit/core'
+import { CardEncontrista, type SortableEncontrista } from './CardEncontristas'
 import { TioCirculo, type TioCirculoProps } from './TioCirculo'
 
-interface Circulo {
+interface CirculoInfo {
   idCor: number
   aparente?: TioCirculoProps
   secreto?: TioCirculoProps
-  encontristas?: CardEncontristaInfo[]
+}
+
+export interface CirculoDroppable {
+  id: UniqueIdentifier
+  circuloInfo: CirculoInfo
+}
+
+interface CirculoProps {
+  circulo: CirculoDroppable
+  encontristas: SortableEncontrista[]
+}
+
+export type CirculoType = 'Circulo'
+
+export interface CirculoDropData {
+  type: CirculoType
+  circuloData: CirculoDroppable
 }
 
 type CoresMapProps = {
@@ -24,50 +41,80 @@ const coresMap: CoresMapProps[] = [
   { index: 5, color: 'bg-red-500/50', label: 'Vermelho' },
 ]
 
-export function Circulo({ idCor, aparente, secreto, encontristas }: Circulo) {
-  const cor = coresMap.filter((cor) => cor.index === idCor)[0]
+function compareName(a: SortableEncontrista, b: SortableEncontrista) {
+  if (a.content.nome < b.content.nome) {
+    return -1
+  }
+  if (a.content.nome > b.content.nome) {
+    return 1
+  }
+  return 0
+}
+
+export function Circulo({ circulo, encontristas }: CirculoProps) {
+  const cor = coresMap.filter(
+    (cor) => cor.index === circulo.circuloInfo.idCor,
+  )[0]
+
+  const { setNodeRef } = useDroppable({
+    id: circulo.id,
+    data: {
+      type: 'Circulo',
+      accepts: ['Encontrista'],
+    },
+  })
+
+  const encontristasFromThisCirculo = encontristas
+    .filter((encontrista) => encontrista.circuloId === circulo.id)
+    .sort(compareName)
 
   return (
     <div className="p-4">
-      <Card className="flex flex-col gap-4 text-zinc-700 shadow-lg">
+      <Card
+        ref={setNodeRef}
+        className="flex flex-col gap-4 text-zinc-700 shadow-lg"
+      >
         <CardTitle className={cn('rounded-t-lg', cor.color)}>
-          <div className="p-4">
+          <div className="flex justify-between p-4">
             <h2>{cor.label}</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">
+                {encontristasFromThisCirculo.length}
+              </span>
+            </div>
           </div>
         </CardTitle>
         <CardContent>
           <div className="flex justify-between gap-4">
-            {aparente && (
+            {circulo.circuloInfo.aparente && (
               <TioCirculo
-                nome={aparente.nome}
-                idade={aparente.idade}
-                tipo={aparente.tipo}
+                nome={circulo.circuloInfo.aparente.nome}
+                nascimento={circulo.circuloInfo.aparente.nascimento}
+                tipo={circulo.circuloInfo.aparente.tipo}
               />
             )}
-            {secreto && (
+            {circulo.circuloInfo.secreto && (
               <TioCirculo
-                nome={secreto.nome}
-                idade={secreto.idade}
-                tipo={secreto.tipo}
+                nome={circulo.circuloInfo.secreto.nome}
+                nascimento={circulo.circuloInfo.secreto.nascimento}
+                tipo={circulo.circuloInfo.secreto.tipo}
               />
             )}
           </div>
           <div className="flex flex-col gap-4">
-            {encontristas &&
-              encontristas.map((encontrista) => {
+            {encontristasFromThisCirculo &&
+              encontristasFromThisCirculo.map((encontrista) => {
                 return (
                   <CardEncontrista
                     key={encontrista.id}
-                    nome={encontrista.nome}
-                    idade={encontrista.idade}
-                    bairro={encontrista.bairro}
+                    encontrista={encontrista}
                   />
                 )
               })}
 
-            <div className="flex min-h-24 items-center justify-center rounded-lg border border-dashed border-violet-700 bg-violet-200/80">
+            {/* <div className="flex min-h-24 items-center justify-center rounded-lg border border-dashed border-violet-700 bg-violet-200/80">
               Adicione um encontrista aqui
-            </div>
+            </div> */}
           </div>
         </CardContent>
       </Card>

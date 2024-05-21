@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 
 export type CartaSummaryData = {
   id: string
+  idCor: number | null
   slug: string
   nome: string
   sobrenome: string
@@ -50,6 +51,15 @@ async function getCartas({ page, perPage, encontristaName }: getCartaProps) {
             cartasFisicas: true,
           },
         },
+        encontreiro: {
+          select: {
+            circulo: {
+              select: {
+                idCorCirculo: true,
+              },
+            },
+          },
+        },
       },
       where: {
         role: 'ENCONTRISTA',
@@ -82,6 +92,15 @@ async function getCartas({ page, perPage, encontristaName }: getCartaProps) {
       encontrista: {
         select: {
           cartasFisicas: true,
+        },
+      },
+      encontreiro: {
+        select: {
+          circulo: {
+            select: {
+              idCorCirculo: true,
+            },
+          },
         },
       },
     },
@@ -162,6 +181,9 @@ export async function getMensagensSummary({
           : 0,
         cartasVirtuaisTotais: encontrista.cartasDigitais.length,
         cartasVirtuaisImpressas: cartasImpressas.length,
+        idCor: encontrista.encontreiro!.circulo
+          ? encontrista.encontreiro!.circulo.idCorCirculo
+          : null,
       }
       mensagensResponse.push(cartaResponse)
       return cartaResponse

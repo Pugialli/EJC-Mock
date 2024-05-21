@@ -168,6 +168,7 @@ model Encontro {
   temaEspiritual String?  @map("tema_espiritual")
   temaFantasia   String?  @map("tema_fantasia")
   numeroCirculos Int      @map("numero_circulos")
+  ordemCirculos  Int      @default(12345) @map("ordem_circulos")
 
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @updatedAt @map("modified_at")

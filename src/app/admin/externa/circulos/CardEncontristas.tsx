@@ -1,26 +1,81 @@
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Calendar, Car, MessageSquare } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { getAge } from '@/utils/get-age'
+import { stringToDate } from '@/utils/string-to-date'
+import { useDraggable, type UniqueIdentifier } from '@dnd-kit/core'
+import { cva } from 'class-variance-authority'
+import { Calendar, Car, GripVertical } from 'lucide-react'
+import type { CirculoId } from './page'
 
-export interface CardEncontristaInfo {
+export interface CardEncontrista {
   id: string
   nome: string
-  idade: string
+  nascimento: string
   bairro: string
 }
 
-export interface CardEncontristaProps {
-  nome: string
-  idade: string
-  bairro: string
+export interface SortableEncontrista {
+  id: UniqueIdentifier
+  circuloId: CirculoId
+  content: CardEncontrista
 }
 
-export function CardEncontrista({ nome, idade, bairro }: CardEncontristaProps) {
+export type EncontristaType = 'Encontrista'
+
+export interface EncontristaDragData {
+  type: EncontristaType
+  encontrista: SortableEncontrista
+}
+
+interface CardEncontristaProps {
+  encontrista: SortableEncontrista
+  isOverlay?: boolean
+}
+export function CardEncontrista({
+  encontrista,
+  isOverlay,
+}: CardEncontristaProps) {
+  const idade = getAge(stringToDate(encontrista.content.nascimento))
+
+  const { setNodeRef, attributes, listeners, isDragging } = useDraggable({
+    id: encontrista.id,
+    data: {
+      type: 'Encontrista',
+      encontrista,
+    } satisfies EncontristaDragData,
+    attributes: {
+      roleDescription: 'Encontrista',
+    },
+  })
+
+  const variants = cva('', {
+    variants: {
+      dragging: {
+        over: 'ring-2 opacity-30',
+        overlay: 'ring-2 ring-primary cursor-grabbing',
+      },
+    },
+  })
+
   return (
-    <Card className="p-2">
+    <Card
+      ref={setNodeRef}
+      className={cn(
+        'cursor-grab',
+        variants({
+          dragging: isOverlay ? 'overlay' : isDragging ? 'over' : undefined,
+        }),
+      )}
+      {...attributes}
+      {...listeners}
+    >
       <div className="flex items-center justify-between px-2 py-3">
-        <span>{nome}</span>
-        <MessageSquare className="h-4 w-4 text-zinc-400" />
+        <span>{encontrista.content.nome}</span>
+        <div className="h-auto rounded-md p-1">
+          <span className="sr-only">Move task</span>
+          <GripVertical className="h-4 w-4 text-zinc-400" />
+        </div>
       </div>
       <Separator />
       <div className="flex justify-between p-2">
@@ -30,7 +85,7 @@ export function CardEncontrista({ nome, idade, bairro }: CardEncontristaProps) {
         </div>
         <div className="flex items-center gap-2 text-zinc-400">
           <Car className="h-4 w-4" />
-          <span>{bairro}</span>
+          <span>{encontrista.content.bairro}</span>
         </div>
       </div>
     </Card>

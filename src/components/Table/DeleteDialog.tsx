@@ -68,17 +68,6 @@ export function DeleteDialog({
             Deletar
           </AlertDialogAction>
         </AlertDialogFooter>
-
-        {/* <div className="flex w-full justify-between">
-            <DialogClose asChild>
-              <Button variant="secondary">Cancelar</Button>
-            </DialogClose>
-            <DialogClose asChild>
-              <Button onClick={handleDelete} variant="destructive">
-                Deletar
-              </Button>
-            </DialogClose>
-          </div> */}
       </AlertDialogHeader>
     </AlertDialogContent>
   )

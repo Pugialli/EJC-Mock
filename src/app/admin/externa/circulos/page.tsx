@@ -6,11 +6,11 @@ import type {
 } from '@/app/api/circulo/get-circulos'
 import type { CardEncontristaResponse } from '@/app/api/encontrista/confirmados-card/get-confirmados-card'
 import { ChangeOrderDialog } from '@/components/Circulos/ChangeOrderDialog'
+import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { api } from '@/lib/axios'
 import { hasDraggableData } from '@/utils/draggable-data'
-import { stringToDate } from '@/utils/string-to-date'
 import {
   DndContext,
   DragOverlay,
@@ -24,20 +24,14 @@ import {
   type DragStartEvent,
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { compareDesc } from 'date-fns'
+import { useQuery } from '@tanstack/react-query'
 import { ArrowDownUp, Download, Puzzle } from 'lucide-react'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { AutoSortButton } from './AutoSortButton'
 import { CardEncontrista, type SortableEncontrista } from './CardEncontristas'
 import { Circulos } from './Circulos'
 import { ListaConfirmadosSemCirculo } from './ListaConfirmados'
-
-function compareDate(a: SortableEncontrista, b: SortableEncontrista) {
-  return compareDesc(
-    stringToDate(a.content.nascimento),
-    stringToDate(b.content.nascimento),
-  )
-}
 
 function ordenarCirculos(baseOrder: string, circulos: CirculoEncontro[]) {
   // Converter a string de baseOrder em um array de números
@@ -105,28 +99,6 @@ async function getConfirmados() {
   return sortableResponse
 }
 
-function agruparCirculos(
-  encontristas: SortableEncontrista[],
-  totalCirculos: number,
-): SortableEncontrista[][] {
-  const encontristaSortedByDate = encontristas.sort(compareDate)
-
-  const resultado: SortableEncontrista[][] = Array.from(
-    { length: totalCirculos },
-    () => [],
-  )
-
-  const tamanhoParte = Math.ceil(encontristaSortedByDate.length / totalCirculos)
-  let contador = 0
-
-  for (const encontrista of encontristaSortedByDate) {
-    resultado[Math.floor(contador / tamanhoParte)].push(encontrista)
-    contador++
-  }
-
-  return resultado
-}
-
 async function updateCirculo(encontristaId: string, circuloId: string) {
   return await api.patch(
     `/encontrista/${encontristaId}/change-circulo/${circuloId}`,
@@ -136,8 +108,6 @@ async function updateCirculo(encontristaId: string, circuloId: string) {
 export type CirculoId = string
 
 export default function MontagemCirculos() {
-  const queryClient = useQueryClient()
-
   const { data: circulosEncontrao, isLoading: isLoadingCirculos } =
     useQuery<CirculosResponse>({
       queryKey: ['circulos'],
@@ -151,19 +121,12 @@ export default function MontagemCirculos() {
   const [isSorting, setIsSorting] = useState<boolean>(false)
 
   const [encontristas, setEncontristas] = useState<SortableEncontrista[]>([])
-  const [circulos, setCirculos] = useState<CirculoEncontro[]>([
-    // {
-    //   id: '0',
-    //   idCorCirculo: 0,
-    //   tioAparente: undefined,
-    //   tioSecreto: undefined,
-    // },
-  ])
+  const [circulos, setCirculos] = useState<CirculoEncontro[]>([])
+
+  const [openDivisao, setOpenDivisao] = useState<boolean>(false)
 
   const [activeEncontrista, setActiveEncontrista] =
     useState<SortableEncontrista | null>(null)
-
-  // const pickedUpEncontristaCirculo = useRef<CirculoId | null>(null)
 
   useEffect(() => {
     if (confirmadosCard) {
@@ -173,111 +136,11 @@ export default function MontagemCirculos() {
 
   useEffect(() => {
     if (circulosEncontrao) {
-      circulosEncontrao.circulos.forEach((circulo) => {
-        setCirculos((state) => [...state, circulo])
-      })
+      setCirculos(circulosEncontrao.circulos)
     }
   }, [circulosEncontrao])
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor))
-
-  // function getDraggingEncontristaData(
-  //   encontristaId: UniqueIdentifier,
-  //   circuloId: CirculoId,
-  // ) {
-  //   const encontristasInColumn = encontristas.filter(
-  //     (encontrista) => encontrista.circuloId === circuloId,
-  //   )
-  //   const encontristaPosition = encontristasInColumn.findIndex(
-  //     (encontrista) => encontrista.id === encontristaId,
-  //   )
-  //   const circulo = circulos.find((circulo) => circulo.id === circuloId)
-  //   return {
-  //     encontristasInColumn,
-  //     encontristaPosition,
-  //     circulo,
-  //   }
-  // }
-
-  // const announcements: Announcements = {
-  //   onDragStart({ active }) {
-  //     if (!hasDraggableData(active)) return
-  //     if (active.data.current?.type === 'Encontrista') {
-  //       pickedUpEncontristaCirculo.current =
-  //         active.data.current.encontrista.circuloId
-  //       const { encontristasInColumn, encontristaPosition, circulo } =
-  //         getDraggingEncontristaData(
-  //           active.id,
-  //           pickedUpEncontristaCirculo.current!,
-  //         )
-  //       return `Picked up Encontrista ${
-  //         active.data.current.encontrista.content
-  //       } at position: ${encontristaPosition + 1} of ${
-  //         encontristasInColumn.length
-  //       } in column ${circulo?.idCorCirculo}`
-  //     }
-  //   },
-  //   onDragOver({ active, over }) {
-  //     if (!hasDraggableData(active) || !hasDraggableData(over)) return
-
-  //     if (
-  //       active.data.current?.type === 'Encontrista' &&
-  //       over.data.current?.type === 'Encontrista'
-  //     ) {
-  //       const { encontristasInColumn, encontristaPosition, circulo } =
-  //         getDraggingEncontristaData(
-  //           over.id,
-  //           over.data.current.encontrista.circuloId,
-  //         )
-  //       if (
-  //         over.data.current.encontrista.circuloId !==
-  //         pickedUpEncontristaCirculo.current
-  //       ) {
-  //         return `Encontrista ${
-  //           active.data.current.encontrista.content
-  //         } was moved over column ${circulo?.idCorCirculo} in position ${
-  //           encontristaPosition + 1
-  //         } of ${encontristasInColumn.length}`
-  //       }
-  //       return `Encontrista was moved over position ${encontristaPosition + 1} of ${
-  //         encontristasInColumn.length
-  //       } in column ${circulo?.idCorCirculo}`
-  //     }
-  //   },
-  //   onDragEnd({ active, over }) {
-  //     if (!hasDraggableData(active) || !hasDraggableData(over)) {
-  //       pickedUpEncontristaCirculo.current = null
-  //       return
-  //     }
-  //     if (
-  //       active.data.current?.type === 'Encontrista' &&
-  //       over.data.current?.type === 'Encontrista'
-  //     ) {
-  //       const { encontristasInColumn, encontristaPosition, circulo } =
-  //         getDraggingEncontristaData(
-  //           over.id,
-  //           over.data.current.encontrista.circuloId,
-  //         )
-  //       if (
-  //         over.data.current.encontrista.circuloId !==
-  //         pickedUpEncontristaCirculo.current
-  //       ) {
-  //         return `Encontrista was dropped into column ${circulo?.idCorCirculo} in position ${
-  //           encontristaPosition + 1
-  //         } of ${encontristasInColumn.length}`
-  //       }
-  //       return `Encontrista was dropped into position ${encontristaPosition + 1} of ${
-  //         encontristasInColumn.length
-  //       } in column ${circulo?.idCorCirculo}`
-  //     }
-  //     pickedUpEncontristaCirculo.current = null
-  //   },
-  //   onDragCancel({ active }) {
-  //     pickedUpEncontristaCirculo.current = null
-  //     if (!hasDraggableData(active)) return
-  //     return `Dragging ${active.data.current?.type} cancelled.`
-  //   },
-  // }
 
   function onDragStart(event: DragStartEvent) {
     if (!hasDraggableData(event.active)) return
@@ -356,28 +219,6 @@ export default function MontagemCirculos() {
     }
   }
 
-  async function handleAutoSortCirculos() {
-    setIsSorting(true)
-    const circulosDivididos = agruparCirculos(encontristas, circulos.length - 1)
-
-    circulosDivididos.forEach((circulo, index) => {
-      circulo.forEach(async (encontrista) => {
-        if (encontrista.circuloId !== circulos[index + 1].id) {
-          console.log(encontrista.content.nome)
-          await updateCirculo(encontrista.content.id, circulos[index + 1].id)
-        } else {
-          // await updateCirculo(encontrista.content.id, '0')
-        }
-      })
-    })
-    console.log('Circulos atualizados')
-    queryClient
-      .refetchQueries({
-        queryKey: ['confirmados'],
-      })
-      .then(() => setIsSorting(false))
-  }
-
   return (
     <div className="w-ful h-full">
       <div className="pb-4">
@@ -396,22 +237,33 @@ export default function MontagemCirculos() {
 
       <div className="grid grid-cols-9">
         <div className="col-span-9 flex flex-col justify-start gap-2 px-4 lg:col-span-6 lg:flex-row">
-          <Button type="button" disabled>
-            <div className="flex items-center justify-center gap-2">
-              <Download className="h-4 w-4" />
-              <span className="flex">Baixar lista dos círculos</span>
-            </div>
-          </Button>
-          <Button
-            type="button"
-            onClick={handleAutoSortCirculos}
-            disabled={isLoadingCirculos || isSorting}
-          >
-            <div className="flex items-center justify-center gap-2">
-              <Puzzle className="h-4 w-4" />
-              <span className="flex">Sugerir Organização</span>
-            </div>
-          </Button>
+          <Link href="/api/export/circulo">
+            <Button type="button" disabled={isLoadingCirculos || isSorting}>
+              <div className="flex items-center justify-center gap-2">
+                <Download className="h-4 w-4" />
+                <span className="flex">Baixar lista dos círculos</span>
+              </div>
+            </Button>
+          </Link>
+          <AlertDialog open={openDivisao} onOpenChange={setOpenDivisao}>
+            <AlertDialogTrigger asChild>
+              <Button type="button" disabled={isLoadingCirculos}>
+                <div className="flex items-center justify-center gap-2">
+                  <Puzzle className="h-4 w-4" />
+                  <span className="flex">Sugerir Organização</span>
+                </div>
+              </Button>
+            </AlertDialogTrigger>
+            {circulos && (
+              <AutoSortButton
+                circulos={circulos}
+                encontristas={encontristas}
+                isSorting={isSorting}
+                setIsSorting={setIsSorting}
+                updateCirculo={updateCirculo}
+              />
+            )}
+          </AlertDialog>
           <Dialog>
             <DialogTrigger asChild>
               <Button type="button" disabled={isLoadingCirculos || true}>

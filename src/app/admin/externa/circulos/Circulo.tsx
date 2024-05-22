@@ -106,7 +106,7 @@ export function Circulo({ circulo, encontristas }: CirculoProps) {
               encontristasFromThisCirculo.map((encontrista) => {
                 return (
                   <CardEncontrista
-                    key={encontrista.id}
+                    key={`${encontrista.id}-${encontrista.circuloId}`}
                     encontrista={encontrista}
                   />
                 )

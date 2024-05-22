@@ -47,7 +47,10 @@ export function ListaConfirmadosSemCirculo({
         <div className="flex flex-col gap-4">
           {encontristasWithoutCirculo.map((encontrista) => {
             return (
-              <CardEncontrista key={encontrista.id} encontrista={encontrista} />
+              <CardEncontrista
+                key={`${encontrista.id}-${encontrista.circuloId}`}
+                encontrista={encontrista}
+              />
             )
           })}
         </div>

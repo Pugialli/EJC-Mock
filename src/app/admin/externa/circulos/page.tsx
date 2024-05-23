@@ -112,12 +112,12 @@ export default function MontagemCirculos() {
     useQuery<CirculosResponse>({
       queryKey: ['circulos'],
       queryFn: () => getCirculos(),
-      refetchOnWindowFocus: true,
     })
 
   const { data: confirmadosCard } = useQuery<SortableEncontrista[]>({
     queryKey: ['confirmados'],
     queryFn: () => getConfirmados(),
+    refetchOnWindowFocus: true,
   })
   const [isSorting, setIsSorting] = useState<boolean>(false)
 

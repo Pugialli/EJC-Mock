@@ -77,13 +77,31 @@ export function AutoSortButton({
     )
     queryClient
       .refetchQueries({
-        queryKey: ['confirmados'],
+        queryKey: ['confirmadosCirculos'],
+      })
+      .then(() => setIsSorting(false))
+  }
+
+  async function handleResetCirculos() {
+    setIsSorting(true)
+    const circulosDivididos = agruparCirculos(encontristas, circulos.length)
+
+    await Promise.all(
+      circulosDivididos.map(async (circulo) => {
+        circulo.forEach(async (encontrista) => {
+          updateCirculo(encontrista.content.id, '0')
+        })
+      }),
+    )
+    queryClient
+      .refetchQueries({
+        queryKey: ['confirmadosCirculos'],
       })
       .then(() => setIsSorting(false))
   }
 
   return (
-    <AlertDialogContent className="w-80">
+    <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>Atenção!</AlertDialogTitle>
         <AlertDialogDescription>
@@ -104,6 +122,13 @@ export function AutoSortButton({
             onClick={handleAutoSortCirculos}
           >
             Dividir Círculos
+          </AlertDialogAction>
+          <AlertDialogAction
+            disabled={isSorting}
+            className="disabled:cursor-wait disabled:opacity-50"
+            onClick={handleResetCirculos}
+          >
+            Limpar Divisão Atual
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogHeader>

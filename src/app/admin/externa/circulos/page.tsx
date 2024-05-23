@@ -128,12 +128,6 @@ export default function MontagemCirculos() {
   })
   const queryClient = useQueryClient()
 
-  // if (!confirmadosCard) {
-  //   console.log('Carregando...')
-  // } else {
-  //   console.log('Na page', confirmadosCard[2])
-  // }
-
   const [isSorting, setIsSorting] = useState<boolean>(false)
 
   const [encontristas, setEncontristas] = useState<SortableEncontrista[]>([])
@@ -157,7 +151,6 @@ export default function MontagemCirculos() {
 
       const newCache = cacheData.map((encontrista) => {
         if (encontrista.content.id === encontristaId) {
-          console.log(encontrista)
           return { ...encontrista, circuloId: updatedCirculoId }
         }
         return encontrista

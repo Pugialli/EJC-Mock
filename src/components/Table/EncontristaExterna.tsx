@@ -1,5 +1,5 @@
 import type { EncontristaSummary } from '@/app/api/encontrista/get-encontristas-summary'
-import type { MembroExterna } from '@/app/api/externa/get-equipe-externa'
+import type { MembroExterna } from '@/app/api/encontro/[numeroEncontro]/externa/get-equipe-externa'
 import { api } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'

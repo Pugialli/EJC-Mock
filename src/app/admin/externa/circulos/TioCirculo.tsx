@@ -1,4 +1,4 @@
-import type { TioCirculoType } from '@/app/api/circulo/get-circulos'
+import type { TioCirculoType } from '@/app/api/encontro/[numeroEncontro]/circulos/get-circulos'
 import { Separator } from '@/components/ui/separator'
 import { textEllipsis } from '@/utils/ellipsis-text'
 import { getAge } from '@/utils/get-age'

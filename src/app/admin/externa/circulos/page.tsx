@@ -3,8 +3,8 @@
 import type {
   CirculoEncontro,
   CirculosResponse,
-} from '@/app/api/circulo/get-circulos'
-import type { CardEncontristaResponse } from '@/app/api/encontrista/confirmados-card/get-confirmados-card'
+} from '@/app/api/encontro/[numeroEncontro]/circulos/get-circulos'
+import type { CardEncontristaResponse } from '@/app/api/encontro/[numeroEncontro]/confirmados-card/get-confirmados-card'
 import { ChangeOrderDialog } from '@/components/Circulos/ChangeOrderDialog'
 import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
@@ -24,7 +24,7 @@ import {
   type DragStartEvent,
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowDownUp, Download, Puzzle } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -57,8 +57,10 @@ function ordenarCirculos(baseOrder: string, circulos: CirculoEncontro[]) {
 }
 
 async function getCirculos() {
+  const encontro = 71
+
   const response: CirculosResponse = await api
-    .get('/circulo')
+    .get(`/encontro/${encontro}/circulos`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
@@ -76,8 +78,9 @@ async function getCirculos() {
 }
 
 async function getConfirmados() {
+  const encontro = 71
   const response: CardEncontristaResponse[] = await api
-    .get('/encontrista/confirmados-card')
+    .get(`/encontro/${encontro}/confirmados-card`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
@@ -99,7 +102,12 @@ async function getConfirmados() {
   return sortableResponse
 }
 
-async function updateCirculo(encontristaId: string, circuloId: string) {
+export interface UpdateCirculoProps {
+  encontristaId: string
+  circuloId: string
+}
+
+async function updateCirculo({ encontristaId, circuloId }: UpdateCirculoProps) {
   return await api.patch(
     `/encontrista/${encontristaId}/change-circulo/${circuloId}`,
   )
@@ -115,10 +123,17 @@ export default function MontagemCirculos() {
     })
 
   const { data: confirmadosCard } = useQuery<SortableEncontrista[]>({
-    queryKey: ['confirmados'],
+    queryKey: ['confirmadosCirculos'],
     queryFn: () => getConfirmados(),
-    refetchOnWindowFocus: 'always',
   })
+  const queryClient = useQueryClient()
+
+  // if (!confirmadosCard) {
+  //   console.log('Carregando...')
+  // } else {
+  //   console.log('Na page', confirmadosCard[2])
+  // }
+
   const [isSorting, setIsSorting] = useState<boolean>(false)
 
   const [encontristas, setEncontristas] = useState<SortableEncontrista[]>([])
@@ -128,6 +143,46 @@ export default function MontagemCirculos() {
 
   const [activeEncontrista, setActiveEncontrista] =
     useState<SortableEncontrista | null>(null)
+
+  function updateEncontristaCirculoOnCache(
+    encontristaId: string,
+    updatedCirculoId: string,
+  ) {
+    const encontristaListCache = queryClient.getQueriesData<
+      SortableEncontrista[]
+    >({ queryKey: ['confirmadosCirculos'] })
+
+    encontristaListCache.forEach(([cacheKey, cacheData]) => {
+      if (!cacheData) return
+
+      const newCache = cacheData.map((encontrista) => {
+        if (encontrista.content.id === encontristaId) {
+          console.log(encontrista)
+          return { ...encontrista, circuloId: updatedCirculoId }
+        }
+        return encontrista
+      })
+
+      queryClient.setQueryData<SortableEncontrista[]>(cacheKey, () => {
+        setEncontristas(newCache)
+        return newCache
+      })
+    })
+  }
+
+  const { mutateAsync: circuloEncontristaFn } = useMutation({
+    mutationFn: updateCirculo,
+    onSuccess: (_, { encontristaId, circuloId }) => {
+      updateEncontristaCirculoOnCache(encontristaId, circuloId)
+    },
+  })
+
+  function handleUpdateCirculo(encontristaId: string, circuloId: string) {
+    circuloEncontristaFn({
+      encontristaId,
+      circuloId,
+    })
+  }
 
   useEffect(() => {
     if (confirmadosCard) {
@@ -151,7 +206,7 @@ export default function MontagemCirculos() {
     }
   }
 
-  async function onDragEnd(event: DragEndEvent) {
+  function onDragEnd(event: DragEndEvent) {
     setActiveEncontrista(null)
 
     const { active, over } = event
@@ -160,9 +215,7 @@ export default function MontagemCirculos() {
     const activeId = active.id
     const overId = over.id
 
-    const response = await updateCirculo(activeId.toString(), overId.toString())
-
-    console.log(response.data)
+    handleUpdateCirculo(activeId.toString(), overId.toString())
 
     if (!hasDraggableData(active)) return
 
@@ -261,7 +314,7 @@ export default function MontagemCirculos() {
                 encontristas={encontristas}
                 isSorting={isSorting}
                 setIsSorting={setIsSorting}
-                updateCirculo={updateCirculo}
+                updateCirculo={handleUpdateCirculo}
               />
             )}
           </AlertDialog>

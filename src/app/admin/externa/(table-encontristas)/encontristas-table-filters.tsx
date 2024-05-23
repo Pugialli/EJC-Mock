@@ -1,7 +1,7 @@
 import { Search, SearchX } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
-import { getEquipeExterna } from '@/app/api/externa/get-equipe-externa'
+import { getEquipeExterna } from '@/app/api/encontro/[numeroEncontro]/externa/get-equipe-externa'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
 import { SelectItem } from '@/components/Form/SelectInput/SelectItem'
 import type { SelectItemAvatarProps } from '@/components/Table/SelectItemAvatar'

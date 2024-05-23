@@ -1,4 +1,4 @@
-import type { TioCirculoType } from '@/app/api/circulo/get-circulos'
+import type { TioCirculoType } from '@/app/api/encontro/[numeroEncontro]/circulos/get-circulos'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { useDroppable, type UniqueIdentifier } from '@dnd-kit/core'

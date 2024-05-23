@@ -1,4 +1,4 @@
-import type { MembroExterna } from '@/app/api/externa/get-equipe-externa'
+import type { MembroExterna } from '@/app/api/encontro/[numeroEncontro]/externa/get-equipe-externa'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { SelectItem } from '../ui/select'
 

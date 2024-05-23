@@ -1,4 +1,4 @@
-import type { CirculoEncontro } from '@/app/api/circulo/get-circulos'
+import type { CirculoEncontro } from '@/app/api/encontro/[numeroEncontro]/circulos/get-circulos'
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/alert-dialog'
 import { stringToDate } from '@/utils/string-to-date'
 import { useQueryClient } from '@tanstack/react-query'
-import type { AxiosResponse } from 'axios'
 import { compareDesc } from 'date-fns'
 import type { SetStateAction } from 'react'
 import type { SortableEncontrista } from './CardEncontristas'
@@ -49,10 +48,7 @@ interface AutoSortButtonProps {
   encontristas: SortableEncontrista[]
   circulos: CirculoEncontro[]
   setIsSorting: (value: SetStateAction<boolean>) => void
-  updateCirculo(
-    encontristaId: string,
-    circuloId: string,
-  ): Promise<AxiosResponse>
+  updateCirculo(encontristaId: string, circuloId: string): void
 }
 
 export function AutoSortButton({
@@ -72,7 +68,7 @@ export function AutoSortButton({
       circulosDivididos.map(async (circulo, index) => {
         circulo.forEach(async (encontrista) => {
           if (encontrista.circuloId !== circulos[index].id) {
-            await updateCirculo(encontrista.content.id, circulos[index].id)
+            updateCirculo(encontrista.content.id, circulos[index].id)
           } else {
             // await updateCirculo(encontrista.content.id, '0')
           }

@@ -1,6 +1,6 @@
 'use client'
 
-import type { EncontristaConfirmadosData } from '@/app/api/encontrista/confirmados/get-confirmados'
+import type { EncontristaConfirmadosData } from '@/app/api/encontro/[numeroEncontro]/confirmados/get-confirmados'
 import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
 
 import {
@@ -29,8 +29,9 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 async function getConfirmados() {
+  const encontro = '71'
   const response: EncontristaConfirmadosData[] = await api
-    .get('encontrista/confirmados')
+    .get(`encontro/${encontro}/confirmados`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 

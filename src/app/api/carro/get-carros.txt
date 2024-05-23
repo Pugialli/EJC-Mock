@@ -1,24 +1,20 @@
 import { prisma } from '@/lib/prisma'
 
-export interface TioCirculoType {
+export interface TioExterna {
   nome: string
-  nascimento: string
-  tipo: 'Aparente' | 'Secreto'
+  bairro: string
+  tipo: 'Motorista' | 'Carona'
 }
 
-export interface CirculoEncontro {
+export interface CarroEncontro {
   id: string
-  idCorCirculo: number
-  tioAparente: TioCirculoType | undefined
-  tioSecreto: TioCirculoType | undefined
+  numero: number
+  bairro: string
+  motorista: TioExterna
+  carona?: TioExterna
 }
 
-export interface CirculosResponse {
-  order: number
-  circulos: CirculoEncontro[]
-}
-
-export async function getCirculos() {
+export async function getCarros() {
   const encontro = await prisma.encontro.findFirst({
     orderBy: {
       createdAt: 'desc',
@@ -27,30 +23,12 @@ export async function getCirculos() {
   if (!encontro) {
     return null
   }
-  const circulos = await prisma.circulo.findMany({
+
+  const carros = await prisma.carroEncontro.findMany({
     select: {
-      id: true,
-      idCorCirculo: true,
-      tioAparente: {
+      carro: {
         select: {
-          nome: true,
-          apelido: true,
-          encontreiro: {
-            select: {
-              nascimento: true,
-            },
-          },
-        },
-      },
-      tioSecreto: {
-        select: {
-          nome: true,
-          apelido: true,
-          encontreiro: {
-            select: {
-              nascimento: true,
-            },
-          },
+          id: true,
         },
       },
     },
@@ -59,7 +37,7 @@ export async function getCirculos() {
     },
   })
 
-  const infoCirculos: CirculoEncontro[] = circulos.map((circulo) => {
+  const response: CarroEncontro[] = circulos.map((circulo) => {
     return {
       id: circulo.id,
       idCorCirculo: circulo.idCorCirculo,
@@ -83,11 +61,6 @@ export async function getCirculos() {
         : undefined,
     }
   })
-
-  const response: CirculosResponse = {
-    order: encontro.ordemCirculos,
-    circulos: infoCirculos,
-  }
 
   return response
 }

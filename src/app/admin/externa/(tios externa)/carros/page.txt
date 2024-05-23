@@ -5,10 +5,6 @@ import type {
   CirculosResponse,
 } from '@/app/api/circulo/get-circulos'
 import type { CardEncontristaResponse } from '@/app/api/encontrista/confirmados-card/get-confirmados-card'
-import { ChangeOrderDialog } from '@/components/Circulos/ChangeOrderDialog'
-import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { api } from '@/lib/axios'
 import { hasDraggableData } from '@/utils/draggable-data'
 import {
@@ -25,36 +21,11 @@ import {
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowDownUp, Download, Puzzle } from 'lucide-react'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { AutoSortButton } from './AutoSortButton'
-import { CardEncontrista, type SortableEncontrista } from './CardEncontristas'
-import { Circulos } from './Circulos'
-import { ListaConfirmadosSemCirculo } from './ListaConfirmados'
-
-function ordenarCirculos(baseOrder: string, circulos: CirculoEncontro[]) {
-  // Converter a string de baseOrder em um array de números
-  const order = baseOrder.split('').map(Number)
-
-  // Criar um mapeamento dos IDs para suas posições
-  const idPositionMap = new Map<number, number>()
-  order.forEach((id, index) => {
-    idPositionMap.set(id, index)
-  })
-
-  // Ordenar o array com base nas posições mapeadas
-  return circulos.sort((a, b) => {
-    const posA = idPositionMap.get(a.idCorCirculo)
-    const posB = idPositionMap.get(b.idCorCirculo)
-
-    // Se um dos IDs não estiver no mapeamento, manter a ordem original entre eles
-    if (posA === undefined) return 1
-    if (posB === undefined) return -1
-
-    return posA - posB
-  })
-}
+import {
+  CardEncontristaCarro,
+  type SortableEncontristaCarro,
+} from './CardEncontristasCarro'
 
 async function getCirculos() {
   const response: CirculosResponse = await api
@@ -105,29 +76,24 @@ async function updateCirculo(encontristaId: string, circuloId: string) {
   )
 }
 
-export type CirculoId = string
+export type CarroId = string
 
-export default function MontagemCirculos() {
-  const { data: circulosEncontrao, isLoading: isLoadingCirculos } =
-    useQuery<CirculosResponse>({
-      queryKey: ['circulos'],
-      queryFn: () => getCirculos(),
-      refetchOnWindowFocus: true,
-    })
-
-  const { data: confirmadosCard } = useQuery<SortableEncontrista[]>({
+export default function Carros() {
+  const { data: confirmadosCard } = useQuery<SortableEncontristaCarro[]>({
     queryKey: ['confirmados'],
     queryFn: () => getConfirmados(),
   })
-  const [isSorting, setIsSorting] = useState<boolean>(false)
-
-  const [encontristas, setEncontristas] = useState<SortableEncontrista[]>([])
-  const [circulos, setCirculos] = useState<CirculoEncontro[]>([])
-
-  const [openDivisao, setOpenDivisao] = useState<boolean>(false)
+  const { data: carrosEncontro } = useQuery<CirculoEncontro[]>({
+    queryKey: ['carros'],
+    queryFn: () => getCarros(),
+  })
+  const [encontristas, setEncontristas] = useState<SortableEncontristaCarro[]>(
+    [],
+  )
+  const [carros, setCarros] = useState<CirculoEncontro[]>([])
 
   const [activeEncontrista, setActiveEncontrista] =
-    useState<SortableEncontrista | null>(null)
+    useState<SortableEncontristaCarro | null>(null)
 
   useEffect(() => {
     if (confirmadosCard) {
@@ -136,10 +102,10 @@ export default function MontagemCirculos() {
   }, [confirmadosCard])
 
   useEffect(() => {
-    if (circulosEncontrao) {
-      setCirculos(circulosEncontrao.circulos)
+    if (carrosEncontro) {
+      setCarros(carrosEncontro)
     }
-  }, [circulosEncontrao])
+  }, [carrosEncontro])
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor))
 
@@ -160,9 +126,9 @@ export default function MontagemCirculos() {
     const activeId = active.id
     const overId = over.id
 
-    const response = await updateCirculo(activeId.toString(), overId.toString())
+    // const response = await updateCirculo(activeId.toString(), overId.toString())
 
-    console.log(response.data)
+    // console.log(response.data)
 
     if (!hasDraggableData(active)) return
 
@@ -170,19 +136,17 @@ export default function MontagemCirculos() {
 
     if (activeId === overId) return
 
-    const isActiveCirculo = activeData?.type === 'Circulo'
-    if (!isActiveCirculo) return
+    const isActiveCarro = activeData?.type === 'Carro'
+    if (!isActiveCarro) return
 
-    setCirculos((circulos) => {
-      const activeCirculoIndex = circulos.findIndex(
-        (circulo) => circulo.id === activeId,
+    setCarros((carros) => {
+      const activeCarroIndex = carros.findIndex(
+        (carro) => carro.id === activeId,
       )
 
-      const overCirculoIndex = circulos.findIndex(
-        (circulo) => circulo.id === overId,
-      )
+      const overCarroIndex = carros.findIndex((carro) => carro.id === overId)
 
-      return arrayMove(circulos, activeCirculoIndex, overCirculoIndex)
+      return arrayMove(carros, activeCarroIndex, overCarroIndex)
     })
   }
 
@@ -204,10 +168,10 @@ export default function MontagemCirculos() {
 
     if (!isActiveEncontrista) return
 
-    const isOverACirculo = overData?.type === 'Circulo'
+    const isOverACarro = overData?.type === 'Carro'
 
-    // Im dropping a Encontrista over a Circulo
-    if (isActiveEncontrista && isOverACirculo) {
+    // Im dropping a Encontrista over a Carro
+    if (isActiveEncontrista && isOverACarro) {
       setEncontristas((encontristas) => {
         const activeIndex = encontristas.findIndex((t) => t.id === activeId)
         const activeEncontrista = encontristas[activeIndex]
@@ -226,7 +190,7 @@ export default function MontagemCirculos() {
         <div className="flex items-center justify-between gap-8 pb-8">
           <div className="px-4">
             <h1 className="text-2xl font-bold text-tertiary">
-              Montagem de Círculos
+              Alocação de Carros
             </h1>
             <span className="text-base font-normal text-zinc-500">
               Montagem dos círculos e distribuição dos encontristas
@@ -237,7 +201,7 @@ export default function MontagemCirculos() {
       </div>
 
       <div className="grid grid-cols-9">
-        <div className="col-span-9 flex flex-col justify-start gap-2 px-4 lg:col-span-6 lg:flex-row">
+        {/* <div className="col-span-9 flex flex-col justify-start gap-2 px-4 lg:col-span-6 lg:flex-row">
           <Link href="/api/export/circulo">
             <Button type="button" disabled={isLoadingCirculos || isSorting}>
               <div className="flex items-center justify-center gap-2">
@@ -280,7 +244,7 @@ export default function MontagemCirculos() {
               )}
             </DialogContent>
           </Dialog>
-        </div>
+        </div> */}
         <DndContext
           sensors={sensors}
           onDragStart={onDragStart}
@@ -290,20 +254,20 @@ export default function MontagemCirculos() {
         >
           <>
             <div className="col-span-9 lg:col-span-6">
-              {circulos && encontristas && (
-                <Circulos circulos={circulos} encontristas={encontristas} />
+              {carros && encontristas && (
+                <Carros circulos={circulos} encontristas={encontristas} />
               )}
             </div>
             <div className="col-span-9 lg:col-span-3">
               {encontristas && (
-                <ListaConfirmadosSemCirculo encontristas={encontristas} />
+                <ListaConfirmadosSemCarro encontristas={encontristas} />
               )}
             </div>
           </>
 
           <DragOverlay>
             {activeEncontrista && (
-              <CardEncontrista encontrista={activeEncontrista} isOverlay />
+              <CardEncontristaCarro encontrista={activeEncontrista} isOverlay />
             )}
           </DragOverlay>
         </DndContext>

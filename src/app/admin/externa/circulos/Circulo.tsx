@@ -1,13 +1,14 @@
+import type { TioCirculoType } from '@/app/api/circulo/get-circulos'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { useDroppable, type UniqueIdentifier } from '@dnd-kit/core'
 import { CardEncontrista, type SortableEncontrista } from './CardEncontristas'
-import { TioCirculo, type TioCirculoProps } from './TioCirculo'
+import { TioCirculo } from './TioCirculo'
 
 interface CirculoInfo {
   idCor: number
-  aparente?: TioCirculoProps
-  secreto?: TioCirculoProps
+  aparente?: TioCirculoType
+  secreto?: TioCirculoType
 }
 
 export interface CirculoDroppable {
@@ -87,18 +88,10 @@ export function Circulo({ circulo, encontristas }: CirculoProps) {
         <CardContent>
           <div className="flex justify-between gap-4">
             {circulo.circuloInfo.aparente && (
-              <TioCirculo
-                nome={circulo.circuloInfo.aparente.nome}
-                nascimento={circulo.circuloInfo.aparente.nascimento}
-                tipo={circulo.circuloInfo.aparente.tipo}
-              />
+              <TioCirculo data={circulo.circuloInfo.aparente} />
             )}
             {circulo.circuloInfo.secreto && (
-              <TioCirculo
-                nome={circulo.circuloInfo.secreto.nome}
-                nascimento={circulo.circuloInfo.secreto.nascimento}
-                tipo={circulo.circuloInfo.secreto.tipo}
-              />
+              <TioCirculo data={circulo.circuloInfo.secreto} />
             )}
           </div>
           <div className="flex flex-col gap-4">

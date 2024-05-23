@@ -1,0 +1,54 @@
+import { Card } from '@/components/ui/card'
+import { useDroppable } from '@dnd-kit/core'
+import { useUniqueId } from '@dnd-kit/utilities'
+import {
+  CardEncontristaCarro,
+  type SortableEncontristaCarro,
+} from './CardEncontristasCarro'
+
+interface ListaConfirmadosSemCirculoProps {
+  encontristas: SortableEncontristaCarro[]
+}
+
+export function ListaConfirmadosSemCarro({
+  encontristas,
+}: ListaConfirmadosSemCirculoProps) {
+  const encontristasWithoutCarro = encontristas.filter(
+    (encontrista) => encontrista.carroId === '0',
+  )
+
+  const { setNodeRef } = useDroppable({
+    id: useUniqueId('EncontristaSemCarro', '0'),
+    data: {
+      type: 'Carro',
+      accepts: ['Encontrista'],
+    },
+  })
+
+  return (
+    <div className="p-4">
+      <Card
+        ref={setNodeRef}
+        className="flex flex-col gap-8 p-4 text-zinc-700 shadow-lg"
+      >
+        <div className="flex items-center justify-between p-2">
+          <h2 className="text-xl font-bold">Encontristas sem Carro</h2>
+          {/* <span className="font-medium">
+            {encontristasWithoutCirculo.length}
+          </span> */}
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {encontristasWithoutCarro.map((encontrista) => {
+            return (
+              <CardEncontristaCarro
+                key={`${encontrista.id}-${encontrista.carroId}`}
+                encontrista={encontrista}
+              />
+            )
+          })}
+        </div>
+      </Card>
+    </div>
+  )
+}

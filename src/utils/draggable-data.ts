@@ -15,7 +15,11 @@ export function hasDraggableData<T extends Active | Over>(
 
   const data = entry.data.current
 
-  if (data?.type === 'Encontrista' || data?.type === 'Circulo') {
+  if (
+    data?.type === 'Encontrista' ||
+    data?.type === 'Circulo' ||
+    data?.type === 'Carro'
+  ) {
     return true
   }
 

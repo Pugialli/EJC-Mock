@@ -1,3 +1,4 @@
+import type { TioCirculoType } from '@/app/api/circulo/get-circulos'
 import { Separator } from '@/components/ui/separator'
 import { textEllipsis } from '@/utils/ellipsis-text'
 import { getAge } from '@/utils/get-age'
@@ -5,12 +6,11 @@ import { stringToDate } from '@/utils/string-to-date'
 import { Calendar, Crown } from 'lucide-react'
 
 export interface TioCirculoProps {
-  nome: string
-  nascimento: string
-  tipo: 'Aparente' | 'Secreto'
+  data: TioCirculoType
 }
 
-export function TioCirculo({ nome, nascimento, tipo }: TioCirculoProps) {
+export function TioCirculo({ data }: TioCirculoProps) {
+  const { nome, nascimento, tipo } = data
   const idade = getAge(stringToDate(nascimento))
   return (
     <div className="w-full">

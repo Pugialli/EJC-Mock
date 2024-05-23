@@ -92,6 +92,7 @@ model Pessoa {
   tioAparenteCirculo Circulo?        @relation("TioAparente")
   tioSecretoCirculo  Circulo?        @relation("TioSecreto")
   pessoaMotorista    Carro[]         @relation("PessoaMotorista")
+  pessoaCarona       Carro[]         @relation("PessoaCarona")
   carroEncontro      CarroEncontro[]
   encontreiro        Encontreiro?
   encontrista        Encontrista?
@@ -229,13 +230,16 @@ model Local {
 model Carro {
   id                  String @id @default(uuid())
   idMotorista         String @map("id_motorista")
+  idCarona            String @map("id_carona")
   modeloCarro         String @map("modelo_carro")
   placaCarro          String @map("placa_carro")
   lugaresCarro        Int    @map("lugares_carro")
   observacaoMotorista String @map("observacao_motorista")
 
-  pessoaMotorista Pessoa          @relation("PessoaMotorista", fields: [idMotorista], references: [id])
-  carroEncontro   CarroEncontro[]
+  pessoaMotorista Pessoa @relation("PessoaMotorista", fields: [idMotorista], references: [id])
+  pessoaCarona    Pessoa @relation("PessoaCarona", fields: [idCarona], references: [id])
+
+  carroEncontro CarroEncontro[]
 
   @@unique([idMotorista, placaCarro])
   @@map("carros")
@@ -245,6 +249,7 @@ model CarroEncontro {
   idCarro       String @map("id_carro")
   idEncontrista String @map("id_encontrista")
   idEncontro    String @map("id_encontro")
+  numeroCarro   Int
 
   carro       Carro    @relation(fields: [idCarro], references: [id])
   encontrista Pessoa   @relation(fields: [idEncontrista], references: [id])

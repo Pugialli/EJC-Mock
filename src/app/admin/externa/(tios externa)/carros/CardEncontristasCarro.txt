@@ -1,42 +1,45 @@
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import { getAge } from '@/utils/get-age'
-import { stringToDate } from '@/utils/string-to-date'
 import { useDraggable, type UniqueIdentifier } from '@dnd-kit/core'
 import { cva } from 'class-variance-authority'
-import { Calendar, Car, GripVertical } from 'lucide-react'
-import type { CirculoId } from './page'
+import { GripVertical, Home, MapPin } from 'lucide-react'
+import type { CarroId } from './page'
 
-export interface CardEncontrista {
+export interface CardEncontristaCarro {
   id: string
   nome: string
-  nascimento: string
   bairro: string
+  rua: string
+  endNumero: number
+  endComplemento: string
+  zona: string | null
+  bairroEncontro: string
+  corCirculo: string
 }
 
-export interface SortableEncontrista {
+export interface SortableEncontristaCarro {
   id: UniqueIdentifier
-  circuloId: CirculoId
-  content: CardEncontrista
+  carroId: CarroId
+  content: CardEncontristaCarro
 }
 
 export type EncontristaType = 'Encontrista'
 
 export interface EncontristaDragData {
   type: EncontristaType
-  encontrista: SortableEncontrista
+  encontrista: SortableEncontristaCarro
 }
 
 interface CardEncontristaProps {
-  encontrista: SortableEncontrista
+  encontrista: SortableEncontristaCarro
   isOverlay?: boolean
 }
-export function CardEncontrista({
+export function CardEncontristaCarro({
   encontrista,
   isOverlay,
 }: CardEncontristaProps) {
-  const idade = getAge(stringToDate(encontrista.content.nascimento))
+  const endereco = `${encontrista.content.rua} ${encontrista.content.endNumero}/${encontrista.content.endComplemento}`
 
   const { setNodeRef, attributes, listeners, isDragging } = useDraggable({
     id: encontrista.id,
@@ -80,12 +83,16 @@ export function CardEncontrista({
       <Separator />
       <div className="flex justify-between p-2">
         <div className="flex items-center gap-2 text-zinc-400">
-          <Calendar className="h-4 w-4" />
-          <span>{idade} anos</span>
+          <MapPin className="h-4 w-4" />
+          <span>{encontrista.content.bairroEncontro}</span>
         </div>
         <div className="flex items-center gap-2 text-zinc-400">
-          <Car className="h-4 w-4" />
-          <span>{encontrista.content.bairro}</span>
+          <Home className="h-4 w-4" />
+          <span>
+            {encontrista.content.bairro === encontrista.content.bairroEncontro
+              ? endereco
+              : '?'}
+          </span>
         </div>
       </div>
     </Card>

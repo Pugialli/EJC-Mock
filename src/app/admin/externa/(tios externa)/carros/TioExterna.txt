@@ -1,0 +1,20 @@
+import { textEllipsis } from '@/utils/ellipsis-text'
+import { Armchair, CarFront } from 'lucide-react'
+
+export interface TioExternaProps {
+  nome: string
+  tipo: 'Motorista' | 'Carona'
+}
+
+export function TioExterna({ nome, tipo }: TioExternaProps) {
+  return (
+    <div className="w-full">
+      {tipo === 'Motorista' ? (
+        <CarFront className="h-4 w-4" />
+      ) : (
+        <Armchair className="h-4 w-4" />
+      )}
+      <h1>{textEllipsis(nome, 25)}</h1>
+    </div>
+  )
+}

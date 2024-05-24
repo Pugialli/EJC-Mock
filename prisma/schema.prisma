@@ -88,12 +88,12 @@ model Pessoa {
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @updatedAt @map("modified_at")
 
-  endereco           Endereco        @relation(fields: [enderecoCep], references: [cep])
-  tioAparenteCirculo Circulo?        @relation("TioAparente")
-  tioSecretoCirculo  Circulo?        @relation("TioSecreto")
-  pessoaMotorista    Carro[]         @relation("PessoaMotorista")
-  pessoaCarona       Carro[]         @relation("PessoaCarona")
-  carroEncontro      CarroEncontro[]
+  endereco           Endereco       @relation(fields: [enderecoCep], references: [cep])
+  tioAparenteCirculo Circulo?       @relation("TioAparente")
+  tioSecretoCirculo  Circulo?       @relation("TioSecreto")
+  pessoaMotorista    Carro[]        @relation("PessoaMotorista")
+  pessoaCarona       Carro[]        @relation("PessoaCarona")
+  carroEncontro      CarroEncontro?
   encontreiro        Encontreiro?
   encontrista        Encontrista?
 
@@ -228,16 +228,16 @@ model Local {
 }
 
 model Carro {
-  id                  String @id @default(uuid())
-  idMotorista         String @map("id_motorista")
-  idCarona            String @map("id_carona")
-  modeloCarro         String @map("modelo_carro")
-  placaCarro          String @map("placa_carro")
-  lugaresCarro        Int    @map("lugares_carro")
-  observacaoMotorista String @map("observacao_motorista")
+  id                  String  @id @default(uuid())
+  idMotorista         String  @map("id_motorista")
+  idCarona            String? @map("id_carona")
+  modeloCarro         String  @map("modelo_carro")
+  placaCarro          String  @map("placa_carro")
+  lugaresCarro        Int     @map("lugares_carro")
+  observacaoMotorista String  @map("observacao_motorista")
 
-  pessoaMotorista Pessoa @relation("PessoaMotorista", fields: [idMotorista], references: [id])
-  pessoaCarona    Pessoa @relation("PessoaCarona", fields: [idCarona], references: [id])
+  pessoaMotorista Pessoa  @relation("PessoaMotorista", fields: [idMotorista], references: [id])
+  pessoaCarona    Pessoa? @relation("PessoaCarona", fields: [idCarona], references: [id])
 
   carroEncontro CarroEncontro[]
 
@@ -247,15 +247,15 @@ model Carro {
 
 model CarroEncontro {
   idCarro       String @map("id_carro")
-  idEncontrista String @map("id_encontrista")
+  idEncontrista String @unique @map("id_encontrista")
   idEncontro    String @map("id_encontro")
   numeroCarro   Int
 
-  carro       Carro    @relation(fields: [idCarro], references: [id])
-  encontrista Pessoa   @relation(fields: [idEncontrista], references: [id])
+  carro       Carro    @relation(fields: [idCarro], references: [id], onDelete: Cascade)
+  encontrista Pessoa   @relation(fields: [idEncontrista], references: [id], onDelete: Cascade)
   encontro    Encontro @relation(fields: [idEncontro], references: [id])
 
-  @@id([idCarro, idEncontrista, idEncontro])
+  @@id([idEncontro, numeroCarro, idEncontrista])
   @@map("carro_encontro")
 }
 

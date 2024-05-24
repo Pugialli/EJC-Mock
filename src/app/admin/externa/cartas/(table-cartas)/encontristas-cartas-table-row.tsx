@@ -195,7 +195,7 @@ export function EncontristaCartasTableRow({
           label={statusCartaEncontrista.label}
         />
       </TableCell>
-      <TableCell>[Em breve...]</TableCell>
+      <TableCell>{encontristaCartas.tiosExterna}</TableCell>
       <TableCell>
         <div className="flex items-center justify-center gap-2">
           {isLoadingCartas && <Skeleton className="w-5" />}

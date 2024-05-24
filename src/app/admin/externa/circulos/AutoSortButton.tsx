@@ -109,7 +109,7 @@ export function AutoSortButton({
           atual será perdida!
         </AlertDialogDescription>
 
-        <AlertDialogFooter className="py-4">
+        <AlertDialogFooter className="flex gap-4 py-4">
           <AlertDialogCancel
             disabled={isSorting}
             className="disabled:cursor-wait disabled:opacity-50"

@@ -9,6 +9,7 @@ export type CartaSummaryData = {
   cartasFisicas: number
   cartasVirtuaisTotais: number
   cartasVirtuaisImpressas: number
+  tiosExterna: string | null
 }
 
 export type CartaSummary = {
@@ -46,6 +47,24 @@ async function getCartas({ page, perPage, encontristaName }: getCartaProps) {
         nome: true,
         sobrenome: true,
         cartasDigitais: true,
+        carroEncontro: {
+          select: {
+            carro: {
+              select: {
+                pessoaMotorista: {
+                  select: {
+                    apelido: true,
+                  },
+                },
+                pessoaCarona: {
+                  select: {
+                    apelido: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         encontrista: {
           select: {
             cartasFisicas: true,
@@ -89,6 +108,24 @@ async function getCartas({ page, perPage, encontristaName }: getCartaProps) {
       nome: true,
       sobrenome: true,
       cartasDigitais: true,
+      carroEncontro: {
+        select: {
+          carro: {
+            select: {
+              pessoaMotorista: {
+                select: {
+                  apelido: true,
+                },
+              },
+              pessoaCarona: {
+                select: {
+                  apelido: true,
+                },
+              },
+            },
+          },
+        },
+      },
       encontrista: {
         select: {
           cartasFisicas: true,
@@ -171,6 +208,11 @@ export async function getMensagensSummary({
       const cartasImpressas = encontrista.cartasDigitais.filter(
         (carta) => carta.isPrinted,
       )
+      const tioExterna = encontrista.carroEncontro
+        ? encontrista.carroEncontro.carro.pessoaCarona
+          ? `${encontrista.carroEncontro.carro.pessoaMotorista.apelido!} e ${encontrista.carroEncontro.carro.pessoaCarona.apelido!}`
+          : encontrista.carroEncontro.carro.pessoaMotorista.apelido!
+        : 'Ainda sem carro'
       const cartaResponse: CartaSummaryData = {
         id: encontrista.id,
         slug: encontrista.slug,
@@ -184,6 +226,7 @@ export async function getMensagensSummary({
         idCor: encontrista.encontreiro!.circulo
           ? encontrista.encontreiro!.circulo.idCorCirculo
           : null,
+        tiosExterna: tioExterna,
       }
       mensagensResponse.push(cartaResponse)
       return cartaResponse

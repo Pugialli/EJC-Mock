@@ -27,6 +27,7 @@ import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import { MensagemFechada } from './MensagemFechada'
 
 async function getConfirmados() {
   const encontro = '71'
@@ -48,6 +49,11 @@ async function getConfirmados() {
   return selectData
 }
 
+async function getCartasStatus() {
+  const res = await api.get(`/encontro/71/get-carta-status`)
+  return res.data as boolean
+}
+
 const messageScheme = z.object({
   encontrista: z.string({ required_error: 'O encontrista é obrigatório.' }),
   para: z
@@ -64,6 +70,11 @@ const messageScheme = z.object({
 export type messageData = z.infer<typeof messageScheme>
 
 export default function Mensagem() {
+  const { data: statusCarta } = useQuery<boolean>({
+    queryKey: ['statusCarta'],
+    queryFn: async () => await getCartasStatus(),
+  })
+
   const form = useForm<messageData>({
     resolver: zodResolver(messageScheme),
     defaultValues: {
@@ -111,90 +122,98 @@ export default function Mensagem() {
     <div className="flex w-auto items-center justify-center px-4 pt-11">
       <FormProvider {...form}>
         <form id="messageForm" onSubmit={handleSubmit(handlPostMessage)}>
-          <Card className="flex flex-col items-center gap-8 p-8 text-zinc-700 lg:w-auto">
-            <CardHeader className="flex flex-col gap-2 p-0 text-center">
-              <CardTitle className="text-3xl font-bold text-zinc-700">
-                Mensagem
-              </CardTitle>
-              <CardDescription className="text-sm text-zinc-500">
-                Deixe aqui sua mensagem de carinho para um de nossos
-                encontristas
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex w-full flex-col gap-6 p-0">
-              <FormField
-                control={control}
-                name="encontrista"
-                render={({ field }) => {
-                  return (
-                    <SelectGroupInput
-                      label="Para quem você deseja enviar essa mensagem?"
-                      placeholder="Selecione um encontrista"
-                      onChange={field.onChange}
-                      value={field.value}
-                    >
-                      {encontristas &&
-                        encontristas.map((item) => {
-                          return (
-                            <SelectItem
-                              key={item.value}
-                              value={item.value}
-                              text={item.label}
-                            />
-                          )
-                        })}
-                    </SelectGroupInput>
-                  )
-                }}
-              />
-              <div className="flex flex-col gap-4 border-2 border-dashed border-primary p-4">
-                <div className="flex items-end gap-1">
-                  <FormField
-                    control={control}
-                    name="para"
-                    render={({ field }) => (
-                      <TextInput>
-                        <Input placeholder="Querido..." {...field} />
-                      </TextInput>
-                    )}
-                  />
-                  <span className="text-4xl">,</span>
-                </div>
+          {statusCarta && statusCarta ? (
+            <Card className="flex flex-col items-center gap-8 p-8 text-zinc-700 lg:w-auto">
+              <CardHeader className="flex flex-col gap-2 p-0 text-center">
+                <CardTitle className="text-3xl font-bold text-zinc-700">
+                  Mensagem
+                </CardTitle>
+                <CardDescription className="text-sm text-zinc-500">
+                  Deixe aqui sua mensagem de carinho para um de nossos
+                  encontristas
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex w-full flex-col gap-6 p-0">
                 <FormField
                   control={control}
-                  name="conteudo"
-                  render={({ field }) => (
-                    <Textarea
-                      placeholder="Insira aqui sua mensagem..."
-                      {...field}
-                    />
-                  )}
+                  name="encontrista"
+                  render={({ field }) => {
+                    return (
+                      <SelectGroupInput
+                        label="Para quem você deseja enviar essa mensagem?"
+                        placeholder="Selecione um encontrista"
+                        onChange={field.onChange}
+                        value={field.value}
+                      >
+                        {encontristas &&
+                          encontristas.map((item) => {
+                            return (
+                              <SelectItem
+                                key={item.value}
+                                value={item.value}
+                                text={item.label}
+                              />
+                            )
+                          })}
+                      </SelectGroupInput>
+                    )
+                  }}
                 />
-                <div className="flex w-full justify-end">
-                  <div className="w-52">
+                <div className="flex flex-col gap-4 border-2 border-dashed border-primary p-4">
+                  <div className="flex items-end gap-1">
                     <FormField
                       control={control}
-                      name="de"
+                      name="para"
                       render={({ field }) => (
                         <TextInput>
-                          <Input
-                            className="text-end"
-                            placeholder="Seu nome"
-                            {...field}
-                          />
+                          <Input placeholder="Querido..." {...field} />
                         </TextInput>
                       )}
                     />
+                    <span className="text-4xl">,</span>
+                  </div>
+                  <FormField
+                    control={control}
+                    name="conteudo"
+                    render={({ field }) => (
+                      <Textarea
+                        placeholder="Insira aqui sua mensagem..."
+                        {...field}
+                      />
+                    )}
+                  />
+                  <div className="flex w-full justify-end">
+                    <div className="w-52">
+                      <FormField
+                        control={control}
+                        name="de"
+                        render={({ field }) => (
+                          <TextInput>
+                            <Input
+                              className="text-end"
+                              placeholder="Seu nome"
+                              {...field}
+                            />
+                          </TextInput>
+                        )}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex w-full flex-col gap-8 p-0">
-              <Button type="submit" disabled={isSubmitting} className="w-full">
-                Enviar
-              </Button>
-            </CardFooter>
-          </Card>
+              </CardContent>
+              <CardFooter className="flex w-full flex-col gap-8 p-0">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full"
+                >
+                  Enviar
+                </Button>
+              </CardFooter>
+            </Card>
+          ) : (
+            <MensagemFechada />
+          )}
         </form>
       </FormProvider>
     </div>

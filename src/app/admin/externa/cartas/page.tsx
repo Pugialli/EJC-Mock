@@ -13,23 +13,39 @@ import { api } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
 import { BarChart4, Plus } from 'lucide-react'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { EncontristasCartasTable } from './(table-cartas)/encontristas-cartas-table'
 
 async function getCartasStatus() {
   const res = await api.get(`/encontro/71/get-carta-status`)
-  return res.data as boolean
-}
+  const data: boolean = res.data
 
-async function updateStatusCartas() {
-  return await api.patch(`/encontro/71/change-carta-status`)
+  return data
 }
 
 export default function Cartas() {
-  const { data: statusCarta } = useQuery<boolean>({
+  const { data: statusCarta, isLoading } = useQuery<boolean>({
     queryKey: ['statusCarta'],
     queryFn: async () => await getCartasStatus(),
+    staleTime: 10 * 1000,
   })
 
+  const [isReceiving, setIsReceiving] = useState(false)
+
+  useEffect(() => {
+    if (statusCarta !== undefined) {
+      setIsReceiving(statusCarta)
+    }
+  }, [isLoading, statusCarta])
+
+  async function updateStatusCartas() {
+    if (!isLoading) {
+      return await api.patch(`/encontro/change-carta-status`, {
+        numeroEncontro: 71,
+        status: !isReceiving,
+      })
+    }
+  }
   return (
     <div className="w-ful h-full">
       <div className="pb-4">
@@ -46,7 +62,7 @@ export default function Cartas() {
           <div className="flex flex-col items-center gap-2 lg:flex-row">
             <div className="flex items-center gap-2">
               <span className="hidden lg:flex">Estamos recebendo cartas?</span>
-              {statusCarta ? (
+              {statusCarta !== undefined ? (
                 <Switch
                   defaultChecked={statusCarta}
                   onCheckedChange={updateStatusCartas}

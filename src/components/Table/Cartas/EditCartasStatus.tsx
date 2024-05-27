@@ -1,5 +1,6 @@
 import type { EncontristaIdentification } from '@/app/api/encontrista/identification/[slug]/get-identification'
 import type { Carta } from '@/app/api/export/carta/[slug]/get-encontrista-cartas'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Tooltip,
   TooltipContent,
@@ -27,6 +28,7 @@ export function EditCartasStatus({
         <TooltipTrigger>
           <DialogTrigger asChild>
             <Button
+              id={encontrista.id}
               variant="ghost"
               className="p-0 disabled:cursor-auto disabled:opacity-20"
               disabled={hasCartas}
@@ -36,10 +38,12 @@ export function EditCartasStatus({
           </DialogTrigger>
         </TooltipTrigger>
         <DialogContent className="h-auto w-9/10 rounded-lg p-6 lg:h-auto lg:w-screen">
-          <CheckCartasVirtuaisDialog
-            cartas={cartas}
-            encontrista={encontrista}
-          />
+          <ScrollArea className="max-h-96 rounded-md px-4">
+            <CheckCartasVirtuaisDialog
+              cartas={cartas}
+              encontrista={encontrista}
+            />
+          </ScrollArea>
         </DialogContent>
       </Dialog>
 

@@ -16,18 +16,6 @@ const Table = React.forwardRef<
 ))
 Table.displayName = 'Table'
 
-const TableScroll = React.forwardRef<
-  HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
-  <table
-    ref={ref}
-    className={cn('w-full caption-bottom bg-transparent text-sm', className)}
-    {...props}
-  />
-))
-TableScroll.displayName = 'TableScroll'
-
 const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
@@ -136,5 +124,5 @@ export {
   TableHead,
   TableHeader,
   // eslint-disable-next-line prettier/prettier
-  TableRow, TableScroll
+  TableRow
 }

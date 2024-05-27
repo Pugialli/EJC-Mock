@@ -83,6 +83,11 @@ export function CartaCheckbox({ id, status, slug, ...props }: CartaCheckbox) {
   }
 
   return (
-    <Checkbox onCheckedChange={updateCartaStatus} checked={check} {...props} />
+    <Checkbox
+      id={id}
+      onCheckedChange={updateCartaStatus}
+      checked={check}
+      {...props}
+    />
   )
 }

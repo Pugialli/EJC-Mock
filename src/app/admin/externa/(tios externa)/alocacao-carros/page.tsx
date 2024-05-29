@@ -1,10 +1,7 @@
 'use client'
 
-import type {
-  CirculoEncontro,
-  CirculosResponse,
-} from '@/app/api/circulo/get-circulos'
-import type { CardEncontristaResponse } from '@/app/api/encontrista/confirmados-card/get-confirmados-card'
+import type { CarroFromEncontro } from '@/app/api/encontro/[numeroEncontro]/carros/get-carros'
+import type { CardEncontristaResponse } from '@/app/api/encontro/[numeroEncontro]/confirmados-card/get-confirmados-card'
 import { api } from '@/lib/axios'
 import { hasDraggableData } from '@/utils/draggable-data'
 import {
@@ -26,42 +23,44 @@ import {
   CardEncontristaCarro,
   type SortableEncontristaCarro,
 } from './CardEncontristasCarro'
+import { Carros } from './Carros'
+import { ListaConfirmadosSemCarro } from './ListaConfirmadosSemCarro'
 
-async function getCirculos() {
-  const response: CirculosResponse = await api
-    .get('/circulo')
+export type CarroId = string
+
+async function getCarros() {
+  const encontro = 71
+
+  const response: CarroFromEncontro[] = await api
+    .get(`/encontro/${encontro}/carros`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
-  const sortedCirculos = ordenarCirculos(
-    response.order.toString(),
-    response.circulos,
-  )
-
-  const orderedResponse: CirculosResponse = {
-    order: response.order,
-    circulos: sortedCirculos,
-  }
-
-  return orderedResponse
+  return response
 }
 
 async function getConfirmados() {
+  const encontro = 71
   const response: CardEncontristaResponse[] = await api
-    .get('/encontrista/confirmados-card')
+    .get(`/encontro/${encontro}/confirmados-card`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
-  const sortableResponse: SortableEncontrista[] = response.map(
+  const sortableResponse: SortableEncontristaCarro[] = response.map(
     (encontrista) => {
       return {
         id: encontrista.id,
-        circuloId: encontrista.idCirculo ? encontrista.idCirculo : '0',
+        carroId: encontrista.idCarro ? encontrista.idCarro : '0',
         content: {
           id: encontrista.id,
-          bairro: encontrista.bairro,
-          nascimento: encontrista.nascimento,
           nome: encontrista.nome,
+          zona: encontrista.zona,
+          bairro: encontrista.bairroEncontro,
+          rua: encontrista.rua,
+          endNumero: encontrista.endNumero,
+          endComplemento: encontrista.endComplemento,
+          bairroEncontro: encontrista.bairroEncontro,
+          corCirculo: encontrista.corCirculo,
         },
       }
     },
@@ -70,27 +69,25 @@ async function getConfirmados() {
   return sortableResponse
 }
 
-async function updateCirculo(encontristaId: string, circuloId: string) {
+async function updateCarro(encontristaId: string, carroId: string) {
   return await api.patch(
-    `/encontrista/${encontristaId}/change-circulo/${circuloId}`,
+    `/encontrista/${encontristaId}/change-carro/${carroId}`,
   )
 }
 
-export type CarroId = string
-
-export default function Carros() {
+export default function AlocacaoCarros() {
   const { data: confirmadosCard } = useQuery<SortableEncontristaCarro[]>({
     queryKey: ['confirmados'],
     queryFn: () => getConfirmados(),
   })
-  const { data: carrosEncontro } = useQuery<CirculoEncontro[]>({
+  const { data: carrosEncontro } = useQuery<CarroFromEncontro[]>({
     queryKey: ['carros'],
     queryFn: () => getCarros(),
   })
   const [encontristas, setEncontristas] = useState<SortableEncontristaCarro[]>(
     [],
   )
-  const [carros, setCarros] = useState<CirculoEncontro[]>([])
+  const [carros, setCarros] = useState<CarroFromEncontro[]>([])
 
   const [activeEncontrista, setActiveEncontrista] =
     useState<SortableEncontristaCarro | null>(null)
@@ -126,7 +123,7 @@ export default function Carros() {
     const activeId = active.id
     const overId = over.id
 
-    // const response = await updateCirculo(activeId.toString(), overId.toString())
+    await updateCarro(activeId.toString(), overId.toString())
 
     // console.log(response.data)
 
@@ -176,7 +173,7 @@ export default function Carros() {
         const activeIndex = encontristas.findIndex((t) => t.id === activeId)
         const activeEncontrista = encontristas[activeIndex]
         if (activeEncontrista) {
-          activeEncontrista.circuloId = overId.toString()
+          activeEncontrista.carroId = overId.toString()
           return arrayMove(encontristas, activeIndex, activeIndex)
         }
         return encontristas
@@ -255,7 +252,7 @@ export default function Carros() {
           <>
             <div className="col-span-9 lg:col-span-6">
               {carros && encontristas && (
-                <Carros circulos={circulos} encontristas={encontristas} />
+                <Carros carros={carros} encontristas={encontristas} />
               )}
             </div>
             <div className="col-span-9 lg:col-span-3">

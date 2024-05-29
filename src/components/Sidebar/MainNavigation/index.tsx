@@ -1,7 +1,8 @@
-import { Mail, Puzzle, SquareUserRound } from 'lucide-react'
+import { Blocks, CarFront, Mail, Puzzle, SquareUserRound } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { NavItem } from './NavItem'
+import { NavItemGroup } from './NavItemGroup'
 
 export function MainNavigation() {
   const path = usePathname()
@@ -22,8 +23,8 @@ export function MainNavigation() {
           active={path === '/admin/externa/circulos'}
         />
       </Link>
-      {/* <NavItemGroup title="Tios de Externa" icon={CarFront}>
-        <Link href="/admin/externa/tios">
+      <NavItemGroup title="Tios de Externa" icon={CarFront}>
+        {/* <Link href="/admin/externa/tios">
           <NavItem
             title="Lista de Tios"
             icon={Users}
@@ -32,12 +33,19 @@ export function MainNavigation() {
         </Link>
         <Link href="/admin/externa/carros">
           <NavItem
-            title="Alocação nos Carros"
-            icon={Blocks}
+            title="Lista de Carros"
+            icon={Car}
             active={path === '/admin/externa/carros'}
           />
+        </Link> */}
+        <Link href="/admin/externa/alocacao-carros">
+          <NavItem
+            title="Alocação nos Carros"
+            icon={Blocks}
+            active={path === '/admin/externa/alocacao-carros'}
+          />
         </Link>
-      </NavItemGroup> */}
+      </NavItemGroup>
       {/* <Link href="/admin/externa/pendencias">
         <NavItem
           title="Controle de Pendências"

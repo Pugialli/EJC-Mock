@@ -47,27 +47,27 @@ async function getCartas({ page, perPage, encontristaName }: getCartaProps) {
         nome: true,
         sobrenome: true,
         cartasDigitais: true,
-        carroEncontro: {
+        encontrista: {
           select: {
-            carro: {
+            cartasFisicas: true,
+            carroEncontro: {
               select: {
-                pessoaMotorista: {
+                carro: {
                   select: {
-                    apelido: true,
-                  },
-                },
-                pessoaCarona: {
-                  select: {
-                    apelido: true,
+                    pessoaMotorista: {
+                      select: {
+                        apelido: true,
+                      },
+                    },
+                    pessoaCarona: {
+                      select: {
+                        apelido: true,
+                      },
+                    },
                   },
                 },
               },
             },
-          },
-        },
-        encontrista: {
-          select: {
-            cartasFisicas: true,
           },
         },
         encontreiro: {
@@ -108,27 +108,27 @@ async function getCartas({ page, perPage, encontristaName }: getCartaProps) {
       nome: true,
       sobrenome: true,
       cartasDigitais: true,
-      carroEncontro: {
+      encontrista: {
         select: {
-          carro: {
+          cartasFisicas: true,
+          carroEncontro: {
             select: {
-              pessoaMotorista: {
+              carro: {
                 select: {
-                  apelido: true,
-                },
-              },
-              pessoaCarona: {
-                select: {
-                  apelido: true,
+                  pessoaMotorista: {
+                    select: {
+                      apelido: true,
+                    },
+                  },
+                  pessoaCarona: {
+                    select: {
+                      apelido: true,
+                    },
+                  },
                 },
               },
             },
           },
-        },
-      },
-      encontrista: {
-        select: {
-          cartasFisicas: true,
         },
       },
       encontreiro: {
@@ -208,10 +208,10 @@ export async function getMensagensSummary({
       const cartasImpressas = encontrista.cartasDigitais.filter(
         (carta) => carta.isPrinted,
       )
-      const tioExterna = encontrista.carroEncontro
-        ? encontrista.carroEncontro.carro.pessoaCarona
-          ? `${encontrista.carroEncontro.carro.pessoaMotorista.apelido!} e ${encontrista.carroEncontro.carro.pessoaCarona.apelido!}`
-          : encontrista.carroEncontro.carro.pessoaMotorista.apelido!
+      const tioExterna = encontrista.encontrista?.carroEncontro
+        ? encontrista.encontrista.carroEncontro.carro.pessoaCarona
+          ? `${encontrista.encontrista.carroEncontro.carro.pessoaMotorista.apelido!} e ${encontrista.encontrista.carroEncontro.carro.pessoaCarona.apelido!}`
+          : encontrista.encontrista.carroEncontro.carro.pessoaMotorista.apelido!
         : 'Ainda sem carro'
       const cartaResponse: CartaSummaryData = {
         id: encontrista.id,

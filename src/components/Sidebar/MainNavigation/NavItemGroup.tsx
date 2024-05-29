@@ -26,7 +26,9 @@ export function NavItemGroup({
             <span className="text-sm font-medium text-zinc-50">{title}</span>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pl-4 pt-2">{children}</AccordionContent>
+        <AccordionContent className="flex flex-col gap-2 py-2 pl-4">
+          {children}
+        </AccordionContent>
       </AccordionItem>
     </Accordion>
 

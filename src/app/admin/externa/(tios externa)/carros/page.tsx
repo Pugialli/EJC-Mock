@@ -9,19 +9,19 @@ import {
 import { Button } from '@/components/ui/button'
 import { BarChart4, Download, Plus } from 'lucide-react'
 import Link from 'next/link'
-import { TiosExternaTable } from './(table-tios)/tios-externa-table'
+import { CarrosTable } from './(table-carros)/carros-table'
 
-export default function ListaTios() {
+export default function ListaCarros() {
   return (
     <div className="w-ful h-full">
       <div className="pb-4">
         <div className="flex items-center justify-between pb-8">
           <div className="">
             <h1 className="text-2xl font-bold text-tertiary">
-              Lista de Tios de Externa
+              Lista de Carros
             </h1>
             <span className="text-base font-normal text-zinc-500">
-              Lista geral de tios de externa disponíveis para o encontro
+              Lista geral de carros de externa disponíveis para o encontro
             </span>
           </div>
           <div className="flex flex-col items-center gap-2 lg:flex-row">
@@ -38,7 +38,7 @@ export default function ListaTios() {
               <Button>
                 <div className="flex items-center justify-center gap-2 lg:w-40">
                   <Plus className="h-4 w-4" />
-                  <span className="hidden lg:flex">Novo Tio</span>
+                  <span className="hidden lg:flex">Novo Carro</span>
                 </div>
               </Button>
             </Link>
@@ -61,7 +61,7 @@ export default function ListaTios() {
           </AccordionItem>
         </Accordion>
       </div>
-      <TiosExternaTable />
+      <CarrosTable />
     </div>
   )
 }

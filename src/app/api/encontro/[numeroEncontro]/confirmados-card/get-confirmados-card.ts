@@ -12,6 +12,7 @@ export interface CardEncontristaResponse {
   bairroEncontro: string
   idCirculo: string | null
   corCirculo: string | null
+  idCarro: string | null
 }
 
 export async function getConfirmadosCard() {
@@ -20,6 +21,7 @@ export async function getConfirmadosCard() {
       id: true,
       nome: true,
       sobrenome: true,
+
       encontreiro: {
         select: {
           nascimento: true,
@@ -46,6 +48,7 @@ export async function getConfirmadosCard() {
           bairroEncontro: true,
           endNumero: true,
           endComplemento: true,
+          idCarroEncontro: true,
         },
       },
     },
@@ -80,6 +83,7 @@ export async function getConfirmadosCard() {
         endComplemento: encontrista.encontrista!.endComplemento,
         idCirculo: encontrista.encontreiro!.idCirculo,
         corCirculo: encontrista.encontreiro!.circulo?.corCirculo.cor || null,
+        idCarro: encontrista.encontrista?.idCarroEncontro || null,
       }
     },
   )

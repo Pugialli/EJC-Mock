@@ -8,13 +8,13 @@ export interface TioExternaProps {
 
 export function TioExterna({ nome, tipo }: TioExternaProps) {
   return (
-    <div className="w-full">
+    <div className="flex w-full gap-2">
       {tipo === 'Motorista' ? (
         <CarFront className="h-4 w-4" />
       ) : (
         <Armchair className="h-4 w-4" />
       )}
-      <h1>{textEllipsis(nome, 25)}</h1>
+      <span className="text-sm">{textEllipsis(nome, 25)}</span>
     </div>
   )
 }

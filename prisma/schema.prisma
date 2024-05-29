@@ -88,12 +88,11 @@ model Pessoa {
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @updatedAt @map("modified_at")
 
-  endereco           Endereco       @relation(fields: [enderecoCep], references: [cep])
-  tioAparenteCirculo Circulo?       @relation("TioAparente")
-  tioSecretoCirculo  Circulo?       @relation("TioSecreto")
-  pessoaMotorista    Carro[]        @relation("PessoaMotorista")
-  pessoaCarona       Carro[]        @relation("PessoaCarona")
-  carroEncontro      CarroEncontro?
+  endereco           Endereco     @relation(fields: [enderecoCep], references: [cep])
+  tioAparenteCirculo Circulo?     @relation("TioAparente")
+  tioSecretoCirculo  Circulo?     @relation("TioSecreto")
+  pessoaMotorista    Carro[]      @relation("PessoaMotorista")
+  pessoaCarona       Carro[]      @relation("PessoaCarona")
   encontreiro        Encontreiro?
   encontrista        Encontrista?
 
@@ -127,6 +126,7 @@ model Encontrista {
   indicadoPorTel     String?          @map("indicado_por_tel")
   indicadoPorEmail   String?          @map("indicado_por_email")
   cartasFisicas      Int              @default(0) @map("cartas_fisicas")
+  idCarroEncontro    String?          @map("id_carro_encontro")
 
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @updatedAt @map("modified_at")
@@ -138,6 +138,7 @@ model Encontrista {
   moraCom            DomainMoraCom        @relation(fields: [idMoracom], references: [id])
   statusPais         DomainStatusPais     @relation(fields: [idStatusPais], references: [id])
   responsavelExterna ResponsavelExterna?
+  carroEncontro      CarroEncontro?       @relation(fields: [idCarroEncontro], references: [id])
 
   @@map("encontristas")
 }
@@ -151,11 +152,12 @@ model Encontreiro {
   idEncontro         String?              @map("id_encontro")
   idCirculo          String?              @map("id_circulo")
 
-  pessoa             Pessoa               @relation(fields: [idPessoa], references: [id], onDelete: Cascade)
-  encontro           Encontro?            @relation(fields: [idEncontro], references: [id])
-  tamanhoCamisa      DomainTamanhoCamisa? @relation(fields: [idTamanhoCamisa], references: [id])
-  circulo            Circulo?             @relation(fields: [idCirculo], references: [id])
-  responsavelExterna ResponsavelExterna[]
+  pessoa                  Pessoa               @relation(fields: [idPessoa], references: [id], onDelete: Cascade)
+  encontro                Encontro?            @relation(fields: [idEncontro], references: [id])
+  tamanhoCamisa           DomainTamanhoCamisa? @relation(fields: [idTamanhoCamisa], references: [id])
+  circulo                 Circulo?             @relation(fields: [idCirculo], references: [id])
+  responsavelExterna      ResponsavelExterna[]
+  responsavelCarroExterna CarroEncontro[]      @relation("PessoaResponsavelExterna")
 
   @@map("encontreiros")
 }
@@ -247,16 +249,18 @@ model Carro {
 }
 
 model CarroEncontro {
-  idCarro       String @map("id_carro")
-  idEncontrista String @unique @map("id_encontrista")
-  idEncontro    String @map("id_encontro")
-  numeroCarro   Int
+  id          String  @id @default(uuid())
+  idCarro     String  @map("id_carro")
+  idEncontro  String  @map("id_encontro")
+  idExterna   String?
+  numeroCarro Int
 
-  carro       Carro    @relation(fields: [idCarro], references: [id], onDelete: Cascade)
-  encontrista Pessoa   @relation(fields: [idEncontrista], references: [id], onDelete: Cascade)
-  encontro    Encontro @relation(fields: [idEncontro], references: [id])
+  carro       Carro         @relation(fields: [idCarro], references: [id], onDelete: Cascade)
+  encontrista Encontrista[]
+  encontro    Encontro      @relation(fields: [idEncontro], references: [id])
+  externa     Encontreiro?  @relation("PessoaResponsavelExterna", fields: [idExterna], references: [idPessoa])
 
-  @@id([idEncontro, numeroCarro, idEncontrista])
+  @@unique([idCarro, idEncontro])
   @@map("carro_encontro")
 }
 

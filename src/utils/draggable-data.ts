@@ -1,8 +1,9 @@
+import type { CarroDropData } from '@/app/admin/externa/(tios externa)/alocacao-carros/Carro'
 import type { EncontristaDragData } from '@/app/admin/externa/circulos/CardEncontristas'
 import type { CirculoDropData } from '@/app/admin/externa/circulos/Circulo'
 import { Active, DataRef, Over } from '@dnd-kit/core'
 
-type DraggableData = EncontristaDragData | CirculoDropData
+type DraggableData = EncontristaDragData | CirculoDropData | CarroDropData
 
 export function hasDraggableData<T extends Active | Over>(
   entry: T | null | undefined,

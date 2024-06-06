@@ -1,8 +1,8 @@
 'use client'
 
 import carro from '@/assets/Carro.png'
-import onibus from '@/assets/onibus.png'
-import ape from '@/assets/pe.png'
+import onibus from '@/assets/Onibus.png'
+import ape from '@/assets/Pe.png'
 import { BusFront, CarFront, Footprints } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import {

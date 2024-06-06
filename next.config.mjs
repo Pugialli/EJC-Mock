@@ -3,15 +3,6 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/participe',
-        permanent: true,
-      },
-    ]
-  },
 }
 
 export default nextConfig

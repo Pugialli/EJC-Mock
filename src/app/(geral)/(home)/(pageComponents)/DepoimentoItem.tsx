@@ -18,7 +18,7 @@ export function DepoimentoItem({
   const avatarFallback = name.split(' ')[0][0] + name.split(' ')[1][0]
   return (
     <div className="flex h-96 w-auto flex-col items-center gap-10 rounded-2xl p-8 lg:w-96">
-      <p className="items-center text-lg font-normal text-zinc-200">
+      <p className="min-h-36 items-center text-lg font-normal text-zinc-200">
         {`"${text}"`}
       </p>
       <div className="flex w-full flex-col justify-center gap-4">

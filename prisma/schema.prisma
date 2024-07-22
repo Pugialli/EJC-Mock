@@ -71,6 +71,14 @@ enum Role {
   TIOSECRETO
 }
 
+enum DisponibilidadePre {
+  MUITO_BAIXA
+  BAIXA
+  MEDIA
+  ALTA
+  MUITO_ALTA
+}
+
 model Pessoa {
   id          String  @id @default(uuid())
   nome        String
@@ -151,6 +159,9 @@ model Encontreiro {
   idTamanhoCamisa    Value_TamanhoCamisa? @map("id_tamanho_camisa")
   idEncontro         String?              @map("id_encontro")
   idCirculo          String?              @map("id_circulo")
+  obsBanda           String?              @map("obs_banda")
+  disponibilidade    DisponibilidadePre?
+  observacoes        String?
 
   pessoa                  Pessoa               @relation(fields: [idPessoa], references: [id], onDelete: Cascade)
   encontro                Encontro?            @relation(fields: [idEncontro], references: [id])
@@ -158,6 +169,8 @@ model Encontreiro {
   circulo                 Circulo?             @relation(fields: [idCirculo], references: [id])
   responsavelExterna      ResponsavelExterna[]
   responsavelCarroExterna CarroEncontro[]      @relation("PessoaResponsavelExterna")
+  listaPreferencia        ListaPreferencia?
+  equipeEncontro          EquipeEncontro[]
 
   @@map("encontreiros")
 }
@@ -182,6 +195,7 @@ model Encontro {
   circulo            Circulo[]
   carroEncontro      CarroEncontro[]
   ResponsavelExterna ResponsavelExterna[]
+  EquipeEncontro     EquipeEncontro[]
 
   @@map("encontros")
 }
@@ -291,6 +305,31 @@ model Carta {
   @@map("cartas")
 }
 
+model ListaPreferencia {
+  idPessoa            String  @id @map("id_pessoa")
+  primeiraEquipeValue String?
+  segundaEquipeValue  String?
+  terceiraEquipeValue String?
+
+  encontreiro   Encontreiro    @relation(fields: [idPessoa], references: [idPessoa])
+  primeiraOpcao DomainEquipes? @relation("PrimeiraOpcao", fields: [primeiraEquipeValue], references: [equipeValue])
+  segundaOpcao  DomainEquipes? @relation("SegundaOpcao", fields: [segundaEquipeValue], references: [equipeValue])
+  terceiraOpcao DomainEquipes? @relation("TerceiraOpcao", fields: [terceiraEquipeValue], references: [equipeValue])
+}
+
+model EquipeEncontro {
+  idPessoa   String
+  idEncontro String
+  idEquipe   String
+  coordenou  Boolean @default(false)
+
+  encontreiro Encontreiro   @relation(fields: [idPessoa], references: [idPessoa])
+  encontro    Encontro      @relation(fields: [idEncontro], references: [id])
+  equipe      DomainEquipes @relation(fields: [idEquipe], references: [equipeValue])
+
+  @@id([idPessoa, idEncontro])
+}
+
 //Domains
 
 model DomainStatus {
@@ -356,6 +395,18 @@ model DomainCorCirculo {
   circulo Circulo[]
 
   @@map("@cor_circulo")
+}
+
+model DomainEquipes {
+  equipeValue    String           @id @map("equipe_value")
+  equipeLabel    String           @unique @map("equipe_label")
+  EquipeEncontro EquipeEncontro[]
+
+  primeiraOpcao ListaPreferencia[] @relation("PrimeiraOpcao")
+  segundaOpcao  ListaPreferencia[] @relation("SegundaOpcao")
+  terceiraOpcao ListaPreferencia[] @relation("TerceiraOpcao")
+
+  @@map("@equipes")
 }
 
 //Next-Auth/Prisma Adapter

@@ -267,7 +267,7 @@ export default function MontagemCirculos() {
   }
 
   return (
-    <div className="w-ful h-full">
+    <div className="h-full w-full">
       <div className="pb-4">
         <div className="flex items-center justify-between gap-8 pb-8">
           <div className="px-4">

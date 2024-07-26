@@ -119,6 +119,10 @@ export async function getEncontreiroMontagem(slug: string) {
       })
     : []
 
+  const preferenciasOrdenadas = preferencias.sort(
+    (a, b) => b.posicao - a.posicao,
+  )
+
   const equipeEncontroOrdenado = equipeEncontro.sort(
     (a, b) => b.encontro - a.encontro,
   )
@@ -147,7 +151,7 @@ export async function getEncontreiroMontagem(slug: string) {
       encontreiro.encontreiro && encontreiro.encontreiro.obsBanda
         ? encontreiro.encontreiro.obsBanda
         : undefined,
-    preferencias,
+    preferencias: preferenciasOrdenadas,
     equipeEncontro: equipeEncontroOrdenado,
     statusMontagem:
       encontreiro.encontreiro && encontreiro.encontreiro.statusMontagem,

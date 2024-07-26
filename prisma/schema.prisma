@@ -72,11 +72,18 @@ enum Role {
 }
 
 enum DisponibilidadePre {
+  NAO_PREENCHEU
   MUITO_BAIXA
   BAIXA
   MEDIA
   ALTA
   MUITO_ALTA
+}
+
+enum StatusEncontreiro {
+  ATIVO
+  CONVIDADO_ESPECIAL
+  INATIVO
 }
 
 model Pessoa {
@@ -103,10 +110,10 @@ model Pessoa {
   pessoaCarona       Carro[]      @relation("PessoaCarona")
   encontreiro        Encontreiro?
   encontrista        Encontrista?
+  cartasDigitais     Carta[]
 
-  accounts       Account[]
-  sessions       Session[]
-  cartasDigitais Carta[]
+  accounts Account[]
+  sessions Session[]
 
   @@map("pessoas")
 }
@@ -162,6 +169,7 @@ model Encontreiro {
   obsBanda           String?              @map("obs_banda")
   disponibilidade    DisponibilidadePre?
   observacoes        String?
+  statusMontagem     StatusEncontreiro?
 
   pessoa                  Pessoa               @relation(fields: [idPessoa], references: [id], onDelete: Cascade)
   encontro                Encontro?            @relation(fields: [idEncontro], references: [id])
@@ -169,8 +177,9 @@ model Encontreiro {
   circulo                 Circulo?             @relation(fields: [idCirculo], references: [id])
   responsavelExterna      ResponsavelExterna[]
   responsavelCarroExterna CarroEncontro[]      @relation("PessoaResponsavelExterna")
-  listaPreferencia        ListaPreferencia?
   equipeEncontro          EquipeEncontro[]
+  listaPreferencias       ListaPreferencia[]
+  equipeMontagem          EquipeMontagem?
 
   @@map("encontreiros")
 }
@@ -203,6 +212,7 @@ model Encontro {
 model Circulo {
   id            String  @id @default(uuid())
   idCorCirculo  Int     @map("id_cor_circulo")
+  nome          String?
   idTioAparente String? @unique @map("id_tio_aparente")
   idTioSecreto  String? @unique @map("id_tio_secreto")
   idEncontro    String  @map("id_encontro")
@@ -306,15 +316,15 @@ model Carta {
 }
 
 model ListaPreferencia {
-  idPessoa            String  @id @map("id_pessoa")
-  primeiraEquipeValue String?
-  segundaEquipeValue  String?
-  terceiraEquipeValue String?
+  idPessoa    String @map("id_pessoa")
+  posicao     Int
+  valueEquipe String @map("value_equipe")
 
-  encontreiro   Encontreiro    @relation(fields: [idPessoa], references: [idPessoa])
-  primeiraOpcao DomainEquipes? @relation("PrimeiraOpcao", fields: [primeiraEquipeValue], references: [equipeValue])
-  segundaOpcao  DomainEquipes? @relation("SegundaOpcao", fields: [segundaEquipeValue], references: [equipeValue])
-  terceiraOpcao DomainEquipes? @relation("TerceiraOpcao", fields: [terceiraEquipeValue], references: [equipeValue])
+  encontreiro Encontreiro   @relation(fields: [idPessoa], references: [idPessoa], onDelete: Cascade)
+  equipe      DomainEquipes @relation(fields: [valueEquipe], references: [equipeValue])
+
+  @@id([idPessoa, posicao])
+  @@map("lista_preferencia")
 }
 
 model EquipeEncontro {
@@ -328,6 +338,18 @@ model EquipeEncontro {
   equipe      DomainEquipes @relation(fields: [idEquipe], references: [equipeValue])
 
   @@id([idPessoa, idEncontro])
+  @@map("equipes_encontro")
+}
+
+model EquipeMontagem {
+  idEncontreiro String  @id
+  valueEquipe   String
+  coordenando   Boolean
+
+  encontreiro Encontreiro   @relation(fields: [idEncontreiro], references: [idPessoa])
+  equipe      DomainEquipes @relation(fields: [valueEquipe], references: [equipeValue])
+
+  @@map("equipes_montagem")
 }
 
 //Domains
@@ -398,13 +420,12 @@ model DomainCorCirculo {
 }
 
 model DomainEquipes {
-  equipeValue    String           @id @map("equipe_value")
-  equipeLabel    String           @unique @map("equipe_label")
-  EquipeEncontro EquipeEncontro[]
+  equipeValue String @id @map("equipe_value")
+  equipeLabel String @unique @map("equipe_label")
 
-  primeiraOpcao ListaPreferencia[] @relation("PrimeiraOpcao")
-  segundaOpcao  ListaPreferencia[] @relation("SegundaOpcao")
-  terceiraOpcao ListaPreferencia[] @relation("TerceiraOpcao")
+  EquipeEncontro   EquipeEncontro[]
+  ListaPreferencia ListaPreferencia[]
+  EquipeMontagem   EquipeMontagem[]
 
   @@map("@equipes")
 }

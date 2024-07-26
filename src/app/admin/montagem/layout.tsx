@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Header } from '../(sectionComponents)/Header'
+import { Header } from './(sectionComponents)/Header'
 
 export const metadata: Metadata = {
   title: 'Montagem | EJC NSDP',

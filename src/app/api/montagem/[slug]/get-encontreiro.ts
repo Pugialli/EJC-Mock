@@ -1,9 +1,10 @@
 import { prisma } from '@/lib/prisma'
-import type { DisponibilidadePre } from '@prisma/client'
+import type { DisponibilidadePre, StatusEncontreiro } from '@prisma/client'
 
 export type EncontreiroMontagemData = {
   id: string
   nome: string
+  instagram: string | null
   slug: string
   apelido: string | null
   bairro: string
@@ -17,6 +18,7 @@ export type EncontreiroMontagemData = {
   equipeEncontro:
     | { encontro: number; equipe: string; coordenou: boolean }[]
     | []
+  statusMontagem: StatusEncontreiro | null
 }
 
 export async function getEncontreiroMontagem(slug: string) {
@@ -35,9 +37,27 @@ export async function getEncontreiroMontagem(slug: string) {
       avatarUrl: true,
       encontreiro: {
         select: {
+          instagram: true,
           disponibilidade: true,
           obsBanda: true,
           observacoes: true,
+          statusMontagem: true,
+          equipeMontagem: {
+            select: {
+              coordenando: true,
+              valueEquipe: true,
+            },
+          },
+          listaPreferencias: {
+            select: {
+              posicao: true,
+              equipe: {
+                select: {
+                  equipeLabel: true,
+                },
+              },
+            },
+          },
           equipeEncontro: {
             select: {
               encontro: {
@@ -51,13 +71,6 @@ export async function getEncontreiroMontagem(slug: string) {
                   equipeLabel: true,
                 },
               },
-            },
-          },
-          listaPreferencia: {
-            select: {
-              primeiraOpcao: true,
-              segundaOpcao: true,
-              terceiraOpcao: true,
             },
           },
           encontro: {
@@ -87,30 +100,13 @@ export async function getEncontreiroMontagem(slug: string) {
   }
 
   const preferencias =
-    encontreiro.encontreiro && encontreiro.encontreiro.listaPreferencia
-      ? [
-          {
-            posicao: 1,
-            equipe: encontreiro.encontreiro.listaPreferencia.primeiraOpcao
-              ? encontreiro.encontreiro.listaPreferencia.primeiraOpcao
-                  .equipeLabel
-              : '',
-          },
-          {
-            posicao: 2,
-            equipe: encontreiro.encontreiro.listaPreferencia.segundaOpcao
-              ? encontreiro.encontreiro.listaPreferencia.segundaOpcao
-                  .equipeLabel
-              : '',
-          },
-          {
-            posicao: 3,
-            equipe: encontreiro.encontreiro.listaPreferencia.terceiraOpcao
-              ? encontreiro.encontreiro.listaPreferencia.terceiraOpcao
-                  .equipeLabel
-              : '',
-          },
-        ]
+    encontreiro.encontreiro && encontreiro.encontreiro.listaPreferencias
+      ? encontreiro.encontreiro.listaPreferencias.map((preferencia) => {
+          return {
+            posicao: preferencia.posicao,
+            equipe: preferencia.equipe.equipeLabel,
+          }
+        })
       : []
 
   const equipeEncontro = encontreiro.encontreiro
@@ -130,6 +126,7 @@ export async function getEncontreiroMontagem(slug: string) {
   const encontreiroMontagemResponse: EncontreiroMontagemData = {
     id: encontreiro.id,
     nome: encontreiro.nome + ' ' + encontreiro.sobrenome,
+    instagram: encontreiro.encontreiro && encontreiro.encontreiro.instagram,
     slug: encontreiro.slug,
     apelido: encontreiro.apelido,
     bairro: encontreiro.endereco.bairro,
@@ -152,6 +149,8 @@ export async function getEncontreiroMontagem(slug: string) {
         : undefined,
     preferencias,
     equipeEncontro: equipeEncontroOrdenado,
+    statusMontagem:
+      encontreiro.encontreiro && encontreiro.encontreiro.statusMontagem,
   }
 
   return encontreiroMontagemResponse

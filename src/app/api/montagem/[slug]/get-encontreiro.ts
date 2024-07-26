@@ -120,7 +120,7 @@ export async function getEncontreiroMontagem(slug: string) {
     : []
 
   const preferenciasOrdenadas = preferencias.sort(
-    (a, b) => b.posicao - a.posicao,
+    (a, b) => a.posicao - b.posicao,
   )
 
   const equipeEncontroOrdenado = equipeEncontro.sort(

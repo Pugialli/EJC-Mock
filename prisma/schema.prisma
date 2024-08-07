@@ -333,7 +333,7 @@ model EquipeEncontro {
   idEquipe   String
   coordenou  Boolean @default(false)
 
-  encontreiro Encontreiro   @relation(fields: [idPessoa], references: [idPessoa])
+  encontreiro Encontreiro   @relation(fields: [idPessoa], references: [idPessoa], onDelete: Cascade)
   encontro    Encontro      @relation(fields: [idEncontro], references: [id])
   equipe      DomainEquipes @relation(fields: [idEquipe], references: [equipeValue])
 

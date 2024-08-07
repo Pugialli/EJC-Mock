@@ -1,5 +1,5 @@
 import espiritualidade from '@/assets/Espiritualidade.png'
-import movimento from '@/assets/Movimento.png'
+import movimento from '@/assets/Movimento71.png'
 import paroquia from '@/assets/Paroquia.png'
 import Image from 'next/image'
 import type { ReactNode } from 'react'

@@ -278,6 +278,7 @@ model CarroEncontro {
   idEncontro  String  @map("id_encontro")
   idExterna   String?
   numeroCarro Int
+  observacao  String?
 
   carro       Carro         @relation(fields: [idCarro], references: [id], onDelete: Cascade)
   encontrista Encontrista[]

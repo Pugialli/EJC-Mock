@@ -16,6 +16,17 @@ export interface CardEncontristaResponse {
 }
 
 export async function getConfirmadosCard() {
+  const encontro = await prisma.encontro.findFirst({
+    orderBy: {
+      numeroEncontro: 'desc',
+    },
+  })
+
+  console.log(encontro)
+
+  if (!encontro) {
+    return null
+  }
   const encontristas = await prisma.pessoa.findMany({
     select: {
       id: true,
@@ -63,6 +74,11 @@ export async function getConfirmadosCard() {
           },
         },
       ],
+      encontreiro: {
+        encontro: {
+          id: encontro.id,
+        },
+      },
     },
     orderBy: {
       nome: 'asc',

@@ -43,7 +43,7 @@ export async function createEncontrista({
 }: CreateEncontristaProps) {
   const encontro = await prisma.encontro.findFirst({
     orderBy: {
-      createdAt: 'desc',
+      numeroEncontro: 'desc',
     },
   })
 

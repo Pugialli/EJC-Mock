@@ -20,7 +20,7 @@ export interface CarroFromEncontro {
 export async function getCarros() {
   const encontro = await prisma.encontro.findFirst({
     orderBy: {
-      createdAt: 'desc',
+      numeroEncontro: 'desc',
     },
   })
   if (!encontro) {

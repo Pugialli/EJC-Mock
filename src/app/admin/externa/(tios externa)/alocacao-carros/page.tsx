@@ -29,7 +29,7 @@ import { ListaConfirmadosSemCarro } from './ListaConfirmadosSemCarro'
 export type CarroId = string
 
 async function getCarros() {
-  const encontro = 71
+  const encontro = 72
 
   const response: CarroFromEncontro[] = await api
     .get(`/encontro/${encontro}/carros`)

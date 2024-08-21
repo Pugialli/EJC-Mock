@@ -1,7 +1,10 @@
 'use client'
 
+import type { BairrosRJ } from '@/app/api/domains/bairrosRJ/get-bairros-rj'
 import { RadioInputGroup } from '@/components/Form/RadioInput/RadioInputGroup'
 import { RadioInputItem } from '@/components/Form/RadioInput/RadioInputItem'
+import { SelectGroupInput } from '@/components/Form/SelectInput/SelectGroupInput'
+import { SelectItem } from '@/components/Form/SelectInput/SelectItem'
 import { TextInput } from '@/components/Form/TextInput'
 import { Form, FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -10,7 +13,9 @@ import {
   CreateEncontristaContext,
 } from '@/context/CreateEncontristaContext'
 import { CEPResponse, getCEPData } from '@/lib/fetch-cep'
+import { getBairros } from '@/utils/fetch-domains'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery } from '@tanstack/react-query'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useWizard } from 'react-use-wizard'
@@ -31,21 +36,20 @@ const addressFormScheme = z.object({
   numero: z.string().min(1, { message: 'O número é obrigatório.' }),
   complemento: z.string(),
   dormiraEmCasa: z.enum(['sim', 'nao']),
-
-  cepEncontro: z
-    .string({ required_error: 'O cep é obrigatório.' })
-    .min(9, { message: 'O cep está incompleto.' }),
-  estadoEncontro: z.string().min(1, { message: 'O estado é obrigatório.' }),
-  cidadeEncontro: z.string().min(1, { message: 'A cidade é obrigatória.' }),
-  bairroEncontro: z.string().min(1, { message: 'O bairro é obrigatório.' }),
-  ruaEncontro: z.string().min(1, { message: 'A rua é obrigatória.' }),
-  numeroEncontro: z.string().min(1, { message: 'O número é obrigatório.' }),
-  complementoEncontro: z.string(),
+  bairroDuranteOEncontro: z
+    .string()
+    .min(1, { message: 'Selecione um bairro' })
+    .optional(),
 })
 
 export type AddressFormDataInput = z.infer<typeof addressFormScheme>
 
 export function AddressDetails() {
+  const { data: bairros } = useQuery<BairrosRJ[]>({
+    queryFn: async () => await getBairros(),
+    queryKey: ['bairrosRJ'],
+  })
+
   const { completeForm, updateData } = useContext(CreateEncontristaContext)
   const { nextStep, handleStep, activeStep } = useWizard()
 
@@ -65,43 +69,6 @@ export function AddressDetails() {
   const isOnOtherLocation = !(watch('dormiraEmCasa') === 'nao')
 
   const cepValue = watch('cep')
-  const cepEncontroValue = watch('cepEncontro')
-  const estadoValue = watch('estado')
-  const cidadeValue = watch('cidade')
-  const bairroValue = watch('bairro')
-  const ruaValue = watch('rua')
-  const numeroValue = watch('numero')
-  const complementoValue = watch('complemento')
-
-  useEffect(() => {
-    if (!isOnOtherLocation) {
-      setValue('cepEncontro', '')
-      setValue('estadoEncontro', '')
-      setValue('cidadeEncontro', '')
-      setValue('bairroEncontro', '')
-      setValue('ruaEncontro', '')
-      setValue('numeroEncontro', '')
-      setValue('complementoEncontro', '')
-    } else {
-      setValue('cepEncontro', cepValue)
-      setValue('estadoEncontro', estadoValue)
-      setValue('cidadeEncontro', cidadeValue)
-      setValue('bairroEncontro', bairroValue)
-      setValue('ruaEncontro', ruaValue)
-      setValue('numeroEncontro', numeroValue)
-      setValue('complementoEncontro', complementoValue)
-    }
-  }, [
-    isOnOtherLocation,
-    cepValue,
-    estadoValue,
-    cidadeValue,
-    bairroValue,
-    ruaValue,
-    numeroValue,
-    complementoValue,
-    setValue,
-  ])
 
   useEffect(() => {
     async function fetchAddress(cep: string) {
@@ -129,33 +96,6 @@ export function AddressDetails() {
     }
   }, [activeStep, cepValue, setValue])
 
-  useEffect(() => {
-    async function fetchAddress(cep: string) {
-      const response = await getCEPData(cep)
-      if (response === undefined) {
-        toast.error('Seu CEP não foi encontrado')
-      } else {
-        const addressData: CEPResponse = await response.json()
-        setValue('estadoEncontro', addressData.state, {
-          shouldValidate: false,
-          shouldDirty: true,
-        })
-        setValue('cidadeEncontro', addressData.city, { shouldValidate: false })
-        setValue('bairroEncontro', addressData.neighborhood, {
-          shouldValidate: false,
-        })
-        setValue('ruaEncontro', addressData.street, { shouldValidate: false })
-      }
-    }
-    if (cepEncontroValue && cepEncontroValue[8] !== '_') {
-      fetchAddress(cepEncontroValue)
-    } else {
-      setValue('estadoEncontro', '')
-      setValue('cidadeEncontro', '')
-      setValue('bairroEncontro', '')
-      setValue('ruaEncontro', '')
-    }
-  }, [activeStep, cepEncontroValue, setValue])
   const registerWithMask = useHookFormMask(register)
 
   function handleNextFormStep(formDataInput: AddressFormDataInput) {
@@ -265,7 +205,7 @@ export function AddressDetails() {
                 return (
                   <RadioInputGroup
                     label="Durante o Encontro, você ficará na sua própria casa? *"
-                    description='Para facilitar a organização do retiro e a comunicação, precisamos saber em qual endereço estará durante o final de semana do nosso retiro. Se não for ficar no endereço preenchido anteriormente, marque "não" e diga abaixo onde vai ficar. Obs.: Endereços mais próximos ao Jardim Botânico são bem-vindos, mas não obrigatórios.'
+                    description='Se você for dormir na casa de algum amigo, marque "Não".'
                     onChange={field.onChange}
                     defaultValue={field.value}
                   >
@@ -275,89 +215,35 @@ export function AddressDetails() {
                 )
               }}
             />
+
+            <FormField
+              control={control}
+              name="bairroDuranteOEncontro"
+              defaultValue={completeForm.address.bairroDuranteOEncontro}
+              render={({ field }) => {
+                return (
+                  <SelectGroupInput
+                    label="Em qual bairro você ficará?"
+                    placeholder="Selecione uma opção"
+                    onChange={field.onChange}
+                    value={field.value}
+                    disabled={isOnOtherLocation}
+                  >
+                    {bairros &&
+                      bairros.map((item) => {
+                        return (
+                          <SelectItem
+                            key={item.value}
+                            value={item.value}
+                            text={item.bairro}
+                          />
+                        )
+                      })}
+                  </SelectGroupInput>
+                )
+              }}
+            />
           </CardSection>
-          {!isOnOtherLocation && (
-            <CardSection title="Pode nos dar mais detalhes?">
-              <FormField
-                control={control}
-                name="cepEncontro"
-                defaultValue={completeForm.address.cepEncontro}
-                render={({ field }) => (
-                  <TextInput label={'CEP *'}>
-                    <Input
-                      autoFocus
-                      {...field}
-                      {...registerWithMask(field.name, '99999-999')}
-                    />
-                  </TextInput>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="estadoEncontro"
-                defaultValue={completeForm.address.estadoEncontro}
-                render={({ field }) => (
-                  <TextInput label={'Estado *'}>
-                    <Input readOnly={true} {...field} />
-                  </TextInput>
-                )}
-              />
-              <FormField
-                control={control}
-                name="cidadeEncontro"
-                defaultValue={completeForm.address.cidadeEncontro}
-                render={({ field }) => (
-                  <TextInput label={'Cidade *'}>
-                    <Input readOnly={true} {...field} />
-                  </TextInput>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="bairroEncontro"
-                defaultValue={completeForm.address.bairroEncontro}
-                render={({ field }) => (
-                  <TextInput label={'Bairro *'}>
-                    <Input readOnly={true} {...field} />
-                  </TextInput>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="ruaEncontro"
-                defaultValue={completeForm.address.ruaEncontro}
-                render={({ field }) => (
-                  <TextInput label={'Rua *'}>
-                    <Input readOnly={true} {...field} />
-                  </TextInput>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="numeroEncontro"
-                defaultValue={completeForm.address.numeroEncontro}
-                render={({ field }) => (
-                  <TextInput label={'Número *'}>
-                    <Input {...field} />
-                  </TextInput>
-                )}
-              />
-              <FormField
-                control={control}
-                name="complementoEncontro"
-                defaultValue={completeForm.address.complementoEncontro}
-                render={({ field }) => (
-                  <TextInput label={'Complemento'}>
-                    <Input {...field} />
-                  </TextInput>
-                )}
-              />
-            </CardSection>
-          )}
         </CardParticipe>
       </form>
     </Form>

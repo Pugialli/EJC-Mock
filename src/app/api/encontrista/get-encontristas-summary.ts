@@ -1,6 +1,5 @@
 import { prisma } from '@/lib/prisma'
 import { type Value_Status as enumStatus } from '@prisma/client'
-import type { BairrosRJ } from '../domains/bairrosRJ/get-bairros-rj'
 
 export type EncontristaSummaryData = {
   id: string
@@ -13,6 +12,7 @@ export type EncontristaSummaryData = {
   celular: string
   idExterna: string | null
   observacoes: string | null
+  slug: string
 }
 
 export type EncontristaSummary = {
@@ -65,14 +65,19 @@ async function getEncontritas({
               nome: true,
               sobrenome: true,
               celular: true,
+              slug: true,
               encontrista: {
                 select: {
                   idStatus: true,
-                  idBairroEncontro: true,
                   observacao: true,
                   responsavelExterna: {
                     select: {
                       idExterna: true,
+                    },
+                  },
+                  enderecoEncontro: {
+                    select: {
+                      bairro: true,
                     },
                   },
                 },
@@ -113,10 +118,15 @@ async function getEncontritas({
               nome: true,
               sobrenome: true,
               celular: true,
+              slug: true,
               encontrista: {
                 select: {
                   idStatus: true,
-                  idBairroEncontro: true,
+                  enderecoEncontro: {
+                    select: {
+                      bairro: true,
+                    },
+                  },
                   observacao: true,
                   responsavelExterna: {
                     select: {
@@ -159,10 +169,15 @@ async function getEncontritas({
             nome: true,
             sobrenome: true,
             celular: true,
+            slug: true,
             encontrista: {
               select: {
                 idStatus: true,
-                idBairroEncontro: true,
+                enderecoEncontro: {
+                  select: {
+                    bairro: true,
+                  },
+                },
                 observacao: true,
                 responsavelExterna: {
                   select: {
@@ -207,10 +222,15 @@ async function getEncontritas({
               nome: true,
               sobrenome: true,
               celular: true,
+              slug: true,
               encontrista: {
                 select: {
                   idStatus: true,
-                  idBairroEncontro: true,
+                  enderecoEncontro: {
+                    select: {
+                      bairro: true,
+                    },
+                  },
                   observacao: true,
                   responsavelExterna: {
                     select: {
@@ -251,10 +271,15 @@ async function getEncontritas({
               nome: true,
               sobrenome: true,
               celular: true,
+              slug: true,
               encontrista: {
                 select: {
                   idStatus: true,
-                  idBairroEncontro: true,
+                  enderecoEncontro: {
+                    select: {
+                      bairro: true,
+                    },
+                  },
                   observacao: true,
                   responsavelExterna: {
                     select: {
@@ -293,10 +318,15 @@ async function getEncontritas({
             nome: true,
             sobrenome: true,
             celular: true,
+            slug: true,
             encontrista: {
               select: {
                 idStatus: true,
-                idBairroEncontro: true,
+                enderecoEncontro: {
+                  select: {
+                    bairro: true,
+                  },
+                },
                 observacao: true,
                 responsavelExterna: {
                   select: {
@@ -340,10 +370,15 @@ async function getEncontritas({
             nome: true,
             sobrenome: true,
             celular: true,
+            slug: true,
             encontrista: {
               select: {
                 idStatus: true,
-                idBairroEncontro: true,
+                enderecoEncontro: {
+                  select: {
+                    bairro: true,
+                  },
+                },
                 observacao: true,
                 responsavelExterna: {
                   select: {
@@ -385,10 +420,15 @@ async function getEncontritas({
             nome: true,
             sobrenome: true,
             celular: true,
+            slug: true,
             encontrista: {
               select: {
                 idStatus: true,
-                idBairroEncontro: true,
+                enderecoEncontro: {
+                  select: {
+                    bairro: true,
+                  },
+                },
                 observacao: true,
                 responsavelExterna: {
                   select: {
@@ -428,10 +468,15 @@ async function getEncontritas({
           nome: true,
           sobrenome: true,
           celular: true,
+          slug: true,
           encontrista: {
             select: {
               idStatus: true,
-              idBairroEncontro: true,
+              enderecoEncontro: {
+                select: {
+                  bairro: true,
+                },
+              },
               observacao: true,
               responsavelExterna: {
                 select: {
@@ -474,10 +519,16 @@ async function getEncontritas({
           nome: true,
           sobrenome: true,
           celular: true,
+          slug: true,
           encontrista: {
             select: {
               idStatus: true,
-              idBairroEncontro: true,
+              enderecoEncontro: {
+                select: {
+                  bairro: true,
+                },
+              },
+
               observacao: true,
               responsavelExterna: {
                 select: {
@@ -515,10 +566,16 @@ async function getEncontritas({
           nome: true,
           sobrenome: true,
           celular: true,
+          slug: true,
           encontrista: {
             select: {
               idStatus: true,
-              idBairroEncontro: true,
+              enderecoEncontro: {
+                select: {
+                  bairro: true,
+                },
+              },
+
               observacao: true,
               responsavelExterna: {
                 select: {
@@ -555,10 +612,15 @@ async function getEncontritas({
       nome: true,
       sobrenome: true,
       celular: true,
+      slug: true,
       encontrista: {
         select: {
           idStatus: true,
-          idBairroEncontro: true,
+          enderecoEncontro: {
+            select: {
+              bairro: true,
+            },
+          },
           observacao: true,
           responsavelExterna: {
             select: {
@@ -808,10 +870,10 @@ export async function getEncontristasSummary({
         ? encontrista.encontrista!.responsavelExterna.idExterna
         : null
 
-      const bairroRes = await fetch(
-        `${process.env.NEXTAUTH_URL}/api/domains/bairrosRJ/${encontrista.encontrista!.idBairroEncontro}`,
-      )
-      const bairro: BairrosRJ = await bairroRes.json()
+      // const bairroRes = await fetch(
+      //   `${process.env.NEXTAUTH_URL}/api/domains/bairrosRJ/${encontrista.encontrista!.idBairroEncontro}`,
+      // )
+      // const bairro: BairrosRJ = await bairroRes.json()
 
       const encontristaResponse: EncontristaSummaryData = {
         id: encontrista.id,
@@ -821,9 +883,11 @@ export async function getEncontristasSummary({
         celular: encontrista.celular,
         idStatus: encontrista.encontrista!.idStatus,
         nascimento: encontrista.encontreiro!.nascimento,
-        bairroEncontro: bairro.bairro,
+        bairroEncontro:
+          encontrista.encontrista!.enderecoEncontro?.bairro || 'N/A',
         idExterna,
         observacoes: encontrista.encontrista!.observacao,
+        slug: encontrista.slug,
       }
       encontristasResponse.push(encontristaResponse)
       return encontristaResponse

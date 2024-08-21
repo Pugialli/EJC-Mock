@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { AddressCard } from './pageComponents/AddressCard'
+import { AddressEncontroCard } from './pageComponents/AddressEncontroCard'
 import { FamilyCard } from './pageComponents/FamilyCard'
 import { EditNavigation } from './pageComponents/Nav/edit-nav'
 import { NominationCard } from './pageComponents/NominationCard'
@@ -60,10 +61,17 @@ const editFormScheme = z.object({
   rua: z.string().min(1, { message: 'A rua é obrigatória.' }),
   numero: z.number().min(1, { message: 'O número é obrigatório.' }),
   complemento: z.string(),
-  bairroDuranteOEncontro: z
-    .string()
-    .min(1, { message: 'Selecione um bairro' })
-    .optional(),
+
+  cepEncontro: z
+    .string({ required_error: 'O cep é obrigatório.' })
+    .min(9, { message: 'O cep está incompleto.' }),
+  estadoEncontro: z.string().min(1, { message: 'O estado é obrigatório.' }),
+  cidadeEncontro: z.string().min(1, { message: 'A cidade é obrigatória.' }),
+  bairroEncontro: z.string().min(1, { message: 'O bairro é obrigatório.' }),
+  ruaEncontro: z.string().min(1, { message: 'A rua é obrigatória.' }),
+  numeroEncontro: z.string().min(1, { message: 'O número é obrigatório.' }),
+  complementoEncontro: z.string(),
+
   moraCom: z.enum(['sozinho', 'conjuge', 'familiar', 'amigos'], {
     required_error: 'Este campo é obrigatório',
   }),
@@ -121,7 +129,12 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
       rua: data.endereco.rua,
       numero: data.endereco.numero,
       complemento: data.endereco.complemento,
-      bairroDuranteOEncontro: data.endereco.idBairroEncontro,
+      cepEncontro: data.enderecoEncontro.cep,
+      cidadeEncontro: data.enderecoEncontro.cidade,
+      bairroEncontro: data.enderecoEncontro.bairro,
+      ruaEncontro: data.enderecoEncontro.rua,
+      numeroEncontro: data.enderecoEncontro.numero,
+      complementoEncontro: data.enderecoEncontro.complemento,
       moraCom: data.familia.idMoracom,
       statusPais: data.familia.idStatusPais,
       nomeFamiliar: data.familia.nomeContato1,
@@ -165,6 +178,7 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
 
   async function handleUpdateEncontreiro(formDataInput: EditFormDataInput) {
     setUpdating(true)
+    console.log('cheguei aqui')
     await api
       .put('/encontrista/update', formDataInput)
       .then(async () => {
@@ -191,6 +205,7 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
             <div className="flex flex-col gap-6">
               <PersonalCard />
               <AddressCard />
+              <AddressEncontroCard />
               <FamilyCard />
               <NominationCard />
               <OtherCard />

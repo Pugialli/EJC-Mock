@@ -8,7 +8,6 @@ export type EncontristaSummaryData = {
   sobrenome: string
   nascimento: string
   idStatus: enumStatus
-  idBairroEncontro: string
   celular: string
   idExterna: string | null
 }
@@ -24,7 +23,6 @@ export async function getEncontristaSummary(id: string) {
       encontrista: {
         select: {
           idStatus: true,
-          idBairroEncontro: true,
           responsavelExterna: {
             select: {
               idExterna: true,
@@ -56,7 +54,6 @@ export async function getEncontristaSummary(id: string) {
     celular: encontrista.celular,
     idStatus: encontrista.encontrista!.idStatus,
     nascimento: encontrista.encontreiro!.nascimento,
-    idBairroEncontro: encontrista.encontrista!.idBairroEncontro,
     idExterna: encontrista.encontrista!.responsavelExterna
       ? encontrista.encontrista!.responsavelExterna.idExterna
       : null,

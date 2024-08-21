@@ -1,3 +1,5 @@
+import type { BairroResponse } from '@/app/api/domains/bairrosRJ/zona/[bairro]/get-zona'
+import { api } from '@/lib/axios'
 import { prisma } from '@/lib/prisma'
 
 export interface CardEncontristaResponse {
@@ -6,10 +8,9 @@ export interface CardEncontristaResponse {
   nascimento: string
   bairro: string
   rua: string
-  endNumero: number
-  endComplemento: string
+  endNumero: string | null
+  endComplemento: string | null
   zona: string | null
-  bairroEncontro: string
   idCirculo: string | null
   corCirculo: string | null
   idCarro: string | null
@@ -21,8 +22,6 @@ export async function getConfirmadosCard() {
       numeroEncontro: 'desc',
     },
   })
-
-  console.log(encontro)
 
   if (!encontro) {
     return null
@@ -48,17 +47,16 @@ export async function getConfirmadosCard() {
           },
         },
       },
-      endereco: {
-        select: {
-          bairro: true,
-          rua: true,
-        },
-      },
       encontrista: {
         select: {
-          bairroEncontro: true,
-          endNumero: true,
-          endComplemento: true,
+          enderecoEncontro: {
+            select: {
+              bairro: true,
+              rua: true,
+            },
+          },
+          endNumeroEncontro: true,
+          endComplementoEncontro: true,
           idCarroEncontro: true,
         },
       },
@@ -85,23 +83,28 @@ export async function getConfirmadosCard() {
     },
   })
 
-  const response: CardEncontristaResponse[] = encontristas.map(
-    (encontrista) => {
+  const response: CardEncontristaResponse[] = await Promise.all(
+    encontristas.map(async (encontrista) => {
+      const fetchedZona: BairroResponse = await api
+        .get(
+          `/domains/bairrosRJ/zona/${encontrista.encontrista?.enderecoEncontro?.bairro}`,
+        )
+        .then((res) => res.data)
+
       return {
         id: encontrista.id,
         nome: `${encontrista.nome} ${encontrista.sobrenome}`,
         nascimento: encontrista.encontreiro!.nascimento,
-        bairro: encontrista.endereco.bairro,
-        bairroEncontro: encontrista.encontrista!.bairroEncontro.bairro,
-        zona: encontrista.encontrista?.bairroEncontro.zona || null,
-        rua: encontrista.endereco.rua,
-        endNumero: encontrista.encontrista!.endNumero,
-        endComplemento: encontrista.encontrista!.endComplemento,
+        bairro: encontrista.encontrista?.enderecoEncontro?.bairro || 'N/A',
+        zona: fetchedZona.zona || null,
+        rua: encontrista.encontrista?.enderecoEncontro?.rua || 'N/A',
+        endNumero: encontrista.encontrista!.endNumeroEncontro,
+        endComplemento: encontrista.encontrista!.endComplementoEncontro,
         idCirculo: encontrista.encontreiro!.idCirculo,
         corCirculo: encontrista.encontreiro!.circulo?.corCirculo.cor || null,
         idCarro: encontrista.encontrista?.idCarroEncontro || null,
       }
-    },
+    }),
   )
 
   return response

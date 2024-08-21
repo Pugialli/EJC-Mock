@@ -1,4 +1,4 @@
-import type { EditFormDataInput } from '@/app/admin/externa/[id]/edit/EditEncontristaForm'
+import type { EditFormDataInput } from '@/app/admin/externa/[slug]/edit/EditEncontristaForm'
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateEncontrista } from './update-encontrista'
 

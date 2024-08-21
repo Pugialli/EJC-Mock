@@ -111,7 +111,7 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
                 )}
               </TooltipContent>
             </Tooltip>
-            <Link href={`/admin/externa/${encontrista.id}/edit`}>
+            <Link href={`/admin/externa/${encontrista.slug}/edit`}>
               <Button variant="ghost" className="p-0">
                 <Pencil className="h-4 w-4 text-zinc-400 hover:text-zinc-500" />
               </Button>

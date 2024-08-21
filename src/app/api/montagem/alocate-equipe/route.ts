@@ -5,8 +5,6 @@ import { deleteEquipeMontagem } from './delete-equipe-montagem'
 export async function POST(request: NextRequest) {
   const updatedData: changeEquipeProps = await request.json()
 
-  console.log(updatedData.valueEquipe)
-
   const equipeInfo =
     updatedData.valueEquipe !== 'select_equipe'
       ? await alocateEquipeMontagem(updatedData)

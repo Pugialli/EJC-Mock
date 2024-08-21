@@ -149,13 +149,14 @@ export function FamilyDetails() {
                 )
               }}
             />
-
+          </CardSection>
+          <CardSection title="Contato de Emergência">
             <FormField
               control={control}
               name="nomeFamiliar"
               defaultValue={completeForm.family.nomeFamiliar}
               render={({ field }) => (
-                <TextInput label={'Nome de um familiar *'}>
+                <TextInput label={'Nome de um familiar ou amigo *'}>
                   <Input autoFocus {...field} />
                 </TextInput>
               )}
@@ -167,7 +168,7 @@ export function FamilyDetails() {
               defaultValue={completeForm.family.telFamiliar}
               render={({ field }) => {
                 return (
-                  <TextInput label={'Telefone do familiar *'}>
+                  <TextInput label={'Telefone do familiar ou amigo *'}>
                     <Input
                       {...field}
                       {...registerWithMask(field.name, '(99) [9]9999-9999')}
@@ -194,7 +195,7 @@ export function FamilyDetails() {
               name="nomeFamiliar2"
               defaultValue={completeForm.family.nomeFamiliar2}
               render={({ field }) => (
-                <TextInput label={'Nome de outro familiar'}>
+                <TextInput label={'Nome de outro familiar ou amigo'}>
                   <Input {...field} />
                 </TextInput>
               )}
@@ -206,7 +207,7 @@ export function FamilyDetails() {
               defaultValue={completeForm.family.telFamiliar2}
               render={({ field }) => {
                 return (
-                  <TextInput label={'Telefone do familiar'}>
+                  <TextInput label={'Telefone do familiar ou amigo'}>
                     <Input
                       {...field}
                       {...registerWithMask(field.name, '(99) [9]9999-9999')}
@@ -222,7 +223,7 @@ export function FamilyDetails() {
               name="parentescoFamiliar2"
               defaultValue={completeForm.family.parentescoFamiliar2}
               render={({ field }) => (
-                <TextInput label={'Grau de parentesco com o outro familiar'}>
+                <TextInput label={'Grau de parentesco'}>
                   <Input {...field} />
                 </TextInput>
               )}

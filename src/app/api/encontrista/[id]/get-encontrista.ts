@@ -35,7 +35,14 @@ export type EncontristaData = {
     rua: string
     numero: number
     complemento: string
-    idBairroEncontro: string
+  }
+  enderecoEncontro: {
+    cep: string
+    cidade: string
+    bairro: string
+    rua: string
+    numero: string
+    complemento: string
   }
   familia: {
     idMoracom: enumMoraCom
@@ -80,9 +87,18 @@ export async function getEncontrista(id: string) {
           idStatus: true,
           idReligiao: true,
           isAutofill: true,
+          enderecoEncontro: {
+            select: {
+              cep: true,
+              bairro: true,
+              cidade: true,
+              rua: true,
+            },
+          },
           endNumero: true,
           endComplemento: true,
-          idBairroEncontro: true,
+          endNumeroEncontro: true,
+          endComplementoEncontro: true,
           idMoracom: true,
           idStatusPais: true,
           movimentoAnterior: true,
@@ -147,7 +163,14 @@ export async function getEncontrista(id: string) {
       rua: encontrista.endereco.rua,
       numero: encontrista.encontrista!.endNumero,
       complemento: encontrista.encontrista!.endComplemento,
-      idBairroEncontro: encontrista.encontrista!.idBairroEncontro,
+    },
+    enderecoEncontro: {
+      cep: encontrista.encontrista?.enderecoEncontro?.cep || '',
+      cidade: encontrista.encontrista?.enderecoEncontro?.cidade || '',
+      bairro: encontrista.encontrista?.enderecoEncontro?.bairro || '',
+      rua: encontrista.encontrista?.enderecoEncontro?.rua || '',
+      numero: encontrista.encontrista?.endNumeroEncontro || '',
+      complemento: encontrista.encontrista?.endComplementoEncontro || '',
     },
     familia: {
       idMoracom: encontrista.encontrista!.idMoracom,

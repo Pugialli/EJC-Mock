@@ -1,20 +1,6 @@
-import type { EditFormDataInput } from '@/app/admin/externa/[id]/edit/EditEncontristaForm'
+import type { EditFormDataInput } from '@/app/admin/externa/[slug]/edit/EditEncontristaForm'
 import { updateEndereco } from '@/app/api/endereco/[cep]/update/update-endereco'
 import { prisma } from '@/lib/prisma'
-
-async function getBairroEncontro(bairro: string) {
-  const bairroID = await prisma.domainBairroEncontro.findFirst({
-    where: {
-      bairro,
-    },
-  })
-
-  if (!bairroID) {
-    return 'nao_encontrado'
-  }
-
-  return bairroID.value
-}
 
 export async function updateEncontrista(data: EditFormDataInput) {
   const enderecoProps = {
@@ -24,8 +10,6 @@ export async function updateEncontrista(data: EditFormDataInput) {
   }
 
   await updateEndereco(enderecoProps)
-
-  const bairroValue = await getBairroEncontro(data.bairro)
 
   return await prisma.$transaction([
     prisma.pessoa.update({
@@ -49,7 +33,6 @@ export async function updateEncontrista(data: EditFormDataInput) {
         isAutofill: data.paraVoce === 'sim',
         endNumero: data.numero,
         endComplemento: data.complemento,
-        idBairroEncontro: bairroValue,
         idMoracom: data.moraCom,
         idStatusPais: data.statusPais,
         movimentoAnterior: data.nomeMovimento,

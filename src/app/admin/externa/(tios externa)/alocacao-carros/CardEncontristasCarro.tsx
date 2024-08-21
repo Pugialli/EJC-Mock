@@ -3,7 +3,7 @@ import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { useDraggable, type UniqueIdentifier } from '@dnd-kit/core'
 import { cva } from 'class-variance-authority'
-import { GripVertical, Home, MapPin } from 'lucide-react'
+import { GripVertical, MapPin } from 'lucide-react'
 import type { CarroId } from './page'
 
 export interface CardEncontristaCarroContent {
@@ -11,10 +11,9 @@ export interface CardEncontristaCarroContent {
   nome: string
   bairro: string
   rua: string
-  endNumero: number
-  endComplemento: string
+  endNumero: string | null
+  endComplemento: string | null
   zona: string | null
-  bairroEncontro: string
   corCirculo: string | null
 }
 
@@ -39,7 +38,7 @@ export function CardEncontristaCarro({
   encontrista,
   isOverlay,
 }: CardEncontristaProps) {
-  const endereco = `${encontrista.content.rua} ${encontrista.content.endNumero}/${encontrista.content.endComplemento}`
+  // const endereco = `${encontrista.content.rua} ${encontrista.content.endNumero}/${encontrista.content.endComplemento}`
 
   const { setNodeRef, attributes, listeners, isDragging } = useDraggable({
     id: encontrista.id,
@@ -105,15 +104,7 @@ export function CardEncontristaCarro({
       <div className="flex flex-col justify-between p-2">
         <div className="flex items-center gap-2 text-zinc-400">
           <MapPin className="h-4 w-4" />
-          <span>{encontrista.content.bairroEncontro}</span>
-        </div>
-        <div className="flex items-center gap-2 text-zinc-400">
-          <Home className="h-4 w-4" />
-          <span>
-            {encontrista.content.bairro === encontrista.content.bairroEncontro
-              ? endereco
-              : '?'}
-          </span>
+          <span>{encontrista.content.bairro}</span>
         </div>
       </div>
     </Card>

@@ -1,7 +1,12 @@
 import type { EncontristaData } from '@/app/api/encontrista/[id]/get-encontrista'
 import { EditEncontristaForm } from './EditEncontristaForm'
 
-async function getEncontrista(id: string) {
+async function getEncontrista(slug: string) {
+  const id = await fetch(
+    `${process.env.NEXTAUTH_URL}/api/pessoa/id-from-slug/${slug}`,
+    { cache: 'no-store' },
+  ).then(async (res) => await res.json())
+
   const encontrista = await fetch(
     `${process.env.NEXTAUTH_URL}/api/encontrista/${id}`,
     { cache: 'no-store' },
@@ -9,12 +14,13 @@ async function getEncontrista(id: string) {
 
   return encontrista
 }
+
 export default async function EditEncontrista({
   params,
 }: {
-  params: { id: string }
+  params: { slug: string }
 }) {
-  const encontrista: EncontristaData = await getEncontrista(params.id)
+  const encontrista: EncontristaData = await getEncontrista(params.slug)
 
   return <EditEncontristaForm data={encontrista} />
 }

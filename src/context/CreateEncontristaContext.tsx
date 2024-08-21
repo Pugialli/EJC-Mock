@@ -33,7 +33,13 @@ export interface AddressFormData {
   numero: string
   complemento: string
   dormiraEmCasa: 'sim' | 'nao'
-  bairroDuranteOEncontro?: string
+  cepEncontro: string
+  estadoEncontro: string
+  cidadeEncontro: string
+  bairroEncontro: string
+  ruaEncontro: string
+  numeroEncontro: string
+  complementoEncontro: string
 }
 
 export interface FamilyFormData {
@@ -111,7 +117,13 @@ const initialState = {
     numero: '',
     complemento: '',
     dormiraEmCasa: 'sim',
-    bairroDuranteOEncontro: undefined,
+    cepEncontro: '',
+    estadoEncontro: '',
+    cidadeEncontro: '',
+    bairroEncontro: '',
+    ruaEncontro: '',
+    numeroEncontro: '',
+    complementoEncontro: '',
   },
   family: {
     moraCom: 'familiar',

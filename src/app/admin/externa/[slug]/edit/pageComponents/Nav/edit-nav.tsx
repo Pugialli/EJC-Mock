@@ -1,4 +1,5 @@
 import {
+  Bed,
   Building2,
   Clipboard,
   FileHeart,
@@ -27,6 +28,13 @@ export function EditNavigation() {
           title="Endereço"
           icon={Building2}
           active={path === '#address-section'}
+        />
+      </Link>
+      <Link href="#address-encontro-section">
+        <EditNavItem
+          title="Endereço Encontro"
+          icon={Bed}
+          active={path === '#address-encontro-section'}
         />
       </Link>
       <Link href="#family-section">

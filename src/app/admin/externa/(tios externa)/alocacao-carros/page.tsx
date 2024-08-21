@@ -55,11 +55,10 @@ async function getConfirmados() {
           id: encontrista.id,
           nome: encontrista.nome,
           zona: encontrista.zona,
-          bairro: encontrista.bairroEncontro,
+          bairro: encontrista.bairro,
           rua: encontrista.rua,
           endNumero: encontrista.endNumero,
           endComplemento: encontrista.endComplemento,
-          bairroEncontro: encontrista.bairroEncontro,
           corCirculo: encontrista.corCirculo,
         },
       }

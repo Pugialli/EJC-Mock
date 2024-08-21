@@ -17,22 +17,22 @@ export interface CreateEncontristaProps {
   other: OtherFormData
 }
 
-async function getBairroEncontro(addressData: AddressFormData) {
-  if (addressData.bairroDuranteOEncontro !== undefined)
-    return addressData.bairroDuranteOEncontro
+// async function getBairroEncontro(addressData: AddressFormData) {
+//   if (addressData.bairroDuranteOEncontro !== undefined)
+//     return addressData.bairroDuranteOEncontro
 
-  const bairroID = await prisma.domainBairroEncontro.findFirst({
-    where: {
-      bairro: addressData.bairro,
-    },
-  })
+//   const bairroID = await prisma.domainBairroEncontro.findFirst({
+//     where: {
+//       bairro: addressData.bairro,
+//     },
+//   })
 
-  if (!bairroID) {
-    return 'jardim_botanico'
-  }
+//   if (!bairroID) {
+//     return 'jardim_botanico'
+//   }
 
-  return bairroID.value
-}
+//   return bairroID.value
+// }
 
 export async function createEncontrista({
   personal,
@@ -57,7 +57,16 @@ export async function createEncontrista({
     rua: address.rua,
   }
 
+  const enderecoEncontroProps = {
+    cep: address.cepEncontro,
+    bairro: address.bairroEncontro,
+    cidade: address.cidadeEncontro,
+    estado: address.estadoEncontro,
+    rua: address.ruaEncontro,
+  }
+
   const endereco = await createEndereco(enderecoProps)
+  const enderecoEncontro = await createEndereco(enderecoEncontroProps)
 
   const encontristaSlug = createSlugForEncontrista(
     personal.email,
@@ -74,61 +83,100 @@ export async function createEncontrista({
       telefone: personal.telefone,
       email: personal.email,
       slug: encontristaSlug,
+      encontrista: {
+        create: {
+          idStatus: 'ligar',
+          idReligiao: personal.religiao,
+          isAutofill: personal.paraVoce === 'sim',
+          endNumero: Number(address.numero),
+          endComplemento: address.complemento,
+          cepEncontro: enderecoEncontro.cep,
+          endNumeroEncontro: address.numeroEncontro,
+          endComplementoEncontro: address.complementoEncontro,
+          idMoracom: family.moraCom,
+          idStatusPais: family.statusPais,
+          movimentoAnterior: other.nomeMovimento,
+          observacao: other.observacoes,
+          nomeContato1: family.nomeFamiliar,
+          telContato1: family.telFamiliar,
+          parentescoContato1: family.parentescoFamiliar,
+          nomeContato2: family.nomeFamiliar2,
+          telContato2: family.telFamiliar2,
+          parentescoContato2: family.parentescoFamiliar2,
+          indicadoPorNome: nomination.indicadoPorNome,
+          indicadoPorApelido: nomination.indicadoApelido,
+          indicadoPorTel: nomination.indicadoTelefone,
+          indicadoPorEmail: nomination.indicadoEmail,
+        },
+      },
+      encontreiro: {
+        create: {
+          nascimento: personal.dataNascimento,
+          instagram: personal.instagram,
+          restricaoAlimentar: other.restricoesAlimentares,
+          idTamanhoCamisa: other.tamanhoCamisa,
+          idEncontro: encontro ? encontro.id : null,
+        },
+      },
     },
   })
-
   if (!pessoa) {
     return null
   }
 
-  const bairroEncontro = await getBairroEncontro(address)
+  // const bairroEncontro = await getBairroEncontro(address)
 
-  const resultEncontrista = await prisma.$transaction([
-    prisma.encontrista.create({
-      data: {
-        idPessoa: pessoa.id,
-        idStatus: 'ligar',
-        idReligiao: personal.religiao,
-        isAutofill: personal.paraVoce === 'sim',
-        endNumero: Number(address.numero),
-        endComplemento: address.complemento,
-        idBairroEncontro: bairroEncontro,
-        idMoracom: family.moraCom,
-        idStatusPais: family.statusPais,
-        movimentoAnterior: other.nomeMovimento,
-        observacao: other.observacoes,
-        nomeContato1: family.nomeFamiliar,
-        telContato1: family.telFamiliar,
-        parentescoContato1: family.parentescoFamiliar,
-        nomeContato2: family.nomeFamiliar2,
-        telContato2: family.telFamiliar2,
-        parentescoContato2: family.parentescoFamiliar2,
-        indicadoPorNome: nomination.indicadoPorNome,
-        indicadoPorApelido: nomination.indicadoApelido,
-        indicadoPorTel: nomination.indicadoTelefone,
-        indicadoPorEmail: nomination.indicadoEmail,
-      },
-    }),
-    prisma.encontreiro.create({
-      data: {
-        idPessoa: pessoa.id,
-        nascimento: personal.dataNascimento,
-        instagram: personal.instagram,
-        restricaoAlimentar: other.restricoesAlimentares,
-        idTamanhoCamisa: other.tamanhoCamisa,
-        idEncontro: encontro ? encontro.id : null,
-      },
-    }),
-  ])
+  // const resultEncontrista = await prisma.$transaction([
+  //   prisma.encontrista.create({
+  //     data: {
+  //       idPessoa: pessoa.id,
+  //       idStatus: 'ligar',
+  //       idReligiao: personal.religiao,
+  //       isAutofill: personal.paraVoce === 'sim',
+  //       endNumero: Number(address.numero),
+  //       endComplemento: address.complemento,
+  //       cepEncontro: enderecoEncontro.cep,
+  //       endRuaEncontro: address.ruaEncontro,
+  //       endNumeroEncontro: address.numeroEncontro,
+  //       idMoracom: family.moraCom,
+  //       idStatusPais: family.statusPais,
+  //       movimentoAnterior: other.nomeMovimento,
+  //       observacao: other.observacoes,
+  //       nomeContato1: family.nomeFamiliar,
+  //       telContato1: family.telFamiliar,
+  //       parentescoContato1: family.parentescoFamiliar,
+  //       nomeContato2: family.nomeFamiliar2,
+  //       telContato2: family.telFamiliar2,
+  //       parentescoContato2: family.parentescoFamiliar2,
+  //       indicadoPorNome: nomination.indicadoPorNome,
+  //       indicadoPorApelido: nomination.indicadoApelido,
+  //       indicadoPorTel: nomination.indicadoTelefone,
+  //       indicadoPorEmail: nomination.indicadoEmail,
+  //     },
+  //   }),
+  //   prisma.encontreiro.create({
+  //     data: {
+  //       idPessoa: pessoa.id,
+  //       nascimento: personal.dataNascimento,
+  //       instagram: personal.instagram,
+  //       restricaoAlimentar: other.restricoesAlimentares,
+  //       idTamanhoCamisa: other.tamanhoCamisa,
+  //       idEncontro: encontro ? encontro.id : null,
+  //     },
+  //   }),
+  // ])
 
-  if (!resultEncontrista) {
-    prisma.pessoa.delete({
-      where: {
-        id: pessoa.id,
-      },
-    })
-    return null
-  }
+  // console.log(`Encontrista e encontreiro:`)
+  // console.log(resultEncontrista)
+
+  // if (!resultEncontrista) {
+  //   prisma.pessoa.delete({
+  //     where: {
+  //       id: pessoa.id,
+  //     },
+  //   })
+  //   return null
+  // }
 
   return pessoa
 }

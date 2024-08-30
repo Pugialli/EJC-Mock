@@ -7,12 +7,15 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import type { EncontristaSummary } from '@/app/api/encontrista/get-encontristas-summary'
+import type {
+  EncontristaSummary,
+  EncontristaSummaryData,
+} from '@/app/api/encontrista/get-encontristas-summary'
 import { Pagination } from '@/components/Table/Pagination'
 import { PaginationSkeleton } from '@/components/Table/PaginationSkeleton'
-import { SortableTableHead } from '@/components/Table/SortableTableHead'
 import { api } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
+import { compareAsc } from 'date-fns'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 import { EncontristaTableFilters } from './encontristas-table-filters'
@@ -24,8 +27,10 @@ interface SearchProps {
   encontristaName: string | null
   encontristaStatus: string | null
   responsavelExterna: string | null
-  orderByField: string | null
-  orderByDirection: string | null
+}
+
+function compareDate(a: EncontristaSummaryData, b: EncontristaSummaryData) {
+  return compareAsc(a.createdAt, b.createdAt)
 }
 
 async function getEncontrista({
@@ -33,26 +38,21 @@ async function getEncontrista({
   encontristaName,
   encontristaStatus,
   responsavelExterna,
-  orderByField,
-  orderByDirection,
 }: SearchProps) {
   const nameSearch = encontristaName ? `name=${encontristaName}&` : ''
   const statusSearch = encontristaStatus ? `status=${encontristaStatus}&` : ''
   const externaSearch = responsavelExterna
     ? `idExterna=${responsavelExterna}&`
     : ''
-  const orderField = orderByField ? `orderByField=${orderByField}&` : ''
-  const orderDirection = orderByDirection
-    ? `orderDirection=${orderByDirection}&`
-    : ''
 
-  const path = `/encontrista?${nameSearch}${statusSearch}${externaSearch}${orderField}${orderDirection}page=${pageIndex}`
+  const path = `/encontrista?${nameSearch}${statusSearch}${externaSearch}page=${pageIndex}`
 
   const response: EncontristaSummary = await api
     .get(path)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
+  response.encontristas.sort(compareDate)
   return response
 }
 
@@ -64,8 +64,6 @@ export function EncontristasTable() {
   const encontristaName = searchParams.get('encontristaName')
   const encontristaStatus = searchParams.get('encontristaStatus')
   const responsavelExterna = searchParams.get('responsavelExterna')
-  const orderByField = searchParams.get('orderByField')
-  const orderByDirection = searchParams.get('orderDirection')
 
   const pageIndex = z.coerce
     .number()
@@ -76,14 +74,7 @@ export function EncontristasTable() {
     useQuery<EncontristaSummary>({
       queryKey: [
         'encontristas',
-        {
-          pageIndex,
-          encontristaName,
-          encontristaStatus,
-          responsavelExterna,
-          orderByField,
-          orderByDirection,
-        },
+        { pageIndex, encontristaName, encontristaStatus, responsavelExterna },
       ],
       queryFn: () =>
         getEncontrista({
@@ -91,8 +82,6 @@ export function EncontristasTable() {
           encontristaName,
           encontristaStatus,
           responsavelExterna,
-          orderByField,
-          orderByDirection,
         }),
     })
 
@@ -104,33 +93,8 @@ export function EncontristasTable() {
     if (encontristaStatus)
       newSearch.append('encontristaStatus', encontristaStatus.toString())
 
-    if (orderByField) newSearch.append('orderByField', orderByField.toString())
-
-    if (orderByDirection)
-      newSearch.append('orderDirection', orderByDirection.toString())
-
-    newSearch.append('page', (pageIndex + 1).toString())
-    router.push(`${pathname}?${newSearch}`)
-  }
-
-  function handleOrder(orderField: string) {
-    const newSearch = new URLSearchParams()
-    if (encontristaName)
-      newSearch.append('encontristaName', encontristaName.toString())
-
-    if (encontristaStatus)
-      newSearch.append('encontristaStatus', encontristaStatus.toString())
-
     if (responsavelExterna)
       newSearch.append('responsavelExterna', responsavelExterna.toString())
-
-    newSearch.append('orderByField', orderField)
-
-    orderByField === orderField
-      ? orderByDirection === 'asc'
-        ? newSearch.append('orderDirection', 'desc')
-        : newSearch.append('orderDirection', 'asc')
-      : newSearch.append('orderDirection', 'asc')
 
     newSearch.append('page', (pageIndex + 1).toString())
     router.push(`${pathname}?${newSearch}`)
@@ -144,43 +108,13 @@ export function EncontristasTable() {
           <Table className="text-xs">
             <TableHeader>
               <TableRow className="px-2">
-                <SortableTableHead
-                  label="Inscrito em"
-                  value="createdAt"
-                  classname="text-nowrap rounded-tl-xl lg:w-[73px] w-7 pl-4"
-                  orderByField={orderByField}
-                  orderByDirection={orderByDirection}
-                  handleFn={handleOrder}
-                />
-                <SortableTableHead
-                  label="Nome"
-                  value="nome"
-                  orderByField={orderByField}
-                  orderByDirection={orderByDirection}
-                  handleFn={handleOrder}
-                />
-                <SortableTableHead
-                  label="Idade"
-                  value="nascimento"
-                  orderByField={orderByField}
-                  orderByDirection={orderByDirection}
-                  handleFn={handleOrder}
-                />
-                <SortableTableHead
-                  label="Status"
-                  value="idStatus"
-                  classname="lg:w-[178px] w-7"
-                  orderByField={orderByField}
-                  orderByDirection={orderByDirection}
-                  handleFn={handleOrder}
-                />
-                <SortableTableHead
-                  label="Bairro"
-                  value="bairro"
-                  orderByField={orderByField}
-                  orderByDirection={orderByDirection}
-                  handleFn={handleOrder}
-                />
+                <TableHead className="w-7 text-nowrap rounded-tl-xl pl-4 lg:w-[73px]">
+                  Inscrito em
+                </TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Idade</TableHead>
+                <TableHead className="w-7 lg:w-[178px]">Status</TableHead>
+                <TableHead>Bairro</TableHead>
                 <TableHead>Celular</TableHead>
                 <TableHead className="w-7 lg:w-[178px]">Responsável</TableHead>
                 <TableHead className="w-7 rounded-tr-xl lg:w-16">

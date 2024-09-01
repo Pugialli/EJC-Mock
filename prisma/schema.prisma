@@ -126,7 +126,7 @@ model Encontrista {
   endNumero              Int              @map("end_numero")
   endComplemento         String           @map("end_complemento")
   cepEncontro            String?          @map("cep_encontro")
-  endNumeroEncontro      String?          @map("end_numero_encontro")
+  endNumEncontro         Int?             @map("end_num_encontro")
   endComplementoEncontro String?          @map("end_complemento_encontro")
   idMoracom              Value_MoraCom    @map("id_moracom")
   idStatusPais           Value_StatusPais @map("id_statusPais")

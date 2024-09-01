@@ -41,7 +41,7 @@ export type EncontristaData = {
     cidade: string
     bairro: string
     rua: string
-    numero: string
+    numero: number
     complemento: string
   }
   familia: {
@@ -97,7 +97,7 @@ export async function getEncontrista(id: string) {
           },
           endNumero: true,
           endComplemento: true,
-          endNumeroEncontro: true,
+          endNumEncontro: true,
           endComplementoEncontro: true,
           idMoracom: true,
           idStatusPais: true,
@@ -169,7 +169,7 @@ export async function getEncontrista(id: string) {
       cidade: encontrista.encontrista?.enderecoEncontro?.cidade || '',
       bairro: encontrista.encontrista?.enderecoEncontro?.bairro || '',
       rua: encontrista.encontrista?.enderecoEncontro?.rua || '',
-      numero: encontrista.encontrista?.endNumeroEncontro || '',
+      numero: encontrista.encontrista?.endNumEncontro || 0,
       complemento: encontrista.encontrista?.endComplementoEncontro || '',
     },
     familia: {

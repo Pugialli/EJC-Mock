@@ -28,7 +28,12 @@ const addressFormScheme = z.object({
   cidade: z.string().min(1, { message: 'A cidade é obrigatória.' }),
   bairro: z.string().min(1, { message: 'O bairro é obrigatório.' }),
   rua: z.string().min(1, { message: 'A rua é obrigatória.' }),
-  numero: z.string().min(1, { message: 'O número é obrigatório.' }),
+  numero: z
+    .string()
+    .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
+    .min(1, { message: 'O número é obrigatório.' })
+    .transform((val) => parseInt(val, 10)),
+
   complemento: z.string(),
   dormiraEmCasa: z.enum(['sim', 'nao']),
 
@@ -39,7 +44,11 @@ const addressFormScheme = z.object({
   cidadeEncontro: z.string().min(1, { message: 'A cidade é obrigatória.' }),
   bairroEncontro: z.string().min(1, { message: 'O bairro é obrigatório.' }),
   ruaEncontro: z.string().min(1, { message: 'A rua é obrigatória.' }),
-  numeroEncontro: z.string().min(1, { message: 'O número é obrigatório.' }),
+  numeroEncontro: z
+    .string()
+    .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
+    .min(1, { message: 'O número é obrigatório.' })
+    .transform((val) => parseInt(val, 10)),
   complementoEncontro: z.string(),
 })
 
@@ -80,7 +89,7 @@ export function AddressDetails() {
       setValue('cidadeEncontro', '')
       setValue('bairroEncontro', '')
       setValue('ruaEncontro', '')
-      setValue('numeroEncontro', '')
+      setValue('numeroEncontro', 0)
       setValue('complementoEncontro', '')
     } else {
       setValue('cepEncontro', cepValue)

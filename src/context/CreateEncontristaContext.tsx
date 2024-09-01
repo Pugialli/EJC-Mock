@@ -30,7 +30,7 @@ export interface AddressFormData {
   cidade: string
   bairro: string
   rua: string
-  numero: string
+  numero: number
   complemento: string
   dormiraEmCasa: 'sim' | 'nao'
   cepEncontro: string
@@ -38,7 +38,7 @@ export interface AddressFormData {
   cidadeEncontro: string
   bairroEncontro: string
   ruaEncontro: string
-  numeroEncontro: string
+  numeroEncontro: number
   complementoEncontro: string
 }
 
@@ -114,7 +114,7 @@ const initialState = {
     cidade: '',
     bairro: '',
     rua: '',
-    numero: '',
+    numero: 0,
     complemento: '',
     dormiraEmCasa: 'sim',
     cepEncontro: '',
@@ -122,7 +122,7 @@ const initialState = {
     cidadeEncontro: '',
     bairroEncontro: '',
     ruaEncontro: '',
-    numeroEncontro: '',
+    numeroEncontro: 0,
     complementoEncontro: '',
   },
   family: {

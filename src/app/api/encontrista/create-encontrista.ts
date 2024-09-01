@@ -91,7 +91,7 @@ export async function createEncontrista({
           endNumero: Number(address.numero),
           endComplemento: address.complemento,
           cepEncontro: enderecoEncontro.cep,
-          endNumeroEncontro: address.numeroEncontro,
+          endNumEncontro: address.numeroEncontro,
           endComplementoEncontro: address.complementoEncontro,
           idMoracom: family.moraCom,
           idStatusPais: family.statusPais,

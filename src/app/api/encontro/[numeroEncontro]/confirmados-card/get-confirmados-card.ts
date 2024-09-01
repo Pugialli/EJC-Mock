@@ -8,7 +8,7 @@ export interface CardEncontristaResponse {
   nascimento: string
   bairro: string
   rua: string
-  endNumero: string | null
+  endNumero: number | null
   endComplemento: string | null
   zona: string | null
   idCirculo: string | null
@@ -55,7 +55,7 @@ export async function getConfirmadosCard() {
               rua: true,
             },
           },
-          endNumeroEncontro: true,
+          endNumEncontro: true,
           endComplementoEncontro: true,
           idCarroEncontro: true,
         },
@@ -98,7 +98,7 @@ export async function getConfirmadosCard() {
         bairro: encontrista.encontrista?.enderecoEncontro?.bairro || 'N/A',
         zona: fetchedZona.zona || null,
         rua: encontrista.encontrista?.enderecoEncontro?.rua || 'N/A',
-        endNumero: encontrista.encontrista!.endNumeroEncontro,
+        endNumero: encontrista.encontrista!.endNumEncontro,
         endComplemento: encontrista.encontrista!.endComplementoEncontro,
         idCirculo: encontrista.encontreiro!.idCirculo,
         corCirculo: encontrista.encontreiro!.circulo?.corCirculo.cor || null,

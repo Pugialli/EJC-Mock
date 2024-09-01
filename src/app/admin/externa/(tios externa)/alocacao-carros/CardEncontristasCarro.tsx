@@ -11,7 +11,7 @@ export interface CardEncontristaCarroContent {
   nome: string
   bairro: string
   rua: string
-  endNumero: string | null
+  endNumero: number | null
   endComplemento: string | null
   zona: string | null
   corCirculo: string | null

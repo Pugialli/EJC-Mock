@@ -60,8 +60,10 @@ const editFormScheme = z.object({
   bairro: z.string().min(1, { message: 'O bairro é obrigatório.' }),
   rua: z.string().min(1, { message: 'A rua é obrigatória.' }),
   numero: z
-    .number({ invalid_type_error: 'Por favor digite apenas números.' })
-    .min(1, { message: 'O número é obrigatório.' }),
+    .string()
+    .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
+    .min(1, { message: 'O número é obrigatório.' })
+    .transform((val) => parseInt(val, 10)),
   complemento: z.string(),
 
   cepEncontro: z
@@ -72,8 +74,10 @@ const editFormScheme = z.object({
   bairroEncontro: z.string().min(1, { message: 'O bairro é obrigatório.' }),
   ruaEncontro: z.string().min(1, { message: 'A rua é obrigatória.' }),
   numeroEncontro: z
-    .number({ invalid_type_error: 'Por favor digite apenas números.' })
-    .min(1, { message: 'O número é obrigatório.' }),
+    .string()
+    .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
+    .min(1, { message: 'O número é obrigatório.' })
+    .transform((val) => parseInt(val, 10)),
   complementoEncontro: z.string(),
 
   moraCom: z.enum(['sozinho', 'conjuge', 'familiar', 'amigos'], {

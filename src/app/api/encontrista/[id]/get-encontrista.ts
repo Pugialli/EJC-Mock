@@ -60,6 +60,12 @@ export type EncontristaData = {
     indicadoPorTel: string
     indicadoPorEmail: string
   }
+  externa: {
+    obsExternaLocalizacao: string
+    obsExternaSaude: string
+    obsExternaConhecidos: string
+    obsExternaOutros: string
+  }
 }
 
 export async function getEncontrista(id: string) {
@@ -113,6 +119,10 @@ export async function getEncontrista(id: string) {
           indicadoPorApelido: true,
           indicadoPorTel: true,
           indicadoPorEmail: true,
+          obsExternaConhecidos: true,
+          obsExternaLocalizacao: true,
+          obsExternaOutros: true,
+          obsExternaSaude: true,
         },
       },
       encontreiro: {
@@ -187,6 +197,16 @@ export async function getEncontrista(id: string) {
       indicadoPorApelido: String(encontrista.encontrista!.indicadoPorApelido),
       indicadoPorTel: String(encontrista.encontrista!.indicadoPorTel),
       indicadoPorEmail: String(encontrista.encontrista!.indicadoPorEmail),
+    },
+    externa: {
+      obsExternaConhecidos: String(
+        encontrista.encontrista!.obsExternaConhecidos,
+      ),
+      obsExternaLocalizacao: String(
+        encontrista.encontrista!.obsExternaLocalizacao,
+      ),
+      obsExternaOutros: String(encontrista.encontrista!.obsExternaOutros),
+      obsExternaSaude: String(encontrista.encontrista!.obsExternaSaude),
     },
   }
 

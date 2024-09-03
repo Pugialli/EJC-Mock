@@ -124,8 +124,6 @@ export default function AlocacaoCarros() {
 
     await updateCarro(activeId.toString(), overId.toString())
 
-    // console.log(response.data)
-
     if (!hasDraggableData(active)) return
 
     const activeData = active.data.current

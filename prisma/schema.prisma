@@ -144,6 +144,10 @@ model Encontrista {
   indicadoPorEmail       String?          @map("indicado_por_email")
   cartasFisicas          Int              @default(0) @map("cartas_fisicas")
   idCarroEncontro        String?          @map("id_carro_encontro")
+  obsExternaLocalizacao  String?          @map("obs_externa_localizacao")
+  obsExternaSaude        String?          @map("obs_externa_saude")
+  obsExternaConhecidos   String?          @map("obs_externa_conhecidos")
+  obsExternaOutros       String?          @map("obs_externa_outros")
 
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @updatedAt @map("modified_at")

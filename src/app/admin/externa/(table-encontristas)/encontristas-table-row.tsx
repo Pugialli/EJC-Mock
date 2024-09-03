@@ -33,6 +33,10 @@ export interface Encontrista {
   id_status: valueStatus
   modified_at: string
   observacao: string
+  obsExternaLocalizacao: string | null
+  obsExternaSaude: string | null
+  obsExternaConhecidos: string | null
+  obsExternaOutros: string | null
   pessoa: {
     nome: string
     sobrenome: string
@@ -104,8 +108,50 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
                 <MessageSquareMore className="h-4 w-4 text-zinc-400" />
               </TooltipTrigger>
               <TooltipContent className="w-72 text-center">
-                {encontrista.observacoes ? (
-                  <span>{encontrista.observacoes}</span>
+                {encontrista.observacoes ||
+                encontrista.obsExternaLocalizacao ||
+                encontrista.obsExternaConhecidos ||
+                encontrista.obsExternaSaude ||
+                encontrista.obsExternaOutros ? (
+                  <div>
+                    {encontrista.observacoes && (
+                      <div className="flex gap-2">
+                        <span className="font-bold text-zinc-600">
+                          Observação:
+                        </span>
+                        <span>{encontrista.observacoes}</span>
+                      </div>
+                    )}
+                    {encontrista.obsExternaLocalizacao && (
+                      <div className="flex gap-2">
+                        <span className="font-bold text-zinc-600">
+                          Localização:
+                        </span>
+                        <span>{encontrista.obsExternaLocalizacao}</span>
+                      </div>
+                    )}
+                    {encontrista.obsExternaConhecidos && (
+                      <div className="flex gap-2">
+                        <span className="font-bold text-zinc-600">
+                          Conhecidos:
+                        </span>
+                        <span>{encontrista.obsExternaConhecidos}</span>
+                      </div>
+                    )}
+                    {encontrista.obsExternaSaude && (
+                      <div className="flex gap-2">
+                        <span className="font-bold text-zinc-600">Saúde:</span>
+                        <span>{encontrista.obsExternaSaude}</span>
+                      </div>
+                    )}
+
+                    {encontrista.obsExternaOutros && (
+                      <div className="flex gap-2">
+                        <span className="font-bold text-zinc-600">Outros:</span>
+                        <span>{encontrista.obsExternaOutros}</span>
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   <span className="text-zinc-400">Não tem observação</span>
                 )}

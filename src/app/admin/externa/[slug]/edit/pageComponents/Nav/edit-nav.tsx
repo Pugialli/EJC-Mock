@@ -2,6 +2,7 @@ import {
   Bed,
   Building2,
   Clipboard,
+  ClipboardCheck,
   FileHeart,
   Save,
   User,
@@ -56,6 +57,13 @@ export function EditNavigation() {
           title="Outros"
           icon={Clipboard}
           active={path === '#other-section'}
+        />
+      </Link>
+      <Link href="#externa-section">
+        <EditNavItem
+          title="Informações Extras"
+          icon={ClipboardCheck}
+          active={path === '#externa-section'}
         />
       </Link>
       <Link href="#save-section">

@@ -12,8 +12,8 @@ export async function PUT(request: NextRequest) {
   }
 
   const encontristaUpdated = {
-    id: updated[0].id,
-    email: updated[0].email,
+    id: updated.id,
+    email: updated.email,
   }
 
   return NextResponse.json(encontristaUpdated, { status: 201 })

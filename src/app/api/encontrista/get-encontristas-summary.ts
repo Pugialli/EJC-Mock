@@ -49,6 +49,10 @@ export type EncontristaSummaryData = {
   celular: string
   idExterna: string | null
   observacoes: string | null
+  obsExternaLocalizacao: string | null
+  obsExternaSaude: string | null
+  obsExternaConhecidos: string | null
+  obsExternaOutros: string | null
   slug: string
 }
 
@@ -180,6 +184,10 @@ async function getEncontristas({
         select: {
           idStatus: true,
           observacao: true,
+          obsExternaLocalizacao: true,
+          obsExternaSaude: true,
+          obsExternaConhecidos: true,
+          obsExternaOutros: true,
           responsavelExterna: {
             select: {
               idExterna: true,
@@ -414,6 +422,10 @@ function transformToEncontristaSummaryData(
     encontrista: {
       idStatus: enumStatus
       observacao: string | null
+      obsExternaLocalizacao: string | null
+      obsExternaSaude: string | null
+      obsExternaConhecidos: string | null
+      obsExternaOutros: string | null
       enderecoEncontro: {
         bairro: string
       } | null
@@ -440,6 +452,12 @@ function transformToEncontristaSummaryData(
         encontrista.encontrista?.enderecoEncontro?.bairro || 'N/A',
       idExterna,
       observacoes: encontrista.encontrista?.observacao || null,
+      obsExternaLocalizacao:
+        encontrista.encontrista?.obsExternaLocalizacao || null,
+      obsExternaSaude: encontrista.encontrista?.obsExternaSaude || null,
+      obsExternaConhecidos:
+        encontrista.encontrista?.obsExternaConhecidos || null,
+      obsExternaOutros: encontrista.encontrista?.obsExternaOutros || null,
       slug: encontrista.slug,
     }
   })

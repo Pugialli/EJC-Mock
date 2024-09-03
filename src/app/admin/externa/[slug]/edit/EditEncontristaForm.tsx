@@ -3,15 +3,15 @@
 import type { EncontristaData } from '@/app/api/encontrista/[id]/get-encontrista'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Form } from '@/components/ui/form'
 import { api } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { AddressCard } from './pageComponents/AddressCard'
 import { AddressEncontroCard } from './pageComponents/AddressEncontroCard'
+import { ExternaCard } from './pageComponents/ExternaCard'
 import { FamilyCard } from './pageComponents/FamilyCard'
 import { EditNavigation } from './pageComponents/Nav/edit-nav'
 import { NominationCard } from './pageComponents/NominationCard'
@@ -59,25 +59,38 @@ const editFormScheme = z.object({
   cidade: z.string().min(1, { message: 'A cidade é obrigatória.' }),
   bairro: z.string().min(1, { message: 'O bairro é obrigatório.' }),
   rua: z.string().min(1, { message: 'A rua é obrigatória.' }),
-  numero: z
-    .string()
-    .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
-    .min(1, { message: 'O número é obrigatório.' })
-    .transform((val) => parseInt(val, 10)),
+  numero: z.preprocess(
+    (val) => {
+      // Se o valor é string, tenta converter para número, se já for número, mantém
+      return typeof val === 'string' ? parseInt(val, 10) : val
+    },
+    z.number().min(1, { message: 'O número é obrigatório.' }),
+  ),
+  // z
+  //   .string()
+  //   .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
+  //   .min(1, { message: 'O número é obrigatório.' })
+  //   .transform((val) => parseInt(val, 10)),
   complemento: z.string(),
 
   cepEncontro: z
     .string({ required_error: 'O cep é obrigatório.' })
     .min(9, { message: 'O cep está incompleto.' }),
-  estadoEncontro: z.string().min(1, { message: 'O estado é obrigatório.' }),
   cidadeEncontro: z.string().min(1, { message: 'A cidade é obrigatória.' }),
   bairroEncontro: z.string().min(1, { message: 'O bairro é obrigatório.' }),
   ruaEncontro: z.string().min(1, { message: 'A rua é obrigatória.' }),
-  numeroEncontro: z
-    .string()
-    .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
-    .min(1, { message: 'O número é obrigatório.' })
-    .transform((val) => parseInt(val, 10)),
+  numeroEncontro: z.preprocess(
+    (val) => {
+      // Se o valor é string, tenta converter para número, se já for número, mantém
+      return typeof val === 'string' ? parseInt(val, 10) : val
+    },
+    z.number().min(1, { message: 'O número é obrigatório.' }),
+  ),
+  // z
+  //   .string()
+  //   .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
+  //   .min(1, { message: 'O número é obrigatório.' })
+  //   .transform((val) => parseInt(val, 10)),
   complementoEncontro: z.string(),
 
   moraCom: z.enum(['sozinho', 'conjuge', 'familiar', 'amigos'], {
@@ -108,6 +121,11 @@ const editFormScheme = z.object({
   nomeMovimento: z.string().optional(),
   restricoesAlimentares: z.string().optional(),
   observacoes: z.string().optional(),
+
+  obsExternaLocalizacao: z.string().optional(),
+  obsExternaSaude: z.string().optional(),
+  obsExternaConhecidos: z.string().optional(),
+  obsExternaOutros: z.string().optional(),
 })
 
 export type EditFormDataInput = z.infer<typeof editFormScheme>
@@ -179,24 +197,43 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
           : '',
       observacoes:
         data.pessoa.observacao !== 'null' ? data.pessoa.observacao : '',
+
+      obsExternaLocalizacao:
+        data.externa.obsExternaLocalizacao !== 'null'
+          ? data.externa.obsExternaLocalizacao
+          : '',
+      obsExternaSaude:
+        data.externa.obsExternaSaude !== 'null'
+          ? data.externa.obsExternaSaude
+          : '',
+      obsExternaConhecidos:
+        data.externa.obsExternaConhecidos !== 'null'
+          ? data.externa.obsExternaConhecidos
+          : '',
+      obsExternaOutros:
+        data.externa.obsExternaOutros !== 'null'
+          ? data.externa.obsExternaOutros
+          : '',
     },
   })
 
-  const { handleSubmit } = form
+  const {
+    handleSubmit,
+    formState: { errors },
+  } = form
 
   async function handleUpdateEncontreiro(formDataInput: EditFormDataInput) {
     setUpdating(true)
-    console.log('cheguei aqui')
     await api
       .put('/encontrista/update', formDataInput)
       .then(async () => {
         router.push('/admin/externa')
       })
-      .catch((err) => console.log(err))
+      .catch((err) => console.log(err, errors))
   }
 
   return (
-    <Form {...form}>
+    <FormProvider {...form}>
       <form
         id="editEncontristaForm"
         onSubmit={handleSubmit(handleUpdateEncontreiro)}
@@ -217,6 +254,7 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
               <FamilyCard />
               <NominationCard />
               <OtherCard />
+              <ExternaCard />
               <Card
                 id="save-section"
                 className="w-full px-3 pt-8 text-zinc-700 "
@@ -259,6 +297,6 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
           </div>
         </div>
       </form>
-    </Form>
+    </FormProvider>
   )
 }

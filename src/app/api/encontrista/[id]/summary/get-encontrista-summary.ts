@@ -53,7 +53,7 @@ export async function getEncontristaSummary(id: string) {
     sobrenome: encontrista.sobrenome,
     celular: encontrista.celular,
     idStatus: encontrista.encontrista!.idStatus,
-    dataNasc: encontrista.encontreiro!.dataNasc!,
+    dataNasc: encontrista.encontreiro!.dataNasc,
     idExterna: encontrista.encontrista!.responsavelExterna
       ? encontrista.encontrista!.responsavelExterna.idExterna
       : null,

@@ -68,7 +68,7 @@ export async function getCirculos() {
             nome: circulo.tioAparente.apelido
               ? circulo.tioAparente.apelido
               : circulo.tioAparente.nome,
-            dataNasc: circulo.tioAparente.encontreiro!.dataNasc!,
+            dataNasc: circulo.tioAparente.encontreiro!.dataNasc,
             tipo: 'Aparente',
           }
         : undefined,
@@ -77,7 +77,7 @@ export async function getCirculos() {
             nome: circulo.tioSecreto.apelido
               ? circulo.tioSecreto.apelido
               : circulo.tioSecreto.nome,
-            dataNasc: circulo.tioSecreto.encontreiro!.dataNasc!,
+            dataNasc: circulo.tioSecreto.encontreiro!.dataNasc,
             tipo: 'Secreto',
           }
         : undefined,

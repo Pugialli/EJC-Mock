@@ -95,7 +95,7 @@ export async function getConfirmadosCard() {
       return {
         id: encontrista.id,
         nome: `${encontrista.nome} ${encontrista.sobrenome}`,
-        dataNasc: encontrista.encontreiro!.dataNasc!,
+        dataNasc: encontrista.encontreiro!.dataNasc,
         bairro: encontrista.encontrista?.enderecoEncontro?.bairro || 'N/A',
         zona: fetchedZona ? fetchedZona.zona : null,
         rua: encontrista.encontrista?.enderecoEncontro?.rua || 'N/A',

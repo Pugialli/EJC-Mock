@@ -159,7 +159,7 @@ export async function getEncontrista(id: string) {
       isAutofill: encontrista.encontrista!.isAutofill,
       movimentoAnterior: String(encontrista.encontrista!.movimentoAnterior),
       observacao: String(encontrista.encontrista!.observacao),
-      dataNasc: encontrista.encontreiro!.dataNasc!,
+      dataNasc: encontrista.encontreiro!.dataNasc,
       instagram: String(encontrista.encontreiro!.instagram),
       restricaoAlimentar: String(encontrista.encontreiro!.restricaoAlimentar),
       idTamanhoCamisa: encontrista.encontreiro!

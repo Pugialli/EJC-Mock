@@ -48,6 +48,22 @@ export async function getAllEncontristas() {
           indicadoPorApelido: true,
           indicadoPorTel: true,
           indicadoPorEmail: true,
+
+          enderecoEncontro: {
+            select: {
+              cep: true,
+              estado: true,
+              cidade: true,
+              bairro: true,
+              rua: true,
+            },
+          },
+          endNumEncontro: true,
+          endComplementoEncontro: true,
+          obsExternaConhecidos: true,
+          obsExternaLocalizacao: true,
+          obsExternaOutros: true,
+          obsExternaSaude: true,
         },
       },
     },
@@ -98,6 +114,17 @@ export async function getAllEncontristas() {
       indicadoPorApelido: encontrista.encontrista?.indicadoPorApelido,
       indicadoPorTel: encontrista.encontrista?.indicadoPorTel,
       indicadoPorEmail: encontrista.encontrista?.indicadoPorEmail,
+      cepEncontro: encontrista.encontrista?.enderecoEncontro?.cep,
+      estadoEncontro: encontrista.encontrista?.enderecoEncontro?.estado,
+      cidadeEncontro: encontrista.encontrista?.enderecoEncontro?.cidade,
+      bairroEncontro: encontrista.encontrista?.enderecoEncontro?.bairro,
+      ruaEncontro: encontrista.encontrista?.enderecoEncontro?.rua,
+      numEncontro: encontrista.encontrista?.endNumEncontro,
+      complementoEncontro: encontrista.encontrista?.endComplementoEncontro,
+      obsExternaConhecidos: encontrista.encontrista?.obsExternaConhecidos,
+      obsExternaLocalizacao: encontrista.encontrista?.obsExternaLocalizacao,
+      obsExternaOutros: encontrista.encontrista?.obsExternaOutros,
+      obsExternaSaude: encontrista.encontrista?.obsExternaSaude,
     }
   })
   return parsedData

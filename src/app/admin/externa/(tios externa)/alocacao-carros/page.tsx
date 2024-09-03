@@ -195,50 +195,6 @@ export default function AlocacaoCarros() {
       </div>
 
       <div className="grid grid-cols-9">
-        {/* <div className="col-span-9 flex flex-col justify-start gap-2 px-4 lg:col-span-6 lg:flex-row">
-          <Link href="/api/export/circulo">
-            <Button type="button" disabled={isLoadingCirculos || isSorting}>
-              <div className="flex items-center justify-center gap-2">
-                <Download className="h-4 w-4" />
-                <span className="flex">Baixar lista dos círculos</span>
-              </div>
-            </Button>
-          </Link>
-          <AlertDialog open={openDivisao} onOpenChange={setOpenDivisao}>
-            <AlertDialogTrigger asChild>
-              <Button type="button" disabled={isLoadingCirculos}>
-                <div className="flex items-center justify-center gap-2">
-                  <Puzzle className="h-4 w-4" />
-                  <span className="flex">Sugerir Organização</span>
-                </div>
-              </Button>
-            </AlertDialogTrigger>
-            {circulos && (
-              <AutoSortButton
-                circulos={circulos}
-                encontristas={encontristas}
-                isSorting={isSorting}
-                setIsSorting={setIsSorting}
-                updateCirculo={updateCirculo}
-              />
-            )}
-          </AlertDialog>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button type="button" disabled={isLoadingCirculos || true}>
-                <div className="flex items-center justify-center gap-2">
-                  <ArrowDownUp className="h-4 w-4" />
-                  <span className="flex">Alterar ordem dos Círculos</span>
-                </div>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="h-auto w-9/10 rounded-lg p-6 lg:h-auto lg:w-screen">
-              {circulosEncontrao && (
-                <ChangeOrderDialog order={circulosEncontrao.order} />
-              )}
-            </DialogContent>
-          </Dialog>
-        </div> */}
         <DndContext
           sensors={sensors}
           onDragStart={onDragStart}

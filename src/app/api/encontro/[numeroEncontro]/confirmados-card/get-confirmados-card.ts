@@ -1,5 +1,7 @@
-import type { BairroResponse } from '@/app/api/domains/bairrosRJ/zona/[bairro]/get-zona'
-import { api } from '@/lib/axios'
+import {
+  getZona,
+  type BairroResponse,
+} from '@/app/api/domains/bairrosRJ/zona/[bairro]/get-zona'
 import { prisma } from '@/lib/prisma'
 
 export interface CardEncontristaResponse {
@@ -85,18 +87,17 @@ export async function getConfirmadosCard() {
 
   const response: CardEncontristaResponse[] = await Promise.all(
     encontristas.map(async (encontrista) => {
-      const fetchedZona: BairroResponse = await api
-        .get(
-          `/domains/bairrosRJ/zona/${encontrista.encontrista?.enderecoEncontro?.bairro}`,
-        )
-        .then((res) => res.data)
+      const fetchedZona: BairroResponse | null =
+        encontrista.encontrista && encontrista.encontrista.enderecoEncontro
+          ? await getZona(encontrista.encontrista.enderecoEncontro.bairro)
+          : null
 
       return {
         id: encontrista.id,
         nome: `${encontrista.nome} ${encontrista.sobrenome}`,
         dataNasc: encontrista.encontreiro!.dataNasc!,
         bairro: encontrista.encontrista?.enderecoEncontro?.bairro || 'N/A',
-        zona: fetchedZona.zona || null,
+        zona: fetchedZona ? fetchedZona.zona : null,
         rua: encontrista.encontrista?.enderecoEncontro?.rua || 'N/A',
         endNumero: encontrista.encontrista!.endNumEncontro,
         endComplemento: encontrista.encontrista!.endComplementoEncontro,

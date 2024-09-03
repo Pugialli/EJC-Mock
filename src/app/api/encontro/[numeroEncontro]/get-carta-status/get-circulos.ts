@@ -6,7 +6,7 @@ export async function getCartaStatus() {
       isReceivingCartas: true,
     },
     orderBy: {
-      createdAt: 'desc',
+      numeroEncontro: 'desc',
     },
   })
   if (!encontro) {

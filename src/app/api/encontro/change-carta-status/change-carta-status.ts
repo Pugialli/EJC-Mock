@@ -1,14 +1,18 @@
 import { prisma } from '@/lib/prisma'
 
 export interface changeCartaStatusProps {
-  numeroEncontro: number
   status: boolean
 }
 
-export async function changeCartaStatus({
-  numeroEncontro,
-  status,
-}: changeCartaStatusProps) {
+export async function changeCartaStatus({ status }: changeCartaStatusProps) {
+  const encontro = await prisma.encontro.findFirst({
+    orderBy: {
+      numeroEncontro: 'desc',
+    },
+  })
+
+  if (!encontro) return null
+
   return await prisma.encontro.update({
     data: {
       isReceivingCartas: status,
@@ -18,7 +22,7 @@ export async function changeCartaStatus({
       isReceivingCartas: true,
     },
     where: {
-      numeroEncontro,
+      id: encontro.id,
     },
   })
 }

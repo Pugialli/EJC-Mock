@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react'
 import { EncontristasCartasTable } from './(table-cartas)/encontristas-cartas-table'
 
 async function getCartasStatus() {
-  const res = await api.get(`/encontro/71/get-carta-status`)
+  const res = await api.get(`/encontro/1/get-carta-status`)
   const data: boolean = res.data
 
   return data
@@ -41,7 +41,6 @@ export default function Cartas() {
   async function updateStatusCartas() {
     if (!isLoading) {
       return await api.patch(`/encontro/change-carta-status`, {
-        numeroEncontro: 71,
         status: !isReceiving,
       })
     }

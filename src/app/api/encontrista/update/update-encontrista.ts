@@ -1,6 +1,7 @@
 import type { EditFormDataInput } from '@/app/admin/externa/[slug]/edit/EditEncontristaForm'
 import { updateEndereco } from '@/app/api/endereco/[cep]/update/update-endereco'
 import { prisma } from '@/lib/prisma'
+import { stringToDate } from '@/utils/string-to-date'
 
 export async function updateEncontrista(data: EditFormDataInput) {
   const foundUser = await prisma.pessoa.findUnique({
@@ -27,6 +28,8 @@ export async function updateEncontrista(data: EditFormDataInput) {
 
   await updateEndereco(enderecoProps)
   await updateEndereco(enderecoEncontroProps)
+
+  const dataNascimento = stringToDate(data.dataNascimento)
 
   return await prisma.pessoa.update({
     where: { id: foundUser.id },
@@ -69,7 +72,7 @@ export async function updateEncontrista(data: EditFormDataInput) {
       },
       encontreiro: {
         update: {
-          nascimento: data.dataNascimento,
+          dataNasc: dataNascimento,
           instagram: data.instagram,
           restricaoAlimentar: data.restricoesAlimentares,
           idTamanhoCamisa: data.tamanhoCamisa,

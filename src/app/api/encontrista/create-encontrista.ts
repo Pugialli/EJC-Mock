@@ -7,6 +7,7 @@ import {
 } from '@/context/CreateEncontristaContext'
 import { prisma } from '@/lib/prisma'
 import { createSlugForEncontrista } from '@/utils/create-slug'
+import { stringToDate } from '@/utils/string-to-date'
 import { createEndereco } from '../endereco/create-endereco'
 
 export interface CreateEncontristaProps {
@@ -73,6 +74,8 @@ export async function createEncontrista({
     numeroEncontro,
   )
 
+  const dataNascimento = stringToDate(personal.dataNascimento)
+
   const pessoa = await prisma.pessoa.create({
     data: {
       nome: personal.nome,
@@ -111,7 +114,7 @@ export async function createEncontrista({
       },
       encontreiro: {
         create: {
-          nascimento: personal.dataNascimento,
+          dataNasc: dataNascimento,
           instagram: personal.instagram,
           restricaoAlimentar: other.restricoesAlimentares,
           idTamanhoCamisa: other.tamanhoCamisa,
@@ -123,60 +126,6 @@ export async function createEncontrista({
   if (!pessoa) {
     return null
   }
-
-  // const bairroEncontro = await getBairroEncontro(address)
-
-  // const resultEncontrista = await prisma.$transaction([
-  //   prisma.encontrista.create({
-  //     data: {
-  //       idPessoa: pessoa.id,
-  //       idStatus: 'ligar',
-  //       idReligiao: personal.religiao,
-  //       isAutofill: personal.paraVoce === 'sim',
-  //       endNumero: Number(address.numero),
-  //       endComplemento: address.complemento,
-  //       cepEncontro: enderecoEncontro.cep,
-  //       endRuaEncontro: address.ruaEncontro,
-  //       endNumeroEncontro: address.numeroEncontro,
-  //       idMoracom: family.moraCom,
-  //       idStatusPais: family.statusPais,
-  //       movimentoAnterior: other.nomeMovimento,
-  //       observacao: other.observacoes,
-  //       nomeContato1: family.nomeFamiliar,
-  //       telContato1: family.telFamiliar,
-  //       parentescoContato1: family.parentescoFamiliar,
-  //       nomeContato2: family.nomeFamiliar2,
-  //       telContato2: family.telFamiliar2,
-  //       parentescoContato2: family.parentescoFamiliar2,
-  //       indicadoPorNome: nomination.indicadoPorNome,
-  //       indicadoPorApelido: nomination.indicadoApelido,
-  //       indicadoPorTel: nomination.indicadoTelefone,
-  //       indicadoPorEmail: nomination.indicadoEmail,
-  //     },
-  //   }),
-  //   prisma.encontreiro.create({
-  //     data: {
-  //       idPessoa: pessoa.id,
-  //       nascimento: personal.dataNascimento,
-  //       instagram: personal.instagram,
-  //       restricaoAlimentar: other.restricoesAlimentares,
-  //       idTamanhoCamisa: other.tamanhoCamisa,
-  //       idEncontro: encontro ? encontro.id : null,
-  //     },
-  //   }),
-  // ])
-
-  // console.log(`Encontrista e encontreiro:`)
-  // console.log(resultEncontrista)
-
-  // if (!resultEncontrista) {
-  //   prisma.pessoa.delete({
-  //     where: {
-  //       id: pessoa.id,
-  //     },
-  //   })
-  //   return null
-  // }
 
   return pessoa
 }

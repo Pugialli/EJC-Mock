@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/tooltip'
 import { api } from '@/lib/axios'
 import { getAge } from '@/utils/get-age'
-import { stringToDate } from '@/utils/string-to-date'
 import type { Value_Status as valueStatus } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 import { formatDate } from 'date-fns'
@@ -66,8 +65,7 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
 
   const dataInscricao = formatDate(new Date(encontrista.createdAt), 'dd/MM/yy')
   const nomeCompleto = `${encontrista.nome} ${encontrista.sobrenome}`
-  const dataNascimento = stringToDate(encontrista.nascimento)
-  const idade = getAge(dataNascimento)
+  const idade = encontrista.dataNasc ? getAge(encontrista.dataNasc) : 0
 
   const { data: equipeExterna, isLoading } = useQuery<SelectItemAvatarProps[]>({
     queryFn: async () => await getEquipeExterna(),
@@ -113,7 +111,7 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
                 encontrista.obsExternaConhecidos ||
                 encontrista.obsExternaSaude ||
                 encontrista.obsExternaOutros ? (
-                  <div>
+                  <div className="text-left">
                     {encontrista.observacoes && (
                       <div className="flex gap-2">
                         <span className="font-bold text-zinc-600">
@@ -144,7 +142,6 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
                         <span>{encontrista.obsExternaSaude}</span>
                       </div>
                     )}
-
                     {encontrista.obsExternaOutros && (
                       <div className="flex gap-2">
                         <span className="font-bold text-zinc-600">Outros:</span>
@@ -153,7 +150,9 @@ export function EncontristaTableRow({ encontrista }: EncontristaTableRowProps) {
                     )}
                   </div>
                 ) : (
-                  <span className="text-zinc-400">Não tem observação</span>
+                  <span className="text-center text-zinc-400">
+                    Não tem observação
+                  </span>
                 )}
               </TooltipContent>
             </Tooltip>

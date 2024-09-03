@@ -22,7 +22,7 @@ export type EncontristaData = {
     isAutofill: boolean
     movimentoAnterior: string
     observacao: string
-    nascimento: string
+    dataNasc: Date
     instagram: string
     restricaoAlimentar: string
     idTamanhoCamisa: enumTamanhoCamisa
@@ -127,7 +127,7 @@ export async function getEncontrista(id: string) {
       },
       encontreiro: {
         select: {
-          nascimento: true,
+          dataNasc: true,
           instagram: true,
           restricaoAlimentar: true,
           idTamanhoCamisa: true,
@@ -159,7 +159,7 @@ export async function getEncontrista(id: string) {
       isAutofill: encontrista.encontrista!.isAutofill,
       movimentoAnterior: String(encontrista.encontrista!.movimentoAnterior),
       observacao: String(encontrista.encontrista!.observacao),
-      nascimento: encontrista.encontreiro!.nascimento,
+      dataNasc: encontrista.encontreiro!.dataNasc!,
       instagram: String(encontrista.encontreiro!.instagram),
       restricaoAlimentar: String(encontrista.encontreiro!.restricaoAlimentar),
       idTamanhoCamisa: encontrista.encontreiro!

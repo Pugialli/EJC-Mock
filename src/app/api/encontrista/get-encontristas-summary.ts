@@ -1,49 +1,36 @@
-import { prisma } from '@/lib/prisma'
-import { type Value_Status as enumStatus, type Prisma } from '@prisma/client'
+// eslint-disable-next-line prettier/prettier
+import { prisma } from '@/lib/prisma';
+// eslint-disable-next-line prettier/prettier
+import { type Value_Status as enumStatus, type Prisma } from '@prisma/client';
 
-// interface getEncontristasResponse {
-//   id: string
-//   createdAt: Date
-//   nome: string
-//   sobrenome: string
-//   celular: string
-//   slug: string
-//   encontrista: {
-//     idStatus: enumStatus
-//     observacao: string
-//     responsavelExterna: {
-//       idExterna: string
-//     }
-//     enderecoEncontro: {
-//       bairro: string
-//     }
-//   }
-//   encontreiro: {
-//     nascimento: string
-//   }
-// }
-
+// Campos válidos para ordenação
 export const validOrderFields = [
   'createdAt',
   'nome',
   'celular',
-  'nascimento',
+  'dataNasc',
   'idStatus',
   'bairro',
 ] as const
 
-const encontristaOrderFields = ['idStatus'] as const
+// Mapeamento de campos para suas respectivas relações
+const fieldMappings: Record<
+  string,
+  { relation?: string; nestedRelation?: string }
+> = {
+  idStatus: { relation: 'encontrista' },
+  bairro: { relation: 'encontrista', nestedRelation: 'enderecoEncontro' },
+  dataNasc: { relation: 'encontreiro' },
+}
 
-const enderecoOrderFields = ['bairro'] as const
-
-const encontreiroOrderFields = ['nascimento'] as const
+type OrderByField = (typeof validOrderFields)[number]
 
 export type EncontristaSummaryData = {
   id: string
   createdAt: Date
   nome: string
   sobrenome: string
-  nascimento: string
+  dataNasc: Date | null
   idStatus: enumStatus
   bairroEncontro: string
   celular: string
@@ -126,47 +113,34 @@ async function getEncontristas({
     responsavelExterna
       ? { responsavelExterna: { idExterna: responsavelExterna } }
       : {}
-
   const orderBy: Prisma.PessoaOrderByWithRelationInput[] = []
+  const direction =
+    orderDirection === 'asc' || orderDirection === 'desc'
+      ? orderDirection
+      : 'asc'
 
-  if (
-    orderByField &&
-    validOrderFields.some((field) => field === orderByField)
-  ) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (encontristaOrderFields.includes(orderByField as any)) {
-      // If orderByField is in encontristaOrderFields, apply ordering in 'encontrista'
-      orderBy.push({
-        encontrista: {
-          [orderByField]: orderDirection || 'asc',
-        },
-      })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } else if (encontreiroOrderFields.includes(orderByField as any)) {
-      // If orderByField is in encontristaOrderFields, apply ordering in 'encontrista'
-      orderBy.push({
-        encontreiro: {
-          [orderByField]: orderDirection || 'asc',
-        },
-      })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } else if (enderecoOrderFields.includes(orderByField as any)) {
-      // If orderByField is in encontristaOrderFields, apply ordering in 'encontrista'
-      orderBy.push({
-        encontrista: {
-          enderecoEncontro: {
-            [orderByField]: orderDirection || 'asc',
-          },
-        },
-      })
+  if (orderByField && validOrderFields.includes(orderByField as OrderByField)) {
+    const mapping = fieldMappings[orderByField] || {}
+
+    if (orderByField === 'nome') {
+      // Ordenação específica para nome e sobrenome
+      orderBy.push({ nome: direction }, { sobrenome: direction })
+    } else if (mapping.relation) {
+      // Ordenação para campos mapeados
+      const orderObject = mapping.nestedRelation
+        ? {
+            [mapping.relation]: {
+              [mapping.nestedRelation]: { [orderByField]: direction },
+            },
+          }
+        : { [mapping.relation]: { [orderByField]: direction } }
+      orderBy.push(orderObject)
     } else {
-      // Default ordering in 'pessoa'
-      orderBy.push({
-        [orderByField]: orderDirection || 'asc',
-      })
+      // Ordenação padrão
+      orderBy.push({ [orderByField]: direction })
     }
   } else {
-    // Default ordering by 'createdAt' if orderByField is invalid
+    // Ordenação padrão por 'createdAt' se o campo for inválido
     orderBy.push({ createdAt: 'asc' })
   }
 
@@ -202,7 +176,7 @@ async function getEncontristas({
       },
       encontreiro: {
         select: {
-          nascimento: true,
+          dataNasc: true,
         },
       },
     },
@@ -417,7 +391,7 @@ function transformToEncontristaSummaryData(
     slug: string
     createdAt: Date
     encontreiro: {
-      nascimento: string
+      dataNasc: Date | null
     } | null
     encontrista: {
       idStatus: enumStatus
@@ -447,7 +421,7 @@ function transformToEncontristaSummaryData(
       sobrenome: encontrista.sobrenome,
       celular: encontrista.celular,
       idStatus: encontrista.encontrista?.idStatus || 'lista_espera',
-      nascimento: encontrista.encontreiro?.nascimento || '',
+      dataNasc: encontrista.encontreiro?.dataNasc || null,
       bairroEncontro:
         encontrista.encontrista?.enderecoEncontro?.bairro || 'N/A',
       idExterna,
@@ -492,31 +466,6 @@ export async function getEncontristasSummary({
   if (!encontristas) {
     return null
   }
-
-  // await Promise.all(
-  //   encontristas.map(async (encontrista) => {
-  //     const idExterna = encontrista.encontrista!.responsavelExterna
-  //       ? encontrista.encontrista!.responsavelExterna.idExterna
-  //       : null
-
-  //     const encontristaResponse: EncontristaSummaryData = {
-  //       id: encontrista.id,
-  //       createdAt: encontrista.createdAt,
-  //       nome: encontrista.nome,
-  //       sobrenome: encontrista.sobrenome,
-  //       celular: encontrista.celular,
-  //       idStatus: encontrista.encontrista!.idStatus,
-  //       nascimento: encontrista.encontreiro!.nascimento,
-  //       bairroEncontro:
-  //         encontrista.encontrista!.enderecoEncontro?.bairro || 'N/A',
-  //       idExterna,
-  //       observacoes: encontrista.encontrista!.observacao,
-  //       slug: encontrista.slug,
-  //     }
-  //     encontristasResponse.push(encontristaResponse)
-  //     return encontristaResponse
-  //   }),
-  // )
 
   const encontristasResponse = transformToEncontristaSummaryData(encontristas)
 

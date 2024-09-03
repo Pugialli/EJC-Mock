@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma'
 export interface CardEncontristaResponse {
   id: string
   nome: string
-  nascimento: string
+  dataNasc: Date
   bairro: string
   rua: string
   endNumero: number | null
@@ -34,7 +34,7 @@ export async function getConfirmadosCard() {
 
       encontreiro: {
         select: {
-          nascimento: true,
+          dataNasc: true,
           idCirculo: true,
           circulo: {
             select: {
@@ -94,7 +94,7 @@ export async function getConfirmadosCard() {
       return {
         id: encontrista.id,
         nome: `${encontrista.nome} ${encontrista.sobrenome}`,
-        nascimento: encontrista.encontreiro!.nascimento,
+        dataNasc: encontrista.encontreiro!.dataNasc!,
         bairro: encontrista.encontrista?.enderecoEncontro?.bairro || 'N/A',
         zona: fetchedZona.zona || null,
         rua: encontrista.encontrista?.enderecoEncontro?.rua || 'N/A',

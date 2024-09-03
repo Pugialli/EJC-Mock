@@ -161,7 +161,7 @@ export function EncontristasTable() {
                 />
                 <SortableTableHead
                   label="Idade"
-                  value="nascimento"
+                  value="dataNasc"
                   orderByField={orderByField}
                   orderByDirection={orderByDirection}
                   handleFn={handleOrder}

@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma'
 
 export interface TioCirculoType {
   nome: string
-  nascimento: string
+  dataNasc: Date
   tipo: 'Aparente' | 'Secreto'
 }
 
@@ -37,7 +37,7 @@ export async function getCirculos() {
           apelido: true,
           encontreiro: {
             select: {
-              nascimento: true,
+              dataNasc: true,
             },
           },
         },
@@ -48,7 +48,7 @@ export async function getCirculos() {
           apelido: true,
           encontreiro: {
             select: {
-              nascimento: true,
+              dataNasc: true,
             },
           },
         },
@@ -68,7 +68,7 @@ export async function getCirculos() {
             nome: circulo.tioAparente.apelido
               ? circulo.tioAparente.apelido
               : circulo.tioAparente.nome,
-            nascimento: circulo.tioAparente.encontreiro!.nascimento,
+            dataNasc: circulo.tioAparente.encontreiro!.dataNasc!,
             tipo: 'Aparente',
           }
         : undefined,
@@ -77,7 +77,7 @@ export async function getCirculos() {
             nome: circulo.tioSecreto.apelido
               ? circulo.tioSecreto.apelido
               : circulo.tioSecreto.nome,
-            nascimento: circulo.tioSecreto.encontreiro!.nascimento,
+            dataNasc: circulo.tioSecreto.encontreiro!.dataNasc!,
             tipo: 'Secreto',
           }
         : undefined,

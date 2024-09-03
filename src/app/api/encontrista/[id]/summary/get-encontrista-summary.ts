@@ -6,7 +6,7 @@ export type EncontristaSummaryData = {
   createdAt: Date
   nome: string
   sobrenome: string
-  nascimento: string
+  dataNasc: Date
   idStatus: enumStatus
   celular: string
   idExterna: string | null
@@ -32,7 +32,7 @@ export async function getEncontristaSummary(id: string) {
       },
       encontreiro: {
         select: {
-          nascimento: true,
+          dataNasc: true,
         },
       },
     },
@@ -53,7 +53,7 @@ export async function getEncontristaSummary(id: string) {
     sobrenome: encontrista.sobrenome,
     celular: encontrista.celular,
     idStatus: encontrista.encontrista!.idStatus,
-    nascimento: encontrista.encontreiro!.nascimento,
+    dataNasc: encontrista.encontreiro!.dataNasc!,
     idExterna: encontrista.encontrista!.responsavelExterna
       ? encontrista.encontrista!.responsavelExterna.idExterna
       : null,

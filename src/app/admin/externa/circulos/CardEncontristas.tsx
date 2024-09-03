@@ -2,7 +2,6 @@ import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { getAge } from '@/utils/get-age'
-import { stringToDate } from '@/utils/string-to-date'
 import { useDraggable, type UniqueIdentifier } from '@dnd-kit/core'
 import { cva } from 'class-variance-authority'
 import { Calendar, Car, GripVertical } from 'lucide-react'
@@ -11,7 +10,7 @@ import type { CirculoId } from './page'
 export interface CardEncontrista {
   id: string
   nome: string
-  nascimento: string
+  dataNasc: Date
   bairro: string
 }
 
@@ -36,7 +35,9 @@ export function CardEncontrista({
   encontrista,
   isOverlay,
 }: CardEncontristaProps) {
-  const idade = getAge(stringToDate(encontrista.content.nascimento))
+  const idade = encontrista.content.dataNasc
+    ? getAge(encontrista.content.dataNasc)
+    : 0
 
   const { setNodeRef, attributes, listeners, isDragging } = useDraggable({
     id: encontrista.id,

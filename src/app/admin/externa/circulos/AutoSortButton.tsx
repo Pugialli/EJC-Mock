@@ -8,17 +8,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { stringToDate } from '@/utils/string-to-date'
 import { useQueryClient } from '@tanstack/react-query'
 import { compareDesc } from 'date-fns'
 import type { SetStateAction } from 'react'
 import type { SortableEncontrista } from './CardEncontristas'
 
 function compareDate(a: SortableEncontrista, b: SortableEncontrista) {
-  return compareDesc(
-    stringToDate(a.content.nascimento),
-    stringToDate(b.content.nascimento),
-  )
+  return compareDesc(a.content.dataNasc, b.content.dataNasc)
 }
 
 function agruparCirculos(

@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/tooltip'
 import { api } from '@/lib/axios'
 import { getAge } from '@/utils/get-age'
-import { stringToDate } from '@/utils/string-to-date'
 import type { Value_Status as valueStatus } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 import { formatDate } from 'date-fns'
@@ -62,8 +61,7 @@ export function CarrosTableRow({ encontrista }: EncontristaTableRowProps) {
 
   const dataInscricao = formatDate(new Date(encontrista.createdAt), 'dd/MM/yy')
   const nomeCompleto = `${encontrista.nome} ${encontrista.sobrenome}`
-  const dataNascimento = stringToDate(encontrista.nascimento)
-  const idade = getAge(dataNascimento)
+  const idade = encontrista.dataNasc ? getAge(encontrista.dataNasc) : 0
 
   const { data: equipeExterna, isLoading } = useQuery<SelectItemAvatarProps[]>({
     queryFn: async () => await getEquipeExterna(),

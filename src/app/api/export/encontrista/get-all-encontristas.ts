@@ -21,7 +21,7 @@ export async function getAllEncontristas() {
       },
       encontreiro: {
         select: {
-          nascimento: true,
+          dataNasc: true,
           instagram: true,
           restricaoAlimentar: true,
           idTamanhoCamisa: true,
@@ -75,7 +75,7 @@ export async function getAllEncontristas() {
       cidade: encontrista.endereco.cidade,
       bairro: encontrista.endereco.bairro,
       rua: encontrista.endereco.rua,
-      nascimento: encontrista.encontreiro?.nascimento,
+      dataNasc: encontrista.encontreiro!.dataNasc,
       instagram: encontrista.encontreiro?.instagram,
       restricaoAlimentar: encontrista.encontreiro?.restricaoAlimentar,
       idTamanhoCamisa: encontrista.encontreiro?.idTamanhoCamisa,

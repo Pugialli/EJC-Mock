@@ -92,7 +92,7 @@ async function getConfirmados() {
         content: {
           id: encontrista.id,
           bairro: encontrista.bairro,
-          nascimento: encontrista.nascimento,
+          dataNasc: encontrista.dataNasc,
           nome: encontrista.nome,
         },
       }

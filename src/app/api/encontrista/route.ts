@@ -5,10 +5,7 @@ import {
   createEncontrista,
   type CreateEncontristaProps,
 } from './create-encontrista'
-import {
-  getEncontristasSummary,
-  type EncontristaSummary,
-} from './get-encontristas-summary'
+import { getEncontristasSummary } from './get-encontristas-summary'
 
 export async function POST(request: NextRequest) {
   const formData: CreateEncontristaProps = await request.json()
@@ -20,22 +17,6 @@ export async function POST(request: NextRequest) {
 
 export interface searchParams {
   page: number
-}
-
-function orderByNascimento(
-  encontristas: EncontristaSummary,
-  orderDirection: 'asc' | 'desc' = 'asc',
-) {
-  return encontristas.encontristas.sort((a, b) => {
-    const dateA = new Date(a.nascimento)
-    const dateB = new Date(b.nascimento)
-
-    if (orderDirection === 'asc') {
-      return dateA.getTime() - dateB.getTime() // Ordena em ordem crescente
-    } else {
-      return dateB.getTime() - dateA.getTime() // Ordena em ordem decrescente
-    }
-  })
 }
 
 export async function GET(request: Request) {
@@ -62,11 +43,6 @@ export async function GET(request: Request) {
     orderByField,
     orderDirection,
   })
-
-  if (encontristas && orderByField && orderByField === 'nascimento') {
-    const orderDir = orderDirection === 'asc' ? 'asc' : 'desc'
-    orderByNascimento(encontristas, orderDir)
-  }
 
   // const encontristas = await getAllEncontristasSummary()
 

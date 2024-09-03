@@ -1,5 +1,7 @@
-export function getAge(dataNascimento: Date) {
+export function getAge(nascimento: Date) {
   const hoje = new Date()
+
+  const dataNascimento = new Date(nascimento)
 
   let idade = hoje.getFullYear() - dataNascimento.getFullYear()
   const mesAtual = hoje.getMonth()

@@ -1,5 +1,4 @@
 import { Card } from '@/components/ui/card'
-import { stringToDate } from '@/utils/string-to-date'
 import { useDroppable } from '@dnd-kit/core'
 import { useUniqueId } from '@dnd-kit/utilities'
 import { compareDesc } from 'date-fns'
@@ -10,10 +9,7 @@ interface ListaConfirmadosSemCirculoProps {
 }
 
 function compareDate(a: SortableEncontrista, b: SortableEncontrista) {
-  return compareDesc(
-    stringToDate(a.content.nascimento),
-    stringToDate(b.content.nascimento),
-  )
+  return compareDesc(a.content.dataNasc, b.content.dataNasc)
 }
 
 export function ListaConfirmadosSemCirculo({

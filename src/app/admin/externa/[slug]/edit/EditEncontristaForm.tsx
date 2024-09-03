@@ -4,6 +4,7 @@ import type { EncontristaData } from '@/app/api/encontrista/[id]/get-encontrista
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { api } from '@/lib/axios'
+import { dateToString } from '@/utils/string-to-date'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -140,7 +141,7 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
       id: data.id,
       nome: data.pessoa.nome,
       sobrenome: data.pessoa.sobrenome,
-      dataNascimento: data.pessoa.nascimento,
+      dataNascimento: dateToString(data.pessoa.dataNasc),
       apelido: data.pessoa.apelido !== 'null' ? data.pessoa.apelido : '',
       religiao: data.pessoa.idReligiao,
       celular: data.pessoa.celular,

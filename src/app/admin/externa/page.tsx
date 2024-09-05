@@ -32,7 +32,7 @@ export default function Externa() {
               </Button>
             </Link>
 
-            <Link href="/">
+            <Link href="/participe">
               <Button>
                 <div className="flex items-center justify-center gap-2 lg:w-40">
                   <Plus className="h-4 w-4" />

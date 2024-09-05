@@ -13,28 +13,28 @@ import { useQuery } from '@tanstack/react-query'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 
-const encontristaFiltersSchema = z.object({
-  encontristaName: z.string().optional(),
-  encontristaStatus: z.string().optional(),
+const carrosFiltersSchema = z.object({
+  motoristaName: z.string().optional(),
+  ultimoEncontro: z.string().optional(),
   responsavelExterna: z.string().optional(),
 })
 
-type encontristaFiltersFormInput = z.infer<typeof encontristaFiltersSchema>
+type carrosFiltersFormInput = z.infer<typeof carrosFiltersSchema>
 
 export function CarrosTableFilters() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const searchedEncontristaName = searchParams.get('encontristaName')
-  const searchedEncontristaStatus = searchParams.get('encontristaStatus')
+  const searchedMotoristaName = searchParams.get('motoristaName')
+  const searchedUltimoEncontro = searchParams.get('ultimoEncontro')
   const searchedResponsavelExterna = searchParams.get('responsavelExterna')
 
-  const form = useForm<encontristaFiltersFormInput>({
-    resolver: zodResolver(encontristaFiltersSchema),
+  const form = useForm<carrosFiltersFormInput>({
+    resolver: zodResolver(carrosFiltersSchema),
     defaultValues: {
-      encontristaName: searchedEncontristaName ?? '',
-      encontristaStatus: searchedEncontristaStatus ?? 'all',
+      motoristaName: searchedMotoristaName ?? '',
+      ultimoEncontro: searchedUltimoEncontro ?? 'all',
       responsavelExterna: searchedResponsavelExterna ?? 'all',
     },
   })
@@ -47,22 +47,22 @@ export function CarrosTableFilters() {
   })
 
   async function handleFilter({
-    encontristaName,
-    encontristaStatus,
+    motoristaName,
+    ultimoEncontro,
     responsavelExterna,
-  }: encontristaFiltersFormInput) {
+  }: carrosFiltersFormInput) {
     const newSearch = new URLSearchParams()
 
-    if (encontristaName) {
-      newSearch.append('encontristaName', encontristaName)
+    if (motoristaName) {
+      newSearch.append('motoristaName', motoristaName.toString())
     } else {
-      newSearch.delete('encontristaName')
+      newSearch.delete('motoristaName')
     }
 
-    if (encontristaStatus && encontristaStatus !== 'all') {
-      newSearch.append('encontristaStatus', encontristaStatus)
+    if (ultimoEncontro && ultimoEncontro !== 'all') {
+      newSearch.append('ultimoEncontro', ultimoEncontro.toString())
     } else {
-      newSearch.delete('encontristaStatus')
+      newSearch.delete('ultimoEncontro')
     }
 
     if (responsavelExterna && responsavelExterna !== 'all') {
@@ -78,8 +78,8 @@ export function CarrosTableFilters() {
 
   function handleClearFilters() {
     const newSearch = new URLSearchParams()
-    newSearch.delete('encontristaName')
-    newSearch.delete('encontristaStatus')
+    newSearch.delete('motoristaName')
+    newSearch.delete('ultimoEncontro')
     newSearch.delete('responsavelExterna')
     newSearch.append('page', '1')
     reset()
@@ -95,18 +95,18 @@ export function CarrosTableFilters() {
         <div className="flex w-full flex-col gap-2 lg:flex-row lg:items-center">
           <FormField
             control={control}
-            name="encontristaName"
+            name="motoristaName"
             render={({ field }) => (
               <SearchInput
                 className="h-5 w-fit"
-                placeholder="Nome do encontrista..."
+                placeholder="Nome do motorista..."
                 {...field}
               />
             )}
           />
           <FormField
             control={control}
-            name="encontristaStatus"
+            name="ultimoEncontro"
             defaultValue="all"
             render={({ field }) => {
               return (
@@ -115,17 +115,10 @@ export function CarrosTableFilters() {
                     onChange={field.onChange}
                     value={field.value}
                   >
-                    <SelectItem value="all" text="Todos status" />
-                    <SelectItem value="confirmado" text="Confirmados" />
-                    <SelectItem value="desistiu" text="Desistiu" />
-                    <SelectItem value="ligar" text="Ligar" />
-                    <SelectItem value="lista_espera" text="Lista de Espera" />
-                    <SelectItem value="nao_atende" text="Não atende" />
-                    <SelectItem
-                      value="prox_encontro"
-                      text="Próximo Encontrão"
-                    />
-                    <SelectItem value="vai_pensar" text="Vai Pensar" />
+                    <SelectItem value="all" text="Todos encontros" />
+                    <SelectItem value="72" text="72" />
+                    <SelectItem value="71" text="71" />
+                    <SelectItem value="70" text="70" />
                   </SelectGroupInput>
                 </div>
               )

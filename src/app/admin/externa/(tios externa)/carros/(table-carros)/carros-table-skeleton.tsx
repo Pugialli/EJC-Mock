@@ -12,7 +12,7 @@ export function CarrosTableSkeleton() {
           <Skeleton className="h-4 w-52" />
         </TableCell>
         <TableCell>
-          <Skeleton className="h-4 w-7" />
+          <Skeleton className="h-4 w-32" />
         </TableCell>
         <TableCell>
           <Skeleton className="h-4 w-32" />
@@ -22,6 +22,9 @@ export function CarrosTableSkeleton() {
         </TableCell>
         <TableCell>
           <Skeleton className="h-4 w-14" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-4 w-11" />
         </TableCell>
         <TableCell>
           <Skeleton className="h-4 w-32" />

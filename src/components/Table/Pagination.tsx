@@ -6,6 +6,7 @@ export interface PaginationProps {
   pageIndex: number
   perPage: number
   totalCount: number
+  totalCol: number
   onPageChange: (pageIndex: number) => Promise<void> | void
 }
 
@@ -14,6 +15,7 @@ export function Pagination({
   perPage,
   totalCount,
   onPageChange,
+  totalCol,
 }: PaginationProps) {
   const pages = Math.ceil(totalCount / perPage) || 1
   const firstOnPage = (pageIndex - 1) * perPage + 1
@@ -24,14 +26,17 @@ export function Pagination({
 
   const page = pageIndex - 1
 
+  const spanLeft = totalCol / 2
+  const spanRight = totalCol / 2 + (totalCol % 2)
+
   return (
     <TableRow>
-      <TableCell colSpan={4} className="rounded-bl-xl">
+      <TableCell colSpan={spanLeft} className="rounded-bl-xl">
         <span className="text-muted-foreground text-sm">
           {firstOnPage}-{lastOnPage} de {totalCount}
         </span>
       </TableCell>
-      <TableCell colSpan={4} className="rounded-br-xl">
+      <TableCell colSpan={spanRight} className="rounded-br-xl">
         <div className="flex h-10 items-center justify-between">
           <Button
             onClick={() => onPageChange(page - 1)}

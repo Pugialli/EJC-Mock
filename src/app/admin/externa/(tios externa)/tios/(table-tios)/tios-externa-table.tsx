@@ -109,14 +109,13 @@ export function TiosExternaTable() {
             <TableHeader>
               <TableRow className="px-2">
                 <TableHead className="w-7 text-nowrap rounded-tl-xl pl-4 lg:w-[73px]">
-                  Inscrito em
+                  Última externa
                 </TableHead>
                 <TableHead>Nome</TableHead>
-                <TableHead>Idade</TableHead>
-                <TableHead className="w-7 lg:w-[178px]">Status</TableHead>
+                <TableHead>Tipo</TableHead>
                 <TableHead>Bairro</TableHead>
                 <TableHead>Celular</TableHead>
-                <TableHead className="w-7 lg:w-[178px]">Responsável</TableHead>
+                <TableHead>E-mail</TableHead>
                 <TableHead className="w-7 rounded-tr-xl lg:w-16">
                   Ações
                 </TableHead>
@@ -135,13 +134,14 @@ export function TiosExternaTable() {
                 })}
             </TableBody>
             <TableFooter>
-              {isLoadingEncontrista && <PaginationSkeleton />}
+              {isLoadingEncontrista && <PaginationSkeleton totalCol={8} />}
               {result && (
                 <Pagination
                   pageIndex={result.pageIndex}
                   totalCount={result.totalCount}
                   perPage={result.perPage}
                   onPageChange={handlePaginate}
+                  totalCol={8}
                 />
               )}
             </TableFooter>

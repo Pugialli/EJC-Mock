@@ -1,12 +1,16 @@
-import { MessageSquareMore, Pencil, Trash2 } from 'lucide-react'
+import {
+  CircleArrowOutUpRight,
+  MessageSquareMore,
+  Pencil,
+  Trash2,
+} from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 
-import type { EncontristaSummaryData } from '@/app/api/encontrista/get-encontristas-summary'
-import { DeleteDialog } from '@/components/Table/DeleteDialog'
-import { EncontristaExterna } from '@/components/Table/EncontristaExterna'
-import { EncontristaStatus } from '@/components/Table/EncontristaStatus'
+import type { CarroSummaryData } from '@/app/api/carro/get-carros-summary'
+import { CarroExterna } from '@/components/Table/CarroExterna'
+import { DeleteCarroDialog } from '@/components/Table/DeleteCarroDialog'
 import type { SelectItemAvatarProps } from '@/components/Table/SelectItemAvatar'
 import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -16,12 +20,11 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { api } from '@/lib/axios'
-import { getAge } from '@/utils/get-age'
 import type { Value_Status as valueStatus } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
-import { formatDate } from 'date-fns'
 import Link from 'next/link'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 export interface Encontrista {
   id_pessoa: string
@@ -42,7 +45,7 @@ export interface Encontrista {
 }
 
 interface EncontristaTableRowProps {
-  encontrista: EncontristaSummaryData
+  carro: CarroSummaryData
 }
 
 async function getEquipeExterna() {
@@ -56,42 +59,48 @@ async function getEquipeExterna() {
   return equipe
 }
 
-export function CarrosTableRow({ encontrista }: EncontristaTableRowProps) {
+export function CarrosTableRow({ carro }: EncontristaTableRowProps) {
   const [open, setOpen] = useState(false)
 
-  const dataInscricao = formatDate(new Date(encontrista.createdAt), 'dd/MM/yy')
-  const nomeCompleto = `${encontrista.nome} ${encontrista.sobrenome}`
-  const idade = encontrista.dataNasc ? getAge(encontrista.dataNasc) : 0
+  // const router = useRouter()
+
+  const isFromThisEncontro = carro.ultimaExterna === 72
 
   const { data: equipeExterna, isLoading } = useQuery<SelectItemAvatarProps[]>({
     queryFn: async () => await getEquipeExterna(),
     queryKey: ['equipeExterna'],
   })
 
+  async function handleCopyCarro(idCarro: string) {
+    console.log(idCarro)
+    const result = false
+    if (result) {
+      // router.replace('/admin/externa/carros')
+      toast.success('Carro importado.')
+    } else {
+      toast.error('Ouve um erro ao importar este carro.')
+    }
+  }
+
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <TableRow className="bg-white">
-        <TableCell className="w-7 text-nowrap pl-4 font-medium lg:w-[73px]">
-          {dataInscricao}
-        </TableCell>
-        <TableCell>{nomeCompleto}</TableCell>
-        <TableCell>{idade}</TableCell>
-        <TableCell className="w-7 lg:w-[178px]">
-          <EncontristaStatus
-            status={encontrista.idStatus}
-            encontristaId={encontrista.id}
-          />
-        </TableCell>
-        <TableCell>{encontrista.bairroEncontro}</TableCell>
-        <TableCell>{encontrista.celular}</TableCell>
+        <TableCell>{carro.ultimaExterna}</TableCell>
+        <TableCell>{carro.nomeMotorista}</TableCell>
+        <TableCell className="text-nowrap">{carro.contatoMotorista}</TableCell>
+        <TableCell>{carro.bairro}</TableCell>
+        <TableCell className="text-nowrap">{carro.placa}</TableCell>
+        <TableCell>{carro.modelo}</TableCell>
+        <TableCell>{carro.vagas}</TableCell>
         <TableCell className="w-7 lg:w-[178px]">
           {isLoading ? (
             <Skeleton className="h-4 w-14" />
           ) : (
-            <EncontristaExterna
-              idExterna={encontrista.idExterna}
-              idEncontrista={encontrista.id}
+            <CarroExterna
+              idExterna={carro.idExterna}
+              idCarro={carro.id}
               equipe={equipeExterna}
+              disabled={!isFromThisEncontro}
             />
           )}
         </TableCell>
@@ -102,35 +111,62 @@ export function CarrosTableRow({ encontrista }: EncontristaTableRowProps) {
                 <MessageSquareMore className="h-4 w-4 text-zinc-400" />
               </TooltipTrigger>
               <TooltipContent className="w-72 text-center">
-                {encontrista.observacoes ? (
-                  <span>{encontrista.observacoes}</span>
+                {carro.obsExterna || carro.obsMotorista ? (
+                  <div className="text-left">
+                    {carro.obsExterna && (
+                      <div className="flex gap-2">
+                        <span className="font-bold text-zinc-600">
+                          Externa:
+                        </span>
+                        <span>{carro.obsExterna}</span>
+                      </div>
+                    )}
+                    {carro.obsMotorista && (
+                      <div className="flex gap-2">
+                        <span className="font-bold text-zinc-600">
+                          Motorista:
+                        </span>
+                        <span>{carro.obsMotorista}</span>
+                      </div>
+                    )}
+                  </div>
                 ) : (
-                  <span className="text-zinc-400">Não tem observação</span>
+                  <span className="text-center text-zinc-400">
+                    Não tem observação
+                  </span>
                 )}
               </TooltipContent>
             </Tooltip>
-            <Link href={`/admin/externa/${encontrista.id}/edit`}>
+            <Link
+              href={`/admin/externa/carros/${carro.id}/${carro.ultimaExterna}/edit`}
+            >
               <Button variant="ghost" className="p-0">
                 <Pencil className="h-4 w-4 text-zinc-400 hover:text-zinc-500" />
               </Button>
             </Link>
-            <AlertDialogTrigger asChild>
+            {isFromThisEncontro ? (
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" className="p-0">
+                  <Trash2 className="h-4 w-4 text-red-400 hover:text-red-500" />
+                </Button>
+              </AlertDialogTrigger>
+            ) : (
               <Button
-                // onClick={() => dispatchOrderFn({ orderId: order.orderId })}
-                // disabled={isDispatchingOrder}
                 variant="ghost"
                 className="p-0"
+                onClick={() => handleCopyCarro(carro.id)}
               >
-                <Trash2 className="h-4 w-4 text-red-400 hover:text-red-500" />
+                <CircleArrowOutUpRight className="h-4 w-4 text-blue-400 hover:text-blue-500" />
               </Button>
-            </AlertDialogTrigger>
+            )}
           </div>
         </TableCell>
       </TableRow>
 
-      <DeleteDialog
-        idEncontrista={encontrista.id}
-        nomeEncontrista={`${encontrista.nome} ${encontrista.sobrenome}`}
+      <DeleteCarroDialog
+        idCarro={carro.id}
+        nomeMotorista={carro.nomeMotorista}
+        placaCarro={carro.placa}
         openFn={setOpen}
       />
     </AlertDialog>

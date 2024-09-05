@@ -1,19 +1,45 @@
 import { TextInput } from '@/components/Form/TextInput'
 import { FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { getCEPData, type CEPResponse } from '@/lib/fetch-cep'
+import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { toast } from 'sonner'
 import { useHookFormMask } from 'use-mask-input'
 import { CardForm } from '../components/CardForm'
 import { CardFormSection } from '../components/CardFormSection'
 
 export function AddressCard() {
   const form = useFormContext()
-  const {
-    register,
-    // handleSubmit,
-    control,
-    // formState: { isSubmitting },
-  } = form
+  const { register, control, watch, setValue } = form
+
+  const cepValue = watch('cep')
+
+  useEffect(() => {
+    async function fetchAddress(cep: string) {
+      const response = await getCEPData(cep)
+      if (response === undefined) {
+        toast.error('Seu CEP não foi encontrado')
+      } else {
+        const addressData: CEPResponse = await response.json()
+        setValue('estado', addressData.state, {
+          shouldValidate: false,
+          shouldDirty: true,
+        })
+        setValue('cidade', addressData.city, { shouldValidate: false })
+        setValue('bairro', addressData.neighborhood, { shouldValidate: false })
+        setValue('rua', addressData.street, { shouldValidate: false })
+      }
+    }
+    if (cepValue && cepValue[8] !== '_') {
+      fetchAddress(cepValue)
+    } else {
+      setValue('estado', '')
+      setValue('cidade', '')
+      setValue('bairro', '')
+      setValue('rua', '')
+    }
+  }, [cepValue, setValue])
 
   const registerWithMask = useHookFormMask(register)
 

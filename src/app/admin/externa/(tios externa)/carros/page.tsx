@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { BarChart4, Download, Plus } from 'lucide-react'
+import { BarChart4, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { CarrosTable } from './(table-carros)/carros-table'
 
@@ -21,20 +21,20 @@ export default function ListaCarros() {
               Lista de Carros
             </h1>
             <span className="text-base font-normal text-zinc-500">
-              Lista geral de carros de externa disponíveis para o encontro
+              Lista geral de carros que já foram externa no encontro
             </span>
           </div>
           <div className="flex flex-col items-center gap-2 lg:flex-row">
-            <Link href="/api/export/encontrista">
+            {/* <Link href="/api/export/encontrista">
               <Button variant="secondary">
                 <div className="flex items-center justify-center gap-2 lg:w-40">
                   <Download className="h-4 w-4 text-tertiary" />
                   <span className="hidden lg:flex">Gerar XLSX</span>
                 </div>
               </Button>
-            </Link>
+            </Link> */}
 
-            <Link href="/">
+            <Link href="carros/novo">
               <Button>
                 <div className="flex items-center justify-center gap-2 lg:w-40">
                   <Plus className="h-4 w-4" />

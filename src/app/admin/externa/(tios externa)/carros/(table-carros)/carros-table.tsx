@@ -7,15 +7,11 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import type {
-  EncontristaSummary,
-  EncontristaSummaryData,
-} from '@/app/api/encontrista/get-encontristas-summary'
+import type { CarrosSummary } from '@/app/api/carro/get-carros-summary'
 import { Pagination } from '@/components/Table/Pagination'
 import { PaginationSkeleton } from '@/components/Table/PaginationSkeleton'
 import { api } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
-import { compareAsc } from 'date-fns'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 import { CarrosTableFilters } from './carros-table-filters'
@@ -24,35 +20,30 @@ import { CarrosTableSkeleton } from './carros-table-skeleton'
 
 interface SearchProps {
   pageIndex: number
-  encontristaName: string | null
-  encontristaStatus: string | null
+  motoristaName: string | null
+  ultimoEncontro: string | null
   responsavelExterna: string | null
 }
 
-function compareDate(a: EncontristaSummaryData, b: EncontristaSummaryData) {
-  return compareAsc(a.createdAt, b.createdAt)
-}
-
-async function getEncontrista({
+async function getCarro({
   pageIndex,
-  encontristaName,
-  encontristaStatus,
+  motoristaName,
+  ultimoEncontro,
   responsavelExterna,
 }: SearchProps) {
-  const nameSearch = encontristaName ? `name=${encontristaName}&` : ''
-  const statusSearch = encontristaStatus ? `status=${encontristaStatus}&` : ''
+  const nameSearch = motoristaName ? `name=${motoristaName}&` : ''
+  const encontroSearch = ultimoEncontro ? `encontro=${ultimoEncontro}&` : ''
   const externaSearch = responsavelExterna
     ? `idExterna=${responsavelExterna}&`
     : ''
 
-  const path = `/encontrista?${nameSearch}${statusSearch}${externaSearch}page=${pageIndex}`
+  const path = `/carro?${nameSearch}${encontroSearch}${externaSearch}page=${pageIndex}`
 
-  const response: EncontristaSummary = await api
+  const response: CarrosSummary = await api
     .get(path)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
-  response.encontristas.sort(compareDate)
   return response
 }
 
@@ -61,8 +52,8 @@ export function CarrosTable() {
   const pathname = usePathname()
   const router = useRouter()
 
-  const encontristaName = searchParams.get('encontristaName')
-  const encontristaStatus = searchParams.get('encontristaStatus')
+  const motoristaName = searchParams.get('motoristaName')
+  const ultimoEncontro = searchParams.get('ultimoEncontro')
   const responsavelExterna = searchParams.get('responsavelExterna')
 
   const pageIndex = z.coerce
@@ -71,27 +62,27 @@ export function CarrosTable() {
     .parse(searchParams.get('page') ?? '1')
 
   const { data: result, isLoading: isLoadingEncontrista } =
-    useQuery<EncontristaSummary>({
+    useQuery<CarrosSummary>({
       queryKey: [
-        'encontristas',
-        { pageIndex, encontristaName, encontristaStatus, responsavelExterna },
+        'carros',
+        { pageIndex, motoristaName, ultimoEncontro, responsavelExterna },
       ],
       queryFn: () =>
-        getEncontrista({
+        getCarro({
           pageIndex,
-          encontristaName,
-          encontristaStatus,
+          motoristaName,
+          ultimoEncontro,
           responsavelExterna,
         }),
     })
 
   function handlePaginate(pageIndex: number) {
     const newSearch = new URLSearchParams()
-    if (encontristaName)
-      newSearch.append('encontristaName', encontristaName.toString())
+    if (motoristaName)
+      newSearch.append('motoristaName', motoristaName.toString())
 
-    if (encontristaStatus)
-      newSearch.append('encontristaStatus', encontristaStatus.toString())
+    if (ultimoEncontro)
+      newSearch.append('ultimoEncontro', ultimoEncontro.toString())
 
     if (responsavelExterna)
       newSearch.append('responsavelExterna', responsavelExterna.toString())
@@ -108,14 +99,15 @@ export function CarrosTable() {
           <Table className="text-xs">
             <TableHeader>
               <TableRow className="px-2">
-                <TableHead className="w-7 text-nowrap rounded-tl-xl pl-4 lg:w-[73px]">
-                  Inscrito em
+                <TableHead className="w-7 text-nowrap rounded-tl-xl pl-4">
+                  Última externa
                 </TableHead>
-                <TableHead>Nome</TableHead>
-                <TableHead>Idade</TableHead>
-                <TableHead className="w-7 lg:w-[178px]">Status</TableHead>
+                <TableHead>Motorista</TableHead>
+                <TableHead>Contato</TableHead>
                 <TableHead>Bairro</TableHead>
-                <TableHead>Celular</TableHead>
+                <TableHead>Placa</TableHead>
+                <TableHead>Modelo</TableHead>
+                <TableHead>Vagas</TableHead>
                 <TableHead className="w-7 lg:w-[178px]">Responsável</TableHead>
                 <TableHead className="w-7 rounded-tr-xl lg:w-16">
                   Ações
@@ -125,23 +117,19 @@ export function CarrosTable() {
             <TableBody className="bg-transparent">
               {isLoadingEncontrista && <CarrosTableSkeleton />}
               {result &&
-                result.encontristas.map((encontrista) => {
-                  return (
-                    <CarrosTableRow
-                      key={encontrista.id}
-                      encontrista={encontrista}
-                    />
-                  )
+                result.carros.map((carro) => {
+                  return <CarrosTableRow key={carro.id} carro={carro} />
                 })}
             </TableBody>
             <TableFooter>
-              {isLoadingEncontrista && <PaginationSkeleton />}
+              {isLoadingEncontrista && <PaginationSkeleton totalCol={9} />}
               {result && (
                 <Pagination
                   pageIndex={result.pageIndex}
                   totalCount={result.totalCount}
                   perPage={result.perPage}
                   onPageChange={handlePaginate}
+                  totalCol={9}
                 />
               )}
             </TableFooter>

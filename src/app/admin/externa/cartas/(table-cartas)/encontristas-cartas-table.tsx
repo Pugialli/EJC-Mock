@@ -113,13 +113,14 @@ export function EncontristasCartasTable() {
                 })}
             </TableBody>
             <TableFooter>
-              {isLoadingEncontrista && <PaginationSkeleton />}
+              {isLoadingEncontrista && <PaginationSkeleton totalCol={7} />}
               {cartaSumary && (
                 <Pagination
                   pageIndex={cartaSumary.pageIndex}
                   totalCount={cartaSumary.totalCount}
                   perPage={cartaSumary.perPage}
                   onPageChange={handlePaginate}
+                  totalCol={7}
                 />
               )}
             </TableFooter>

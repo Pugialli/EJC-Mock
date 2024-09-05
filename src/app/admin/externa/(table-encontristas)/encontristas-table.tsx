@@ -201,13 +201,14 @@ export function EncontristasTable() {
                 })}
             </TableBody>
             <TableFooter>
-              {isLoadingEncontrista && <PaginationSkeleton />}
+              {isLoadingEncontrista && <PaginationSkeleton totalCol={8} />}
               {result && (
                 <Pagination
                   pageIndex={result.pageIndex}
                   totalCount={result.totalCount}
                   perPage={result.perPage}
                   onPageChange={handlePaginate}
+                  totalCol={8}
                 />
               )}
             </TableFooter>

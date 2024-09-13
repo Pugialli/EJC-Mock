@@ -78,7 +78,7 @@ export async function createCarro({
       lugaresCarro: carro.lugaresCarro,
       modeloCarro: carro.modeloCarro,
       observacaoMotorista: motorista.observacaoMotorista,
-      placaCarro: carro.placaCarro,
+      placaCarro: carro.placaCarro.toUpperCase(),
       idMotorista,
     },
   })

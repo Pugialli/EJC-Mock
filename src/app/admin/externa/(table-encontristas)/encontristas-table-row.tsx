@@ -53,7 +53,7 @@ async function getEquipeExterna() {
   const encontro = 71
 
   const equipe = await api
-    .get(`/encontro/${encontro}/externa`)
+    .get(`encontro/${encontro}/externa`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 

@@ -35,7 +35,7 @@ import NextAuth from 'next-auth'
 
 //         // return (
 //         //   api
-//         //     .post('/auth/singinRequest', {
+//         //     .post('auth/singinRequest', {
 //         //       email: credentials?.email,
 //         //       password: credentials?.password,
 //         //     })
@@ -49,7 +49,7 @@ import NextAuth from 'next-auth'
 //         //     }) || null
 //         // )
 //         // try {
-//         //   const response = await api.post('/auth/singinRequest', credentials)
+//         //   const response = await api.post('auth/singinRequest', credentials)
 //         //   const user = await response.data
 
 //         //   console.log(response)

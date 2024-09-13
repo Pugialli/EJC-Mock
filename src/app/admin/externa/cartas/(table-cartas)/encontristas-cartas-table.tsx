@@ -33,7 +33,7 @@ function compareDate(a: CartaSummaryData, b: CartaSummaryData) {
 async function getCartas({ pageIndex, encontristaName }: SearchProps) {
   const nameSearch = encontristaName ? `name=${encontristaName}&` : ''
 
-  const path = `/carta?${nameSearch}page=${pageIndex}`
+  const path = `carta?${nameSearch}page=${pageIndex}`
 
   const response: CartaSummary = await api
     .get(path)

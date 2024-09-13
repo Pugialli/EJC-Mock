@@ -18,6 +18,7 @@ model Pessoa {
   createdAt          DateTime     @default(now()) @map("created_at")
   modifiedAt         DateTime     @updatedAt @map("modified_at")
   enderecoCep        String       @map("endereco_cep")
+  enderecoNumero     Int?         @map("endereco_numero")
   avatarUrl          String?      @map("avatar_url")
   password           String?
   apelido            String?

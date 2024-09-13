@@ -39,7 +39,7 @@ export default async function RootLayout({
           >
             <ReactQueryProvider>
               <TooltipProvider>{children}</TooltipProvider>
-              <Toaster richColors />
+              <Toaster richColors closeButton />
             </ReactQueryProvider>
           </ThemeProvider>
         </NextAuthSessionProvider>

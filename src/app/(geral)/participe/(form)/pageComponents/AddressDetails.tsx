@@ -9,7 +9,7 @@ import {
   AddressFormData,
   CreateEncontristaContext,
 } from '@/context/CreateEncontristaContext'
-import { CEPResponse, getCEPData } from '@/lib/fetch-cep'
+import { getCEPData, type CEPResponse } from '@/utils/fetch-cep'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'

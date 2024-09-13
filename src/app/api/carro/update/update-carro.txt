@@ -1,0 +1,103 @@
+import { updateEndereco } from '@/app/api/endereco/[cep]/update/update-endereco'
+import { prisma } from '@/lib/prisma'
+import { getCurrentEncontro } from '../../encontro/[numeroEncontro]/get-current-encontro/get-current-encontro'
+
+export type UpdateCarroProps = {
+  id: string
+  numeroCarro: number
+  placaCarro: string
+  observacao: string
+  modeloCarro: string
+  lugaresCarro: number
+  observacaoMotorista: string
+}
+
+export async function updateCarro(data: UpdateCarroProps) {
+  const encontro = await getCurrentEncontro()
+  const foundCarro = await prisma.carro.findUnique({
+    where: {
+      id: data.id,
+    },
+  })
+
+  if (!foundCarro || !encontro) {
+    return null
+  }
+
+  const motoristaEnderecoProps = {
+    cep: data.motorista.cep,
+    bairro: data.motorista.bairro,
+    rua: data.motorista.rua,
+  }
+
+  await updateEndereco(motoristaEnderecoProps)
+
+  if (data.carona) {
+    const caronaEnderecoProps = {
+      cep: data.carona.cep,
+      bairro: data.carona.bairro,
+      rua: data.carona.rua,
+    }
+    await updateEndereco(caronaEnderecoProps)
+  }
+
+  return await prisma.carroEncontro.update({
+    where: {
+      idCarro_idEncontro: {
+        idCarro: data.id,
+        idEncontro: encontro.id,
+      },
+    },
+    data: {
+      carro: {
+        update: {
+
+        }
+      }
+      nome: data.nome,
+      sobrenome: data.sobrenome,
+      apelido: data.apelido,
+      enderecoCep: data.cep,
+      celular: data.celular,
+      telefone: data.telefone,
+      email: data.email,
+      encontrista: {
+        update: {
+          idReligiao: data.religiao,
+          isAutofill: data.paraVoce === 'sim',
+          endNumero: data.numero,
+          endComplemento: data.complemento,
+          cepEncontro: data.cepEncontro,
+          endNumEncontro: data.numeroEncontro,
+          endComplementoEncontro: data.complementoEncontro,
+          idMoracom: data.moraCom,
+          idStatusPais: data.statusPais,
+          movimentoAnterior: data.nomeMovimento,
+          observacao: data.observacoes,
+          nomeContato1: data.nomeFamiliar,
+          telContato1: data.telFamiliar,
+          parentescoContato1: data.parentescoFamiliar,
+          nomeContato2: data.nomeFamiliar2,
+          telContato2: data.telFamiliar2,
+          parentescoContato2: data.parentescoFamiliar2,
+          indicadoPorNome: data.indicadoPorNome,
+          indicadoPorApelido: data.indicadoApelido,
+          indicadoPorTel: data.indicadoTelefone,
+          indicadoPorEmail: data.indicadoEmail,
+          obsExternaLocalizacao: data.obsExternaLocalizacao,
+          obsExternaSaude: data.obsExternaSaude,
+          obsExternaConhecidos: data.obsExternaConhecidos,
+          obsExternaOutros: data.obsExternaOutros,
+        },
+      },
+      encontreiro: {
+        update: {
+          dataNasc: dataNascimento,
+          instagram: data.instagram,
+          restricaoAlimentar: data.restricoesAlimentares,
+          idTamanhoCamisa: data.tamanhoCamisa,
+        },
+      },
+    },
+  })
+}

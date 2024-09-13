@@ -161,7 +161,7 @@ interface ListaEncontreirosProps {
 }
 
 async function getSummary() {
-  const cartas = await api.get(`/montagem/summary/72`)
+  const cartas = await api.get(`montagem/summary/72`)
 
   return cartas.data as EncontreiroSummary
 }

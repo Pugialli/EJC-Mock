@@ -1,14 +1,15 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 
+import { createCarro, type CreateCarroProps } from './create-carro'
 import { getCarrosSummary } from './get-carros-summary'
 
-// export async function POST(request: NextRequest) {
-//   const formData: CreateEncontristaProps = await request.json()
+export async function POST(request: NextRequest) {
+  const formData: CreateCarroProps = await request.json()
 
-//   const pessoa = await createEncontrista(formData)
+  const carro = await createCarro(formData)
 
-//   return NextResponse.json(pessoa, { status: 201 })
-// }
+  return NextResponse.json(carro, { status: 201 })
+}
 
 export interface searchParams {
   page: number

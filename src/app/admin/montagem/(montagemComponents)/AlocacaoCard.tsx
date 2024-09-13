@@ -34,7 +34,7 @@ export async function getEquipes() {
 }
 
 async function getEncontreiroEquipe(slug: string) {
-  const response = await api.get(`/montagem/${slug}/equipe`)
+  const response = await api.get(`montagem/${slug}/equipe`)
 
   return response.data as EncontreiroEquipeMontagem
 }
@@ -59,7 +59,7 @@ export async function changeEncontreiroEquipe({
   coordenando,
   valueEquipe,
 }: changeEquipeProps) {
-  await api.post('/montagem/alocate-equipe', {
+  await api.post('montagem/alocate-equipe', {
     idEncontreiro,
     coordenando,
     valueEquipe,

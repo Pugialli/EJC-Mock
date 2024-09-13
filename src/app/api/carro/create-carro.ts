@@ -1,114 +1,154 @@
-import {
-  AddressFormData,
-  FamilyFormData,
-  NominationFormData,
-  OtherFormData,
-  PersonalFormData,
-} from '@/context/CreateEncontristaContext'
+import type { CarFormData, PersonFormData } from '@/context/NewCarroContext'
 import { prisma } from '@/lib/prisma'
-import { createSlugForEncontrista } from '@/utils/create-slug'
-import { stringToDate } from '@/utils/string-to-date'
+import { createSlugForTioExterna } from '@/utils/create-slug'
+import { getCurrentEncontro } from '../encontro/[numeroEncontro]/get-current-encontro/get-current-encontro'
+import { getNextCarroEncontro } from '../encontro/[numeroEncontro]/get-next-carro-encontro/get-next-carro-encontro'
 import { createEndereco } from '../endereco/create-endereco'
 
 export interface CreateCarroProps {
-  personal: PersonalFormData
-  address: AddressFormData
-  family: FamilyFormData
-  nomination: NominationFormData
-  other: OtherFormData
+  carro: CarFormData
+  motorista: PersonFormData
+  carona?: PersonFormData
 }
 
 export async function createCarro({
-  personal,
-  address,
-  family,
-  nomination,
-  other,
+  carro,
+  motorista,
+  carona,
 }: CreateCarroProps) {
-  const encontro = await prisma.encontro.findFirst({
-    orderBy: {
-      numeroEncontro: 'desc',
+  const encontro = await getCurrentEncontro()
+
+  if (!encontro) return null
+
+  let idMotorista = motorista.id
+
+  const numeroEncontro = encontro.numeroEncontro
+
+  const searchedMotorista = await prisma.pessoa.findUnique({
+    where: {
+      id: motorista.id,
     },
   })
 
-  const numeroEncontro = encontro ? encontro.numeroEncontro : 0
+  if (!searchedMotorista) {
+    const searchedEnderecoMotorista = await prisma.endereco.findUnique({
+      where: {
+        cep: motorista.enderecoCep,
+      },
+    })
 
-  const enderecoProps = {
-    cep: address.cep,
-    bairro: address.bairro,
-    cidade: address.cidade,
-    estado: address.estado,
-    rua: address.rua,
+    if (!searchedEnderecoMotorista) {
+      const motoristaEnderecoProps = {
+        cep: motorista.enderecoCep,
+        bairro: motorista.bairro,
+        cidade: motorista.cidade,
+        estado: motorista.estado,
+        rua: motorista.rua,
+      }
+      await createEndereco(motoristaEnderecoProps)
+    }
+
+    const motoristaSlug = createSlugForTioExterna(
+      motorista.email,
+      numeroEncontro,
+    )
+
+    const motoristaPessoa = await prisma.pessoa.create({
+      data: {
+        nome: motorista.nome,
+        sobrenome: motorista.sobrenome,
+        apelido: motorista.apelido,
+        enderecoCep: motorista.enderecoCep,
+        celular: motorista.celular,
+        telefone: motorista.telefone,
+        email: motorista.email,
+        enderecoNumero: motorista.enderecoNumero,
+        slug: motoristaSlug,
+        role: 'TIOEXTERNA',
+      },
+    })
+    if (!motoristaPessoa) {
+      return null
+    }
+    idMotorista = motoristaPessoa.id
   }
 
-  const enderecoEncontroProps = {
-    cep: address.cepEncontro,
-    bairro: address.bairroEncontro,
-    cidade: address.cidadeEncontro,
-    estado: address.estadoEncontro,
-    rua: address.ruaEncontro,
-  }
-
-  const endereco = await createEndereco(enderecoProps)
-  const enderecoEncontro = await createEndereco(enderecoEncontroProps)
-
-  const encontristaSlug = createSlugForEncontrista(
-    personal.email,
-    numeroEncontro,
-  )
-
-  const dataNascimento = stringToDate(personal.dataNascimento)
-
-  const pessoa = await prisma.pessoa.create({
+  const carroCreated = await prisma.carro.create({
     data: {
-      nome: personal.nome,
-      sobrenome: personal.sobrenome,
-      apelido: personal.apelido,
-      enderecoCep: endereco.cep,
-      celular: personal.celular,
-      telefone: personal.telefone,
-      email: personal.email,
-      slug: encontristaSlug,
-      encontrista: {
-        create: {
-          idStatus: 'ligar',
-          idReligiao: personal.religiao,
-          isAutofill: personal.paraVoce === 'sim',
-          endNumero: Number(address.numero),
-          endComplemento: address.complemento,
-          cepEncontro: enderecoEncontro.cep,
-          endNumEncontro: address.numeroEncontro,
-          endComplementoEncontro: address.complementoEncontro,
-          idMoracom: family.moraCom,
-          idStatusPais: family.statusPais,
-          movimentoAnterior: other.nomeMovimento,
-          observacao: other.observacoes,
-          nomeContato1: family.nomeFamiliar,
-          telContato1: family.telFamiliar,
-          parentescoContato1: family.parentescoFamiliar,
-          nomeContato2: family.nomeFamiliar2,
-          telContato2: family.telFamiliar2,
-          parentescoContato2: family.parentescoFamiliar2,
-          indicadoPorNome: nomination.indicadoPorNome,
-          indicadoPorApelido: nomination.indicadoApelido,
-          indicadoPorTel: nomination.indicadoTelefone,
-          indicadoPorEmail: nomination.indicadoEmail,
-        },
-      },
-      encontreiro: {
-        create: {
-          dataNasc: dataNascimento,
-          instagram: personal.instagram,
-          restricaoAlimentar: other.restricoesAlimentares,
-          idTamanhoCamisa: other.tamanhoCamisa,
-          idEncontro: encontro ? encontro.id : null,
-        },
-      },
+      lugaresCarro: carro.lugaresCarro,
+      modeloCarro: carro.modeloCarro,
+      observacaoMotorista: motorista.observacaoMotorista,
+      placaCarro: carro.placaCarro,
+      idMotorista,
     },
   })
-  if (!pessoa) {
-    return null
+
+  if (carona && carona.nome !== '') {
+    const searchedCarona = await prisma.pessoa.findUnique({
+      where: {
+        id: carona.id,
+      },
+    })
+
+    if (!searchedCarona) {
+      const searchedEnderecoCarona = await prisma.endereco.findUnique({
+        where: {
+          cep: carona.enderecoCep,
+        },
+      })
+
+      if (!searchedEnderecoCarona) {
+        const caronaEnderecoProps = {
+          cep: carona.enderecoCep,
+          bairro: carona.bairro,
+          cidade: carona.cidade,
+          estado: carona.estado,
+          rua: carona.rua,
+        }
+        await createEndereco(caronaEnderecoProps)
+      }
+      const caronaSlug = createSlugForTioExterna(carona.email, numeroEncontro)
+
+      const caronaPessoa = await prisma.pessoa.create({
+        data: {
+          nome: carona.nome,
+          sobrenome: carona.sobrenome,
+          apelido: carona.apelido,
+          enderecoCep: carona.enderecoCep,
+          celular: carona.celular,
+          telefone: carona.telefone,
+          enderecoNumero: carona.enderecoNumero,
+          email: carona.email,
+          slug: caronaSlug,
+          role: 'TIOEXTERNA',
+        },
+      })
+      if (!caronaPessoa) {
+        return null
+      }
+      await prisma.carro.update({
+        data: {
+          idCarona: caronaPessoa.id,
+        },
+        where: {
+          id: carroCreated.id,
+        },
+      })
+    }
   }
 
-  return pessoa
+  if (!carroCreated) return null
+
+  const numeroCarro = await getNextCarroEncontro()
+
+  const carroEncontro = await prisma.carroEncontro.create({
+    data: {
+      numeroCarro,
+      idCarro: carroCreated.id,
+      idEncontro: encontro.id,
+      observacao: carro.observacaoExterna,
+    },
+  })
+
+  return carroEncontro
 }

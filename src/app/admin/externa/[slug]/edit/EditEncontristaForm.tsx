@@ -226,7 +226,7 @@ export function EditEncontristaForm({ data }: EditEncontristaProps) {
   async function handleUpdateEncontreiro(formDataInput: EditFormDataInput) {
     setUpdating(true)
     await api
-      .put('/encontrista/update', formDataInput)
+      .put('encontrista/update', formDataInput)
       .then(async () => {
         router.push('/admin/externa')
       })

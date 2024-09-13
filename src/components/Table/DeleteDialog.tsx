@@ -20,7 +20,7 @@ interface DeleteProps {
 export async function softDelete(encontristaId: string) {
   // await new Promise((resolve) => setTimeout(resolve, Math.random() * 10000))
 
-  return await api.patch(`/encontrista/${encontristaId}/delete`)
+  return await api.patch(`encontrista/${encontristaId}/delete`)
 }
 
 export function DeleteDialog({

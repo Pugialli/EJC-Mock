@@ -30,7 +30,7 @@ async function getConfirmados() {
 }
 
 async function getCartasStatus() {
-  const res = await api.get(`/encontro/71/get-carta-status`)
+  const res = await api.get(`encontro/71/get-carta-status`)
   return res.data as boolean
 }
 

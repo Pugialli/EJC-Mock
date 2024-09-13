@@ -1,4 +1,11 @@
-import { Blocks, CarFront, Mail, Puzzle, SquareUserRound } from 'lucide-react'
+import {
+  Blocks,
+  CarFront,
+  CircleParking,
+  Mail,
+  Puzzle,
+  SquareUserRound,
+} from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { NavItem } from './NavItem'
@@ -43,6 +50,14 @@ export function MainNavigation() {
             title="Alocação nos Carros"
             icon={Blocks}
             active={path === '/admin/externa/alocacao-carros'}
+          />
+        </Link>
+
+        <Link href="/admin/externa/carros">
+          <NavItem
+            title="Carros"
+            icon={CircleParking}
+            active={path === '/admin/externa/carros'}
           />
         </Link>
       </NavItemGroup>

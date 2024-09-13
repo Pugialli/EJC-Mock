@@ -21,6 +21,7 @@ export type CarroData = {
       telefone: string | null
       email: string
       enderecoCep: string
+      endNumero: number
     }
     pessoaCarona: {
       id: string
@@ -30,6 +31,7 @@ export type CarroData = {
       telefone: string | null
       email: string
       enderecoCep: string
+      endNumero: number
     } | null
   }
 }
@@ -71,6 +73,7 @@ export async function getCarro({ carro, encontro }: GetCarroProps) {
               telefone: true,
               email: true,
               enderecoCep: true,
+              enderecoNumero: true,
             },
           },
           pessoaCarona: {
@@ -82,6 +85,7 @@ export async function getCarro({ carro, encontro }: GetCarroProps) {
               telefone: true,
               email: true,
               enderecoCep: true,
+              enderecoNumero: true,
             },
           },
           modeloCarro: true,

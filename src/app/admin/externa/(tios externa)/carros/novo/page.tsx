@@ -1,7 +1,10 @@
-export default function CriarCarro() {
+import { NewCarContextProvider } from '@/context/NewCarroContext'
+import { NewCarroForm } from './(form)/NewCarroForm'
+
+export default async function CriarCarro() {
   return (
-    <div>
-      <h1>Novo Carro</h1>
-    </div>
+    <NewCarContextProvider>
+      <NewCarroForm />
+    </NewCarContextProvider>
   )
 }

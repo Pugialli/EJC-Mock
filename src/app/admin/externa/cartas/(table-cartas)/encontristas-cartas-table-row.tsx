@@ -35,7 +35,7 @@ export async function changeCartasFisicas({
   id,
   cartasFisicas,
 }: updateCartaFisicaRouteProps) {
-  await api.patch('/carta/update-carta-fisica/', { id, cartasFisicas })
+  await api.patch('carta/update-carta-fisica/', { id, cartasFisicas })
 }
 
 async function getCartasEncontrista(slug: string) {

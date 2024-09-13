@@ -1,7 +1,7 @@
 import { TextInput } from '@/components/Form/TextInput'
 import { FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { getCEPData, type CEPResponse } from '@/lib/fetch-cep'
+import { getCEPData, type CEPResponse } from '@/utils/fetch-cep'
 import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { toast } from 'sonner'

@@ -45,7 +45,7 @@ async function getEncontrista({
     ? `idExterna=${responsavelExterna}&`
     : ''
 
-  const path = `/encontrista?${nameSearch}${statusSearch}${externaSearch}page=${pageIndex}`
+  const path = `encontrista?${nameSearch}${statusSearch}${externaSearch}page=${pageIndex}`
 
   const response: EncontristaSummary = await api
     .get(path)

@@ -37,7 +37,7 @@ async function getCarro({
     ? `idExterna=${responsavelExterna}&`
     : ''
 
-  const path = `/carro?${nameSearch}${encontroSearch}${externaSearch}page=${pageIndex}`
+  const path = `carro?${nameSearch}${encontroSearch}${externaSearch}page=${pageIndex}`
 
   const response: CarrosSummary = await api
     .get(path)

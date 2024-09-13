@@ -25,7 +25,7 @@ export async function changeResponsavel({
   responsavelId,
 }: EncontristaResponsavelProps) {
   await api.patch(
-    `/encontrista/${encontristaId}/change-responsavel/${responsavelId}`,
+    `encontrista/${encontristaId}/change-responsavel/${responsavelId}`,
   )
 }
 

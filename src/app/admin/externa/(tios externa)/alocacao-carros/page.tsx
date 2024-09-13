@@ -32,7 +32,7 @@ async function getCarros() {
   const encontro = 72
 
   const response: CarroFromEncontro[] = await api
-    .get(`/encontro/${encontro}/carros`)
+    .get(`encontro/${encontro}/carros`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
@@ -42,7 +42,7 @@ async function getCarros() {
 async function getConfirmados() {
   const encontro = 71
   const response: CardEncontristaResponse[] = await api
-    .get(`/encontro/${encontro}/confirmados-card`)
+    .get(`encontro/${encontro}/confirmados-card`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
@@ -69,9 +69,7 @@ async function getConfirmados() {
 }
 
 async function updateCarro(encontristaId: string, carroId: string) {
-  return await api.patch(
-    `/encontrista/${encontristaId}/change-carro/${carroId}`,
-  )
+  return await api.patch(`encontrista/${encontristaId}/change-carro/${carroId}`)
 }
 
 export default function AlocacaoCarros() {

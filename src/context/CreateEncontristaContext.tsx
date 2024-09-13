@@ -214,7 +214,7 @@ export function CreateEncontristaContextProvider({
       return
     }
     await api
-      .post('/encontrista', completeForm)
+      .post('encontrista', completeForm)
       .then(() => setUserCreated('created'))
       .catch(() => setUserCreated('error'))
   }

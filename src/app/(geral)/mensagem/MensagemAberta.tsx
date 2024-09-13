@@ -66,7 +66,7 @@ export function MensagemAberta({ encontristas }: MensagemAbertaProps) {
   }, [isSubmitSuccessful, control])
 
   async function handlPostMessage(data: messageData) {
-    const message = await api.post('/carta', {
+    const message = await api.post('carta', {
       slugEncontrista: data.encontrista,
       para: data.para,
       de: data.de,

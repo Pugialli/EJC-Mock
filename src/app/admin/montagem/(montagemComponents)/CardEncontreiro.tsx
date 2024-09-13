@@ -23,7 +23,7 @@ import { useEffect, useState } from 'react'
 import { AlocacaoCard } from './AlocacaoCard'
 
 async function getEncontreiroData(slug: string) {
-  const cartas = await api.get(`/montagem/${slug}`)
+  const cartas = await api.get(`montagem/${slug}`)
 
   return cartas.data
 }

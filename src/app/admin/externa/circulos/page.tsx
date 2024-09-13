@@ -60,7 +60,7 @@ async function getCirculos() {
   const encontro = 71
 
   const response: CirculosResponse = await api
-    .get(`/encontro/${encontro}/circulos`)
+    .get(`encontro/${encontro}/circulos`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
@@ -80,7 +80,7 @@ async function getCirculos() {
 async function getConfirmados() {
   const encontro = 71
   const response: CardEncontristaResponse[] = await api
-    .get(`/encontro/${encontro}/confirmados-card`)
+    .get(`encontro/${encontro}/confirmados-card`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
@@ -109,7 +109,7 @@ export interface UpdateCirculoProps {
 
 async function updateCirculo({ encontristaId, circuloId }: UpdateCirculoProps) {
   return await api.patch(
-    `/encontrista/${encontristaId}/change-circulo/${circuloId}`,
+    `encontrista/${encontristaId}/change-circulo/${circuloId}`,
   )
 }
 

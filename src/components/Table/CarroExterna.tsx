@@ -30,7 +30,7 @@ export async function changeResponsavel({
   carroId,
   responsavelId,
 }: CarroResponsavelProps) {
-  await api.patch(`/carro/${carroId}/change-responsavel/${responsavelId}`)
+  await api.patch(`carro/${carroId}/change-responsavel/${responsavelId}`)
 }
 
 const carroResponsavelSchema = z.object({

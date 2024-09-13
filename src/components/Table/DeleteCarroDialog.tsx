@@ -21,7 +21,7 @@ interface DeleteProps {
 export async function carroDelete(carroId: string) {
   // await new Promise((resolve) => setTimeout(resolve, Math.random() * 10000))
 
-  return await api.delete(`/carro/${carroId}/delete`)
+  return await api.delete(`carro/${carroId}/delete`)
 }
 
 export function DeleteCarroDialog({

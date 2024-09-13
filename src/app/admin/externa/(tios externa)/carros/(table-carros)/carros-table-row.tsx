@@ -1,9 +1,4 @@
-import {
-  CircleArrowOutUpRight,
-  MessageSquareMore,
-  Pencil,
-  Trash2,
-} from 'lucide-react'
+import { MessageSquareMore, Pencil, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
@@ -11,6 +6,7 @@ import { TableCell, TableRow } from '@/components/ui/table'
 import type { CarroSummaryData } from '@/app/api/carro/get-carros-summary'
 import { CarroExterna } from '@/components/Table/CarroExterna'
 import { DeleteCarroDialog } from '@/components/Table/DeleteCarroDialog'
+import { ImportCarroButton } from '@/components/Table/ImportCarroButton'
 import type { SelectItemAvatarProps } from '@/components/Table/SelectItemAvatar'
 import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -24,7 +20,6 @@ import type { Value_Status as valueStatus } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useState } from 'react'
-import { toast } from 'sonner'
 
 export interface Encontrista {
   id_pessoa: string
@@ -52,7 +47,7 @@ async function getEquipeExterna() {
   const encontro = 71
 
   const equipe = await api
-    .get(`/encontro/${encontro}/externa`)
+    .get(`encontro/${encontro}/externa`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 
@@ -62,25 +57,12 @@ async function getEquipeExterna() {
 export function CarrosTableRow({ carro }: EncontristaTableRowProps) {
   const [open, setOpen] = useState(false)
 
-  // const router = useRouter()
-
   const isFromThisEncontro = carro.ultimaExterna === 72
 
   const { data: equipeExterna, isLoading } = useQuery<SelectItemAvatarProps[]>({
     queryFn: async () => await getEquipeExterna(),
     queryKey: ['equipeExterna'],
   })
-
-  async function handleCopyCarro(idCarro: string) {
-    console.log(idCarro)
-    const result = false
-    if (result) {
-      // router.replace('/admin/externa/carros')
-      toast.success('Carro importado.')
-    } else {
-      toast.error('Ouve um erro ao importar este carro.')
-    }
-  }
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -151,13 +133,11 @@ export function CarrosTableRow({ carro }: EncontristaTableRowProps) {
                 </Button>
               </AlertDialogTrigger>
             ) : (
-              <Button
-                variant="ghost"
-                className="p-0"
-                onClick={() => handleCopyCarro(carro.id)}
-              >
-                <CircleArrowOutUpRight className="h-4 w-4 text-blue-400 hover:text-blue-500" />
-              </Button>
+              <ImportCarroButton
+                key={carro.id}
+                idCarro={carro.id}
+                observacao={carro.obsExterna}
+              />
             )}
           </div>
         </TableCell>

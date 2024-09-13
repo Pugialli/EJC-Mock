@@ -19,7 +19,7 @@ export async function changeCartaStatus({
   // await new Promise((resolve) => setTimeout(resolve, Math.random() * 10000))
 
   // console.log(`Alterar: ${cartaId} -> ${cartaStatus}`)
-  return await api.patch('/carta/update-carta-virtual/', {
+  return await api.patch('carta/update-carta-virtual/', {
     id,
     cartaStatus,
   })

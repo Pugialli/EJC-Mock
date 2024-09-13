@@ -1,0 +1,19 @@
+import { NextResponse, type NextRequest } from 'next/server'
+import { updateCarro, type UpdateCarroProps } from './update-carro.txy'
+
+export async function PUT(request: NextRequest) {
+  const formData: UpdateCarroProps = await request.json()
+
+  const updated = await updateCarro(formData)
+
+  if (!updated) {
+    return NextResponse.json({ status: 400 })
+  }
+
+  const encontristaUpdated = {
+    idEncontro: updated.idEncontro,
+    idCarro: updated.idCarro,
+  }
+
+  return NextResponse.json(encontristaUpdated, { status: 201 })
+}

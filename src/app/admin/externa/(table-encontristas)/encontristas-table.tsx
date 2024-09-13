@@ -46,7 +46,7 @@ async function getEncontrista({
     ? `orderDirection=${orderByDirection}&`
     : ''
 
-  const path = `/encontrista?${nameSearch}${statusSearch}${externaSearch}${orderField}${orderDirection}page=${pageIndex}`
+  const path = `encontrista?${nameSearch}${statusSearch}${externaSearch}${orderField}${orderDirection}page=${pageIndex}`
 
   const response: EncontristaSummary = await api
     .get(path)

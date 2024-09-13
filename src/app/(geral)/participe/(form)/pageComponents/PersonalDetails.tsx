@@ -14,7 +14,7 @@ import {
   CreateEncontristaContext,
   PersonalFormData,
 } from '@/context/CreateEncontristaContext'
-import { api } from '@/lib/axios'
+import { checkPessoa } from '@/utils/check-already-db'
 import { getReligioes } from '@/utils/fetch-domains'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery } from '@tanstack/react-query'
@@ -59,12 +59,6 @@ const personalFormScheme = z.object({
 })
 
 export type PersonalFormDataInput = z.infer<typeof personalFormScheme>
-
-async function checkPessoa(email: string) {
-  const response = await api.get(`encontrista/check-email/${email}`)
-
-  return response.data
-}
 
 export function PersonalDetails() {
   const { completeForm, updateData } = useContext(CreateEncontristaContext)

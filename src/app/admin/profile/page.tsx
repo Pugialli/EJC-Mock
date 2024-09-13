@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import { ButtonLabel } from './(sectionComponents)/ButtonLabel'
 
 async function getProfile(id: string) {
-  const res = await api.get(`/profile/${id}`)
+  const res = await api.get(`profile/${id}`)
 
   if (res.status !== 200) {
     // This will activate the closest `error.js` Error Boundary

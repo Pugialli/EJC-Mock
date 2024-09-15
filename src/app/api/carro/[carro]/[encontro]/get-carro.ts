@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import type { Role } from '@prisma/client'
 
 export type CarroData = {
   numeroCarro: number
@@ -15,22 +16,32 @@ export type CarroData = {
     observacaoMotorista: string
     pessoaMotorista: {
       id: string
+      role: Role
       nome: string
       sobrenome: string
       celular: string
       telefone: string | null
       email: string
-      enderecoCep: string
+      endereco: {
+        cep: string
+        bairro: string
+        rua: string
+      }
       endNumero: number
     }
     pessoaCarona: {
       id: string
+      role: Role
       nome: string
       sobrenome: string
       celular: string
       telefone: string | null
       email: string
-      enderecoCep: string
+      endereco: {
+        cep: string
+        bairro: string
+        rua: string
+      }
       endNumero: number
     } | null
   }
@@ -67,24 +78,38 @@ export async function getCarro({ carro, encontro }: GetCarroProps) {
           pessoaMotorista: {
             select: {
               id: true,
+              role: true,
               nome: true,
               sobrenome: true,
               celular: true,
               telefone: true,
               email: true,
-              enderecoCep: true,
+              endereco: {
+                select: {
+                  cep: true,
+                  bairro: true,
+                  rua: true,
+                }
+              },
               enderecoNumero: true,
             },
           },
           pessoaCarona: {
             select: {
               id: true,
+              role: true,
               nome: true,
               sobrenome: true,
               celular: true,
               telefone: true,
               email: true,
-              enderecoCep: true,
+              endereco: {
+                select: {
+                  cep: true,
+                  bairro: true,
+                  rua: true,
+                }
+              },
               enderecoNumero: true,
             },
           },

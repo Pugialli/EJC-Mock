@@ -4,6 +4,7 @@ import type { CarroData } from '@/app/api/carro/[carro]/[encontro]/get-carro'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Role } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -26,7 +27,7 @@ const editFormScheme = z.object({
     },
     z.number().min(1, { message: 'O número é obrigatório.' }),
   ),
-  placaCarro: z.string().min(7, { message: 'A placa está incompleta.' }),
+  placaCarro: z.string().optional(),
   observacao: z.string().optional(),
   modeloCarro: z.string().optional(),
   lugaresCarro: z.preprocess(
@@ -38,6 +39,8 @@ const editFormScheme = z.object({
   observacaoMotorista: z.string().optional(),
 
   motorista: z.object({
+    id: z.string(),
+    role: z.nativeEnum(Role),
     nome: z
       .string({ required_error: 'O nome é obrigatório.' })
       .min(3, { message: 'O nome precisa ter pelo menos 3 letras.' }),
@@ -55,9 +58,8 @@ const editFormScheme = z.object({
     cep: z
       .string({ required_error: 'O cep é obrigatório.' })
       .min(9, { message: 'O cep está incompleto.' }),
-    cidade: z.string().min(1, { message: 'A cidade é obrigatória.' }),
     endNumero: z
-      .string()
+      .string({ required_error: 'O número é obrigatório.' })
       .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
       .min(1, { message: 'O número é obrigatório.' })
       .transform((val) => parseInt(val, 10)),
@@ -67,6 +69,8 @@ const editFormScheme = z.object({
 
   carona: z
     .object({
+      id: z.string(),
+      role: z.nativeEnum(Role),
       nome: z
         .string({ required_error: 'O nome é obrigatório.' })
         .min(3, { message: 'O nome precisa ter pelo menos 3 letras.' }),
@@ -84,9 +88,8 @@ const editFormScheme = z.object({
       cep: z
         .string({ required_error: 'O cep é obrigatório.' })
         .min(9, { message: 'O cep está incompleto.' }),
-      cidade: z.string().min(1, { message: 'A cidade é obrigatória.' }),
       endNumero: z
-        .string()
+        .string({ required_error: 'O número é obrigatório.' })
         .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
         .min(1, { message: 'O número é obrigatório.' })
         .transform((val) => parseInt(val, 10)),
@@ -112,6 +115,8 @@ export function EditCarroForm({ data, disabled }: EditCarroProps) {
       lugaresCarro: data.carro.lugaresCarro,
       observacaoMotorista: data.carro.observacaoMotorista,
       motorista: {
+        id: data.carro.pessoaMotorista.id,
+        role: data.carro.pessoaMotorista.role,
         nome: data.carro.pessoaMotorista.nome,
         sobrenome: data.carro.pessoaMotorista.sobrenome,
         celular: data.carro.pessoaMotorista.celular,
@@ -119,10 +124,16 @@ export function EditCarroForm({ data, disabled }: EditCarroProps) {
           ? data.carro.pessoaMotorista.telefone
           : '',
         email: data.carro.pessoaMotorista.email,
-        cep: data.carro.pessoaMotorista.enderecoCep,
+        cep: data.carro.pessoaMotorista.endereco.cep,
+        bairro: data.carro.pessoaMotorista.endereco.bairro,
+        rua: data.carro.pessoaMotorista.endereco.rua,
         endNumero: data.carro.pessoaMotorista.endNumero,
       },
       carona: {
+        id: data.carro.pessoaCarona ? data.carro.pessoaCarona.id : '1',
+        role: data.carro.pessoaCarona
+          ? data.carro.pessoaCarona.role
+          : undefined,
         nome: data.carro.pessoaCarona ? data.carro.pessoaCarona.nome : '',
         sobrenome: data.carro.pessoaCarona
           ? data.carro.pessoaCarona.sobrenome
@@ -133,7 +144,9 @@ export function EditCarroForm({ data, disabled }: EditCarroProps) {
             ? data.carro.pessoaCarona.telefone
             : '',
         email: data.carro.pessoaCarona ? data.carro.pessoaCarona.email : '',
-        cep: data.carro.pessoaCarona ? data.carro.pessoaCarona.enderecoCep : '',
+        cep: data.carro.pessoaCarona ? data.carro.pessoaCarona.endereco.cep : '',
+        bairro: data.carro.pessoaCarona ? data.carro.pessoaCarona.endereco.bairro : '',
+        rua: data.carro.pessoaCarona ? data.carro.pessoaCarona.endereco.rua : '',
         endNumero: data.carro.pessoaMotorista.endNumero,
       },
     },

@@ -3,8 +3,8 @@ import { FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useFormContext } from 'react-hook-form'
+import { TwoRowInput } from '../../../../novo/(form)/components/TwoRowInput'
 import { CardForm } from '../components/CardForm'
-import { CardFormSection } from '../components/CardFormSection'
 
 export function CarroCard() {
   const form = useFormContext()
@@ -13,8 +13,8 @@ export function CarroCard() {
 
   return (
     <CardForm title="Carro" sectionId="car-section">
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
-        <CardFormSection>
+      <div className="grid grid-cols-1 pt-4 lg:grid-cols-2 lg:gap-8">
+        <TwoRowInput>
           <FormField
             control={control}
             name="numeroCarro"
@@ -24,6 +24,22 @@ export function CarroCard() {
               </TextInput>
             )}
           />
+        </TwoRowInput>
+        <TwoRowInput>
+          <FormField
+            control={control}
+            name="placaCarro"
+            disabled={true}
+            render={({ field }) => {
+              return (
+                <TextInput label={'Placa *'}>
+                  <Input {...field} />
+                </TextInput>
+              )
+            }}
+          />
+        </TwoRowInput>
+        <TwoRowInput>
           <FormField
             control={control}
             name="modeloCarro"
@@ -33,31 +49,8 @@ export function CarroCard() {
               </TextInput>
             )}
           />
-          <FormField
-            control={control}
-            name="observacaoMotorista"
-            render={({ field }) => {
-              return (
-                <TextInput label={'Observações do Motorista'}>
-                  <Textarea {...field} />
-                </TextInput>
-              )
-            }}
-          />
-        </CardFormSection>
-        <CardFormSection>
-          <FormField
-            control={control}
-            name="placaCarro"
-            render={({ field }) => {
-              return (
-                <TextInput label={'Placa *'}>
-                  <Input {...field} />
-                </TextInput>
-              )
-            }}
-          />
-
+        </TwoRowInput>
+        <TwoRowInput>
           <FormField
             control={control}
             name="lugaresCarro"
@@ -69,7 +62,22 @@ export function CarroCard() {
               )
             }}
           />
+        </TwoRowInput>
+        <TwoRowInput>
+          <FormField
+            control={control}
+            name="observacaoMotorista"
+            render={({ field }) => {
+              return (
+                <TextInput label={'Observações do Motorista'}>
+                  <Textarea {...field} />
+                </TextInput>
+              )
+            }}
+          />
+        </TwoRowInput>
 
+        <TwoRowInput>
           <FormField
             control={control}
             name="observacao"
@@ -81,7 +89,7 @@ export function CarroCard() {
               )
             }}
           />
-        </CardFormSection>
+        </TwoRowInput>
       </div>
     </CardForm>
   )

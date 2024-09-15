@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { NewCarContext, type PersonFormData } from '@/context/NewCarroContext'
 import { api } from '@/lib/axios'
+import { checkPessoa } from '@/utils/check-already-db'
 import { getCEPData, type CEPResponse } from '@/utils/fetch-cep'
 import { getTioExternaData } from '@/utils/fetch-tio-externa'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -28,6 +29,7 @@ import { TwoRowInput } from '../components/TwoRowInput'
 
 const caronaFormScheme = z.object({
   possiuCarona: z.enum(['sim', 'nao']),
+  mesmoEndereco: z.enum(['sim', 'nao']),
   carona: z
     .object({
       id: z.string().optional(),
@@ -82,7 +84,7 @@ export async function getPossiveisTios() {
 }
 
 export function CaronaDetails() {
-  const { updateData } = useContext(NewCarContext)
+  const { updateData, completeForm } = useContext(NewCarContext)
 
   const form = useForm<CaronaFormDataInput>({
     resolver: zodResolver(caronaFormScheme),
@@ -100,50 +102,65 @@ export function CaronaDetails() {
   } = form
 
   const hasCarona = watch('possiuCarona') === 'sim'
+  const hideAddress = watch('mesmoEndereco') === 'nao'
 
   const registerWithMask = useHookFormMask(register)
 
   async function handleNextFormStep(formDataInput: CaronaFormDataInput) {
     if (formDataInput.possiuCarona === 'sim') {
-      if (formDataInput.carona) {
-        const caronaData: PersonFormData = {
-          id: formDataInput.carona.id ? formDataInput.carona.id : '',
-          nome: formDataInput.carona.nome ? formDataInput.carona.nome : '',
-          sobrenome: formDataInput.carona.sobrenome
-            ? formDataInput.carona.sobrenome
-            : '',
-          apelido: formDataInput.carona.apelido
-            ? formDataInput.carona.apelido
-            : '',
-          email: formDataInput.carona.email ? formDataInput.carona.email : '',
-          celular: formDataInput.carona.celular
-            ? formDataInput.carona.celular
-            : '',
-          telefone: formDataInput.carona.telefone
-            ? formDataInput.carona.telefone
-            : '',
-          enderecoCep: formDataInput.carona.cep ? formDataInput.carona.cep : '',
-          estado: formDataInput.carona.estado
-            ? formDataInput.carona.estado
-            : '',
-          cidade: formDataInput.carona.cidade
-            ? formDataInput.carona.cidade
-            : '',
-          bairro: formDataInput.carona.bairro
-            ? formDataInput.carona.bairro
-            : '',
-          rua: formDataInput.carona.rua ? formDataInput.carona.rua : '',
-          enderecoNumero: formDataInput.carona.endNumero
-            ? parseInt(formDataInput.carona.endNumero, 10)
-            : 0,
-          observacaoMotorista: '',
+      if (formDataInput.carona && formDataInput.carona.email) {
+        const isAlreadyOnDB = await checkPessoa(formDataInput.carona.email)
+
+        if (formDataInput.carona.id === '0' && isAlreadyOnDB) {
+          toast.warning('Este email já está cadastrado', {
+            description:
+              'Adicione este tio de externa usando a lista de tios possíveis acima.',
+            duration: 20000,
+          })
+        } else {
+          const caronaData: PersonFormData = {
+            id: formDataInput.carona.id ? formDataInput.carona.id : '',
+            nome: formDataInput.carona.nome ? formDataInput.carona.nome : '',
+            sobrenome: formDataInput.carona.sobrenome
+              ? formDataInput.carona.sobrenome
+              : '',
+            apelido: formDataInput.carona.apelido
+              ? formDataInput.carona.apelido
+              : '',
+            email: formDataInput.carona.email ? formDataInput.carona.email : '',
+            celular: formDataInput.carona.celular
+              ? formDataInput.carona.celular
+              : '',
+            telefone: formDataInput.carona.telefone
+              ? formDataInput.carona.telefone
+              : '',
+            enderecoCep: formDataInput.carona.cep
+              ? formDataInput.carona.cep
+              : '',
+            estado: formDataInput.carona.estado
+              ? formDataInput.carona.estado
+              : '',
+            cidade: formDataInput.carona.cidade
+              ? formDataInput.carona.cidade
+              : '',
+            bairro: formDataInput.carona.bairro
+              ? formDataInput.carona.bairro
+              : '',
+            rua: formDataInput.carona.rua ? formDataInput.carona.rua : '',
+            enderecoNumero: formDataInput.carona.endNumero
+              ? parseInt(formDataInput.carona.endNumero, 10)
+              : 0,
+            observacaoMotorista: '',
+          }
+          handleStep(() => {
+            updateData({ data: caronaData, step: activeStep })
+          })
+          nextStep()
         }
-        handleStep(() => {
-          updateData({ data: caronaData, step: activeStep })
-        })
       }
+    } else {
+      nextStep()
     }
-    nextStep()
   }
 
   const { data: possiveisExternas } = useQuery<SelectArray[]>({
@@ -174,13 +191,23 @@ export function CaronaDetails() {
     }
     if (cepValue && cepValue[8] !== '_') {
       fetchAddress(cepValue)
+    } else if (!hideAddress) {
+      setValue('carona.cep', completeForm.motorista.enderecoCep)
+      setValue('carona.estado', completeForm.motorista.estado)
+      setValue('carona.cidade', completeForm.motorista.cidade)
+      setValue('carona.bairro', completeForm.motorista.bairro)
+      setValue('carona.rua', completeForm.motorista.rua)
+      setValue(
+        'carona.endNumero',
+        completeForm.motorista.enderecoNumero.toString(),
+      )
     } else {
       setValue('carona.estado', '')
       setValue('carona.cidade', '')
       setValue('carona.bairro', '')
       setValue('carona.rua', '')
     }
-  }, [activeStep, cepValue, setValue])
+  }, [activeStep, cepValue, setValue, completeForm, hideAddress])
 
   useEffect(() => {
     async function fetchPessoa(id: string) {
@@ -198,7 +225,7 @@ export function CaronaDetails() {
         setValue('carona.email', pessoa.email, { shouldValidate: false })
         setValue('carona.celular', pessoa.celular, { shouldValidate: false })
         setValue('carona.telefone', pessoa.telefone, { shouldValidate: false })
-        setValue('carona.cep', pessoa.enderecoCep, { shouldValidate: false })
+        setValue('carona.cep', pessoa.endereco.cep, { shouldValidate: false })
         if (pessoa.enderecoNumero) {
           setValue('carona.endNumero', pessoa.enderecoNumero.toString(), {
             shouldValidate: false,
@@ -365,64 +392,87 @@ export function CaronaDetails() {
                       }}
                     />
                   </TwoRowInput>
-                  <TwoRowInput>
+                  <div className="col-span-2">
                     <FormField
                       control={control}
-                      name="carona.cep"
-                      render={({ field }) => (
-                        <TextInput label={'CEP *'}>
-                          <Input
-                            {...field}
-                            {...registerWithMask(field.name, '99999-999')}
-                          />
-                        </TextInput>
-                      )}
+                      name="mesmoEndereco"
+                      defaultValue="sim"
+                      render={({ field }) => {
+                        return (
+                          <RadioInputGroup
+                            label="Ficará no mesmo endereço do motorista? *"
+                            onChange={field.onChange}
+                            defaultValue={'sim'}
+                          >
+                            <RadioInputItem value="sim" label="Sim" />
+                            <RadioInputItem value="nao" label="Não" />
+                          </RadioInputGroup>
+                        )
+                      }}
                     />
-                  </TwoRowInput>
-                  <TwoRowInput>
-                    <FormField
-                      control={control}
-                      name="carona.cidade"
-                      render={({ field }) => (
-                        <TextInput label={'Cidade *'}>
-                          <Input readOnly={true} {...field} />
-                        </TextInput>
-                      )}
-                    />
-                  </TwoRowInput>
-                  <TwoRowInput>
-                    <FormField
-                      control={control}
-                      name="carona.bairro"
-                      render={({ field }) => (
-                        <TextInput label={'Bairro *'}>
-                          <Input readOnly={true} {...field} />
-                        </TextInput>
-                      )}
-                    />
-                  </TwoRowInput>
-                  <TwoRowInput>
-                    <FormField
-                      control={control}
-                      name="carona.rua"
-                      render={({ field }) => (
-                        <TextInput label={'Rua *'}>
-                          <Input readOnly={true} {...field} />
-                        </TextInput>
-                      )}
-                    />
-                  </TwoRowInput>
-                  <TwoRowInput>
-                    <FormField
-                      control={control}
-                      name="carona.endNumero"
-                      render={({ field }) => (
-                        <TextInput label={'Número do endereço*'}>
-                          <Input {...field} />
-                        </TextInput>
-                      )}
-                    />
-                  </TwoRowInput>
+                  </div>
+                  {hideAddress && (
+                    <div className="col-span-2 grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
+                      <TwoRowInput>
+                        <FormField
+                          control={control}
+                          name="carona.cep"
+                          render={({ field }) => (
+                            <TextInput label={'CEP *'}>
+                              <Input
+                                {...field}
+                                {...registerWithMask(field.name, '99999-999')}
+                              />
+                            </TextInput>
+                          )}
+                        />
+                      </TwoRowInput>
+                      <TwoRowInput>
+                        <FormField
+                          control={control}
+                          name="carona.cidade"
+                          render={({ field }) => (
+                            <TextInput label={'Cidade *'}>
+                              <Input readOnly={true} {...field} />
+                            </TextInput>
+                          )}
+                        />
+                      </TwoRowInput>
+                      <TwoRowInput>
+                        <FormField
+                          control={control}
+                          name="carona.bairro"
+                          render={({ field }) => (
+                            <TextInput label={'Bairro *'}>
+                              <Input readOnly={true} {...field} />
+                            </TextInput>
+                          )}
+                        />
+                      </TwoRowInput>
+                      <TwoRowInput>
+                        <FormField
+                          control={control}
+                          name="carona.rua"
+                          render={({ field }) => (
+                            <TextInput label={'Rua *'}>
+                              <Input readOnly={true} {...field} />
+                            </TextInput>
+                          )}
+                        />
+                      </TwoRowInput>
+                      <TwoRowInput>
+                        <FormField
+                          control={control}
+                          name="carona.endNumero"
+                          render={({ field }) => (
+                            <TextInput label={'Número do endereço*'}>
+                              <Input {...field} />
+                            </TextInput>
+                          )}
+                        />
+                      </TwoRowInput>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

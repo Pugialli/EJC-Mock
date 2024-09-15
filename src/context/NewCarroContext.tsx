@@ -141,6 +141,7 @@ export function NewCarContextProvider({
 
   const clearForm = () => {
     setCompleteForm({ ...initialState })
+    setCarCreated('not sent')
   }
 
   return (

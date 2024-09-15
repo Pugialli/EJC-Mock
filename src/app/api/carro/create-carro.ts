@@ -71,6 +71,15 @@ export async function createCarro({
       return null
     }
     idMotorista = motoristaPessoa.id
+  } else {
+    await prisma.pessoa.update({
+      data: {
+        enderecoNumero: motorista.enderecoNumero,
+      },
+      where: {
+        id: motorista.id,
+      },
+    })
   }
 
   const carroCreated = await prisma.carro.create({
@@ -129,6 +138,24 @@ export async function createCarro({
       await prisma.carro.update({
         data: {
           idCarona: caronaPessoa.id,
+        },
+        where: {
+          id: carroCreated.id,
+        },
+      })
+    } else {
+      await prisma.pessoa.update({
+        data: {
+          enderecoNumero: carona.enderecoNumero,
+        },
+        where: {
+          id: carona.id,
+        },
+      })
+
+      await prisma.carro.update({
+        data: {
+          idCarona: searchedCarona.id,
         },
         where: {
           id: carroCreated.id,

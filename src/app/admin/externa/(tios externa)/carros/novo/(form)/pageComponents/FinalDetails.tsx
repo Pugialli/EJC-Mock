@@ -63,7 +63,7 @@ function SendingCreation() {
 
 export function FinalDetails() {
   const { clearForm, carCreated, createNewCarro } = useContext(NewCarContext)
-  const { goToStep } = useWizard()
+  const { goToStep, activeStep } = useWizard()
 
   function resetForm() {
     clearForm()
@@ -73,7 +73,7 @@ export function FinalDetails() {
   useEffect(() => {
     createNewCarro()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [activeStep])
 
   return (
     <div className="text-center">

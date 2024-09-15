@@ -13,6 +13,7 @@ import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { NewCarContext, type PersonFormData } from '@/context/NewCarroContext'
 import { api } from '@/lib/axios'
+import { checkPessoa } from '@/utils/check-already-db'
 import { getCEPData, type CEPResponse } from '@/utils/fetch-cep'
 import { getTioExternaData } from '@/utils/fetch-tio-externa'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -98,29 +99,39 @@ export function MotoristaDetails() {
   const registerWithMask = useHookFormMask(register)
 
   async function handleNextFormStep(formDataInput: MotoristaFormDataInput) {
-    const motoristaData: PersonFormData = {
-      id: formDataInput.id,
-      nome: formDataInput.nome,
-      sobrenome: formDataInput.sobrenome,
-      apelido: formDataInput.apelido,
-      email: formDataInput.email,
-      celular: formDataInput.celular,
-      telefone: formDataInput.telefone,
-      enderecoCep: formDataInput.cep,
-      estado: formDataInput.estado,
-      cidade: formDataInput.cidade,
-      bairro: formDataInput.bairro,
-      rua: formDataInput.rua,
-      enderecoNumero: parseInt(formDataInput.endNumero, 10),
-      observacaoMotorista: formDataInput.observacaoMotorista
-        ? formDataInput.observacaoMotorista
-        : '',
-    }
+    const isAlreadyOnDB = await checkPessoa(formDataInput.email)
 
-    handleStep(() => {
-      updateData({ data: motoristaData, step: activeStep })
-    })
-    nextStep()
+    if (formDataInput.id === '0' && isAlreadyOnDB) {
+      toast.warning('Este email já está cadastrado', {
+        description:
+          'Adicione este tio de externa usando a lista de tios possíveis acima.',
+        duration: 20000,
+      })
+    } else {
+      const motoristaData: PersonFormData = {
+        id: formDataInput.id,
+        nome: formDataInput.nome,
+        sobrenome: formDataInput.sobrenome,
+        apelido: formDataInput.apelido,
+        email: formDataInput.email,
+        celular: formDataInput.celular,
+        telefone: formDataInput.telefone,
+        enderecoCep: formDataInput.cep,
+        estado: formDataInput.estado,
+        cidade: formDataInput.cidade,
+        bairro: formDataInput.bairro,
+        rua: formDataInput.rua,
+        enderecoNumero: parseInt(formDataInput.endNumero, 10),
+        observacaoMotorista: formDataInput.observacaoMotorista
+          ? formDataInput.observacaoMotorista
+          : '',
+      }
+
+      handleStep(() => {
+        updateData({ data: motoristaData, step: activeStep })
+      })
+      nextStep()
+    }
   }
 
   const { data: possiveisExternas } = useQuery<SelectArray[]>({
@@ -139,21 +150,21 @@ export function MotoristaDetails() {
       } else {
         const addressData: CEPResponse = await response.json()
         setValue('estado', addressData.state, {
-          shouldValidate: false,
+          shouldValidate: true,
           shouldDirty: true,
         })
-        setValue('cidade', addressData.city, { shouldValidate: false })
-        setValue('bairro', addressData.neighborhood, { shouldValidate: false })
-        setValue('rua', addressData.street, { shouldValidate: false })
+        setValue('cidade', addressData.city, { shouldValidate: true })
+        setValue('bairro', addressData.neighborhood, { shouldValidate: true })
+        setValue('rua', addressData.street, { shouldValidate: true })
       }
     }
     if (cepValue && cepValue[8] !== '_') {
       fetchAddress(cepValue)
     } else {
-      setValue('estado', '')
-      setValue('cidade', '')
-      setValue('bairro', '')
-      setValue('rua', '')
+      setValue('estado', completeForm.motorista.estado)
+      setValue('cidade', completeForm.motorista.cidade)
+      setValue('bairro', completeForm.motorista.bairro)
+      setValue('rua', completeForm.motorista.rua)
     }
   }, [activeStep, cepValue, setValue])
 
@@ -171,7 +182,7 @@ export function MotoristaDetails() {
         setValue('email', pessoa.email, { shouldValidate: false })
         setValue('celular', pessoa.celular, { shouldValidate: false })
         setValue('telefone', pessoa.telefone, { shouldValidate: false })
-        setValue('cep', pessoa.enderecoCep, { shouldValidate: false })
+        setValue('cep', pessoa.endereco.cep, { shouldValidate: false })
         if (pessoa.enderecoNumero) {
           setValue('endNumero', pessoa.enderecoNumero.toString(), {
             shouldValidate: false,

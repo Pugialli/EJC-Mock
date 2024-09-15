@@ -144,9 +144,15 @@ export function EditCarroForm({ data, disabled }: EditCarroProps) {
             ? data.carro.pessoaCarona.telefone
             : '',
         email: data.carro.pessoaCarona ? data.carro.pessoaCarona.email : '',
-        cep: data.carro.pessoaCarona ? data.carro.pessoaCarona.endereco.cep : '',
-        bairro: data.carro.pessoaCarona ? data.carro.pessoaCarona.endereco.bairro : '',
-        rua: data.carro.pessoaCarona ? data.carro.pessoaCarona.endereco.rua : '',
+        cep: data.carro.pessoaCarona
+          ? data.carro.pessoaCarona.endereco.cep
+          : '',
+        bairro: data.carro.pessoaCarona
+          ? data.carro.pessoaCarona.endereco.bairro
+          : '',
+        rua: data.carro.pessoaCarona
+          ? data.carro.pessoaCarona.endereco.rua
+          : '',
         endNumero: data.carro.pessoaMotorista.endNumero,
       },
     },

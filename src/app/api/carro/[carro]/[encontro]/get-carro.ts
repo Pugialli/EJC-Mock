@@ -89,7 +89,7 @@ export async function getCarro({ carro, encontro }: GetCarroProps) {
                   cep: true,
                   bairro: true,
                   rua: true,
-                }
+                },
               },
               enderecoNumero: true,
             },
@@ -108,7 +108,7 @@ export async function getCarro({ carro, encontro }: GetCarroProps) {
                   cep: true,
                   bairro: true,
                   rua: true,
-                }
+                },
               },
               enderecoNumero: true,
             },

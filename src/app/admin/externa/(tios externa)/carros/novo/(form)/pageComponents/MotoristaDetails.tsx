@@ -166,7 +166,7 @@ export function MotoristaDetails() {
       setValue('bairro', completeForm.motorista.bairro)
       setValue('rua', completeForm.motorista.rua)
     }
-  }, [activeStep, cepValue, setValue])
+  }, [activeStep, cepValue, setValue, completeForm])
 
   useEffect(() => {
     async function fetchPessoa(id: string) {

@@ -27,7 +27,7 @@ export function SelectItem({ text, badge, ...props }: SelectItemProps) {
       {...props}
     >
       <SelectPrimitive.ItemText asChild>
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           <span className="text-zinc-700 dark:text-zinc-100">{text}</span>
           {badge && <Badge variant={variant}>{convertedBadge}</Badge>}
         </div>

@@ -48,13 +48,7 @@ export function MotoristaCard() {
     queryKey: ['possiveisExternas'],
   })
 
-  const {
-    register,
-    watch,
-    control,
-    setValue,
-    trigger,
-  } = form
+  const { register, watch, control, setValue, trigger } = form
 
   const cepValue = watch('motorista.cep')
   const idValue = watch('motorista.id')
@@ -117,7 +111,9 @@ export function MotoristaCard() {
           shouldValidate: true,
         })
         setValue('motorista.cep', pessoa.endereco.cep, { shouldValidate: true })
-        setValue('motorista.bairro', pessoa.endereco.bairro, { shouldValidate: true })
+        setValue('motorista.bairro', pessoa.endereco.bairro, {
+          shouldValidate: true,
+        })
         setValue('motorista.rua', pessoa.endereco.rua, { shouldValidate: true })
         if (pessoa.enderecoNumero) {
           setValue('motorista.endNumero', pessoa.enderecoNumero.toString(), {
@@ -125,12 +121,26 @@ export function MotoristaCard() {
           })
         }
       }
-      trigger(['motorista.id', 'motorista.role', 'motorista.nome', 'motorista.sobrenome', 'motorista.apelido', 'motorista.role', 'motorista.email', 'motorista.celular', 'motorista.telefone', 'motorista.cep', 'motorista.bairro', 'motorista.rua', 'motorista.endNumero']);
+      trigger([
+        'motorista.id',
+        'motorista.role',
+        'motorista.nome',
+        'motorista.sobrenome',
+        'motorista.apelido',
+        'motorista.role',
+        'motorista.email',
+        'motorista.celular',
+        'motorista.telefone',
+        'motorista.cep',
+        'motorista.bairro',
+        'motorista.rua',
+        'motorista.endNumero',
+      ])
     }
     if (idValue !== '0' && idValue !== undefined) {
       fetchPessoa(idValue)
     }
-  }, [idValue, setValue])
+  }, [idValue, setValue, trigger])
 
   const registerWithMask = useHookFormMask(register)
 

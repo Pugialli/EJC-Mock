@@ -34,7 +34,7 @@ export async function getTioExterna(id: string) {
           bairro: true,
           cep: true,
           rua: true,
-        }
+        },
       },
       enderecoNumero: true,
     },

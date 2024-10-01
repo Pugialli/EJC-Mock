@@ -29,6 +29,14 @@ const equipes = [
     color: 'bg-amber-900/80',
   },
   {
+    value: 'tio_aparente',
+    color: 'bg-amber-900/80',
+  },
+  {
+    value: 'tio_secreto',
+    color: 'bg-amber-900/80',
+  },
+  {
     value: 'boa_vontade',
     color: 'bg-amber-900/80',
   },

@@ -24,7 +24,7 @@ import { useWizard } from 'react-use-wizard'
 import { toast } from 'sonner'
 import { useHookFormMask } from 'use-mask-input'
 import { z } from 'zod'
-import { TwoRowInput } from '../components/TwoRowInput'
+import { TwoRowInput } from '../../../../../../../../components/TwoRowInput'
 
 const motoristaFormScheme = z.object({
   id: z.string(),

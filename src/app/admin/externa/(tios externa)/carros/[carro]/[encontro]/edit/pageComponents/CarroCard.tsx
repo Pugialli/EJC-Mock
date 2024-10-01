@@ -3,7 +3,7 @@ import { FormField } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useFormContext } from 'react-hook-form'
-import { TwoRowInput } from '../../../../novo/(form)/components/TwoRowInput'
+import { TwoRowInput } from '../../../../../../../../../components/TwoRowInput'
 import { CardForm } from '../components/CardForm'
 
 export function CarroCard() {

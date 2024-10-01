@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { getCurrentEncontro } from '../get-current-encontro/get-current-encontro'
 
 export interface TioCirculoType {
   nome: string
@@ -19,14 +20,10 @@ export interface CirculosResponse {
 }
 
 export async function getCirculos() {
-  const encontro = await prisma.encontro.findFirst({
-    orderBy: {
-      createdAt: 'desc',
-    },
-  })
-  if (!encontro) {
-    return null
-  }
+  const encontro = await getCurrentEncontro()
+
+  if (!encontro) return null
+
   const circulos = await prisma.circulo.findMany({
     select: {
       id: true,

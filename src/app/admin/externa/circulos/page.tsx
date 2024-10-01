@@ -5,10 +5,8 @@ import type {
   CirculosResponse,
 } from '@/app/api/encontro/[numeroEncontro]/circulos/get-circulos'
 import type { CardEncontristaResponse } from '@/app/api/encontro/[numeroEncontro]/confirmados-card/get-confirmados-card'
-import { ChangeOrderDialog } from '@/components/Circulos/ChangeOrderDialog'
 import { AlertDialog, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { api } from '@/lib/axios'
 import { hasDraggableData } from '@/utils/draggable-data'
 import {
@@ -25,7 +23,7 @@ import {
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowDownUp, Download, Puzzle } from 'lucide-react'
+import { Download, Puzzle } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { AutoSortButton } from './AutoSortButton'
@@ -311,21 +309,6 @@ export default function MontagemCirculos() {
               />
             )}
           </AlertDialog>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button type="button" disabled={isLoadingCirculos || true}>
-                <div className="flex items-center justify-center gap-2">
-                  <ArrowDownUp className="h-4 w-4" />
-                  <span className="flex">Alterar ordem dos Círculos</span>
-                </div>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="h-auto w-9/10 rounded-lg p-6 lg:h-auto lg:w-screen">
-              {circulosEncontrao && (
-                <ChangeOrderDialog order={circulosEncontrao.order} />
-              )}
-            </DialogContent>
-          </Dialog>
         </div>
         <DndContext
           sensors={sensors}

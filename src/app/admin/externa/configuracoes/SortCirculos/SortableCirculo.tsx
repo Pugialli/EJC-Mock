@@ -2,12 +2,12 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import type { ReactNode } from 'react'
 
-type SortableItemProps = {
+type SortableCirculoProps = {
   id: string
   children: ReactNode
 }
 
-export function SortableItem({ id, children }: SortableItemProps) {
+export function SortableCirculo({ id, children }: SortableCirculoProps) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id })
 

@@ -17,7 +17,7 @@ import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useHookFormMask } from 'use-mask-input'
-import { TwoRowInput } from '../../../../novo/(form)/components/TwoRowInput'
+import { TwoRowInput } from '../../../../../../../../../components/TwoRowInput'
 import { CardForm } from '../components/CardForm'
 
 export async function getPossiveisTios() {

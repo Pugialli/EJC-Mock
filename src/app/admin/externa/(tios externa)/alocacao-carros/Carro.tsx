@@ -106,7 +106,7 @@ export function Carro({ carro, encontristas }: CarroProps) {
         className="flex flex-col gap-4 text-zinc-700 shadow-lg"
       >
         <CardTitle className={cn('rounded-t-lg', cor[0].bg)}>
-          <div className="flex items-center justify-between p-4">
+          <div className="flex items-center justify-between px-4 py-2 text-xl">
             <div className="flex flex-col gap-2 ">
               <h2>
                 {carro.carroInfo.motorista.nome}{' '}
@@ -123,11 +123,11 @@ export function Carro({ carro, encontristas }: CarroProps) {
                 </span>
               </div>
             </div>
-            <div className="flex flex-col items-center justify-center gap-2">
+            <div className="flex flex-col items-center justify-center gap-2 text-base">
               <span>#{carro.carroInfo.numeroCarro}</span>
               <Tooltip>
                 <TooltipTrigger disabled={carro.carroInfo.observacoes === ''}>
-                  <MessageSquare className={cn('h-4 w-4', obsColor)} />
+                  <MessageSquare className={cn('size-4', obsColor)} />
                 </TooltipTrigger>
                 <TooltipContent className="w-72 text-center">
                   {carro.carroInfo.observacoes ? (
@@ -139,7 +139,7 @@ export function Carro({ carro, encontristas }: CarroProps) {
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger disabled={carro.carroInfo.externa === ''}>
-                  <CircleUserRound className={cn('h-4 w-4', externaColor)} />
+                  <CircleUserRound className={cn('size-4', externaColor)} />
                 </TooltipTrigger>
                 <TooltipContent className="w-auto text-center">
                   {carro.carroInfo.externa ? (

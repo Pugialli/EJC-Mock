@@ -23,9 +23,9 @@ import { useEffect, useState } from 'react'
 import { AlocacaoCard } from './AlocacaoCard'
 
 async function getEncontreiroData(slug: string) {
-  const cartas = await api.get(`montagem/${slug}`)
+  const encontreiroData = await api.get(`montagem/${slug}`)
 
-  return cartas.data
+  return encontreiroData.data
 }
 
 interface CardEncontreiroProps {
@@ -44,7 +44,7 @@ export function CardEncontreiro({ slug }: CardEncontreiroProps) {
     nome: '-',
     instagram: null,
     slug: '',
-    apelido: null,
+    apelido: '-',
     bairro: '-',
     avatarUrl: undefined,
     numeroEncontro: undefined,
@@ -60,10 +60,27 @@ export function CardEncontreiro({ slug }: CardEncontreiroProps) {
   useEffect(() => {
     if (encontreiroData) {
       setCurrentData(encontreiroData)
+    } else {
+      setCurrentData({
+        id: '',
+        nome: '-',
+        instagram: null,
+        slug: '',
+        apelido: '-',
+        bairro: '-',
+        avatarUrl: undefined,
+        numeroEncontro: undefined,
+        corCirculo: undefined,
+        obsBanda: '-',
+        disponibilidade: 'NAO_PREENCHEU',
+        obs: '-',
+        preferencias: [],
+        equipeEncontro: [],
+        statusMontagem: null,
+      })
     }
   }, [encontreiroData])
 
-  // const encontreiroData = await getEncontreiroData(slug)
   const corCirculo =
     currentData.corCirculo === 'Amarelo'
       ? 'bg-yellow-500'
@@ -76,6 +93,7 @@ export function CardEncontreiro({ slug }: CardEncontreiroProps) {
             : currentData.corCirculo === 'Vermelho'
               ? 'bg-red-500'
               : 'bg-zinc-200'
+
   return (
     <div className="p-4">
       <Card className="w-full rounded-xl border-none">

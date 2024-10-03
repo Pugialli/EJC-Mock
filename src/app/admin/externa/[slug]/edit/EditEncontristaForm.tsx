@@ -56,9 +56,9 @@ const editFormScheme = z.object({
   cep: z
     .string({ required_error: 'O cep é obrigatório.' })
     .min(9, { message: 'O cep está incompleto.' }),
-  estado: z.string().min(1, { message: 'O estado é obrigatório.' }),
-  cidade: z.string().min(1, { message: 'A cidade é obrigatória.' }),
-  bairro: z.string().min(1, { message: 'O bairro é obrigatório.' }),
+  estado: z.string().optional(),
+  cidade: z.string().optional(),
+  bairro: z.string().optional(),
   rua: z.string().min(1, { message: 'A rua é obrigatória.' }),
   numero: z.preprocess(
     (val) => {
@@ -67,11 +67,6 @@ const editFormScheme = z.object({
     },
     z.number().min(1, { message: 'O número é obrigatório.' }),
   ),
-  // z
-  //   .string()
-  //   .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
-  //   .min(1, { message: 'O número é obrigatório.' })
-  //   .transform((val) => parseInt(val, 10)),
   complemento: z.string(),
 
   cepEncontro: z
@@ -87,11 +82,6 @@ const editFormScheme = z.object({
     },
     z.number().min(1, { message: 'O número é obrigatório.' }),
   ),
-  // z
-  //   .string()
-  //   .regex(/^\d+$/, { message: 'O número deve conter apenas dígitos.' })
-  //   .min(1, { message: 'O número é obrigatório.' })
-  //   .transform((val) => parseInt(val, 10)),
   complementoEncontro: z.string(),
 
   moraCom: z.enum(['sozinho', 'conjuge', 'familiar', 'amigos'], {

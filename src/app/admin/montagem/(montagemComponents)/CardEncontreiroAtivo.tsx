@@ -104,7 +104,11 @@ export function CardEncontreiroAtivo({
                   <X className="size-3 text-white" />
                 )}
               {encontreiro.coordenador && (
-                <Crown className="size-3 text-white" />
+                encontreiro.equipeMontagem === 'mini' ? (
+                  <Crown className="size-3 text-black" />
+                ) : (
+                  <Crown className="size-3 text-white" />
+                )
               )}
             </div>
             <div className="flex items-center gap-4">

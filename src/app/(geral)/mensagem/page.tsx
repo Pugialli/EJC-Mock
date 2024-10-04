@@ -10,7 +10,7 @@ import { MensagemAberta } from './MensagemAberta'
 import { MensagemFechada } from './MensagemFechada'
 
 async function getConfirmados() {
-  const encontro = '71'
+  const encontro = '72'
   const response: EncontristaConfirmadosData[] = await api
     .get(`encontro/${encontro}/confirmados`)
     .then((response) => response.data)
@@ -30,7 +30,7 @@ async function getConfirmados() {
 }
 
 async function getCartasStatus() {
-  const res = await api.get(`encontro/71/get-carta-status`)
+  const res = await api.get(`encontro/72/get-carta-status`)
   return res.data as boolean
 }
 

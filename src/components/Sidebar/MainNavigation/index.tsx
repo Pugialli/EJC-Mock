@@ -2,6 +2,7 @@ import {
   Blocks,
   CarFront,
   CircleParking,
+  ListChecks,
   Mail,
   Puzzle,
   SquareUserRound,
@@ -37,13 +38,6 @@ export function MainNavigation() {
             icon={Users}
             active={path === '/admin/externa/tios'}
           />
-        </Link>
-        <Link href="/admin/externa/carros">
-          <NavItem
-            title="Lista de Carros"
-            icon={Car}
-            active={path === '/admin/externa/carros'}
-          />
         </Link> */}
         <Link href="/admin/externa/alocacao-carros">
           <NavItem
@@ -55,19 +49,19 @@ export function MainNavigation() {
 
         <Link href="/admin/externa/carros">
           <NavItem
-            title="Carros"
+            title="Lista de Carros"
             icon={CircleParking}
             active={path === '/admin/externa/carros'}
           />
         </Link>
       </NavItemGroup>
-      {/* <Link href="/admin/externa/pendencias">
+      <Link href="/admin/externa/pendencias">
         <NavItem
           title="Controle de Pendências"
           icon={ListChecks}
           active={path === '/admin/externa/pendencias'}
         />
-      </Link> */}
+      </Link>
       <Link href="/admin/externa/cartas">
         <NavItem
           title="Cartas"

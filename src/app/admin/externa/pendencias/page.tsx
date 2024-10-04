@@ -1,4 +1,4 @@
-import { TiosExterna } from "./TiosExterna";
+import { TiosExterna } from './TiosExterna'
 
 export default function Pendencias() {
   return (

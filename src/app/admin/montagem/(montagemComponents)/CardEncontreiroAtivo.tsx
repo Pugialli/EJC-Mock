@@ -103,13 +103,12 @@ export function CardEncontreiroAtivo({
                 equipeColor[0].value === 'nao_participara' && (
                   <X className="size-3 text-white" />
                 )}
-              {encontreiro.coordenador && (
-                encontreiro.equipeMontagem === 'mini' ? (
+              {encontreiro.coordenador &&
+                (encontreiro.equipeMontagem === 'mini' ? (
                   <Crown className="size-3 text-black" />
                 ) : (
                   <Crown className="size-3 text-white" />
-                )
-              )}
+                ))}
             </div>
             <div className="flex items-center gap-4">
               {encontreiro.apelido ? (

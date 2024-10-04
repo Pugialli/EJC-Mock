@@ -16,7 +16,7 @@ export async function updateEncontrista(data: EditFormDataInput) {
 
   const enderecoProps = {
     cep: data.cep,
-    bairro: data.bairro,
+    bairro: data.bairro ? data.bairro : '',
     rua: data.rua,
   }
 

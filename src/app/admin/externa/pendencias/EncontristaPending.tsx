@@ -32,8 +32,9 @@ export function EncontristaPending({ encontrista }: EncontristaProps) {
     { label: 'Vermelho', value: 'bg-red-400 text-red-400' },
     { label: 'Undefined', value: 'bg-zinc-400 text-zinc-400' },
   ]
+
   const cor =
-    encontrista.corCirculo !== null
+    encontrista.corCirculo !== undefined
       ? coresMap.filter((cor) => cor.label === encontrista.corCirculo)
       : coresMap.filter((cor) => cor.label === 'Undefined')
 

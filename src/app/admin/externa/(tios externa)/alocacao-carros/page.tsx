@@ -40,9 +40,8 @@ async function getCarros() {
 }
 
 async function getConfirmados() {
-  const encontro = 71
   const response: CardEncontristaResponse[] = await api
-    .get(`encontro/${encontro}/confirmados-card`)
+    .get(`encontro/1/confirmados-card`)
     .then((response) => response.data)
     .catch((err) => console.error(err))
 

@@ -3,6 +3,7 @@ import {
   type BairroResponse,
 } from '@/app/api/domains/bairrosRJ/zona/[bairro]/get-zona'
 import { prisma } from '@/lib/prisma'
+import { getCurrentEncontro } from '../get-current-encontro/get-current-encontro'
 
 export interface CardEncontristaResponse {
   id: string
@@ -19,11 +20,7 @@ export interface CardEncontristaResponse {
 }
 
 export async function getConfirmadosCard() {
-  const encontro = await prisma.encontro.findFirst({
-    orderBy: {
-      numeroEncontro: 'desc',
-    },
-  })
+  const encontro = await getCurrentEncontro()
 
   if (!encontro) {
     return null

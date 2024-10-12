@@ -2,6 +2,7 @@
 
 import type { EncontristaIdentification } from '@/app/api/encontrista/identification/[slug]/get-identification'
 import type { Carta } from '@/app/api/export/carta/[slug]/get-encontrista-cartas'
+import { api } from '@/lib/axios'
 import { dividirEmParagrafos } from '@/utils/dividir-paragrafos'
 import {
   AlignmentType,
@@ -68,6 +69,7 @@ export function PrintCartasEncontristaDocx({
           const separate = !!(
             index + 1 < filteredCartas.length && cartas.length !== 1
           )
+
           const formatedCarta = await createCarta(carta, separate)
           formatedCarta.forEach((paragrah) => {
             doc.push(paragrah)
@@ -75,6 +77,7 @@ export function PrintCartasEncontristaDocx({
         }),
       )
     }
+
     return doc
   }
   async function generateDocx() {
@@ -119,6 +122,15 @@ export function PrintCartasEncontristaDocx({
 
     Packer.toBlob(document).then((blob) => {
       saveAs(blob, `cartas-${encontrista.nome}.docx`)
+    })
+
+    cartas.map(async (carta) => {
+      return carta
+        ? await api.patch('carta/update-carta-virtual/', {
+            id: carta.id,
+            cartaStatus: true,
+          })
+        : null
     })
   }
   return (

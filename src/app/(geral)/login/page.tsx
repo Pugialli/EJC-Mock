@@ -66,7 +66,8 @@ export default function Login() {
                 Log In
               </CardTitle>
               <CardDescription className="text-nowrap text-sm text-zinc-500">
-                Área exclusiva para membros do movimento
+                This is the closed area of this website, to get an username and
+                login please contact the admin.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex w-full flex-col gap-6 p-0">

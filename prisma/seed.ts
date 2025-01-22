@@ -1,6 +1,19 @@
-import { stringToDate } from '@/utils/string-to-date'
 import { PrismaClient } from '@prisma/client'
+import { hash } from 'bcryptjs'
 const prisma = new PrismaClient()
+
+export function stringToDate(string: string) {
+  const correctedString =
+    string.split('/')[1] +
+    '/' +
+    string.split('/')[0] +
+    '/' +
+    string.split('/')[2]
+
+  const date = new Date(correctedString)
+
+  return date
+}
 
 async function main() {
   const status = await prisma.domainStatus.createMany({
@@ -1072,6 +1085,23 @@ async function main() {
     },
   })
 
+  const passwordHash = await hash('test1234', 1)
+
+  const genericAdmin = await prisma.pessoa.create({
+    data: {
+      nome: 'Generic',
+      sobrenome: 'Administrator',
+      celular: '(21) 9999-9999',
+      email: 'admin@ejcmock.com',
+      slug: 'admin-1',
+      enderecoCep: '22270-000',
+      password: passwordHash,
+      avatarUrl:
+        'https://imgcdn.stablediffusionweb.com/2024/9/12/269253cf-0164-4ffa-a64e-c958447c4407.jpg',
+      role: 'ADMIN',
+    },
+  })
+
   const local = await prisma.local.create({
     data: {
       enderecoCep: '22460-012',
@@ -1105,6 +1135,7 @@ async function main() {
     cores,
     endereco,
     admin,
+    genericAdmin,
     local,
     encontro,
   })

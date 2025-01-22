@@ -7,16 +7,20 @@ export function Capa() {
   return (
     <section className="h-full">
       <div className="relative">
-        <div className="flex flex-col gap-4 pb-28 pl-4 pt-8 lg:w-title lg:pb-72 lg:pl-16 lg:pt-32">
+        <div className="flex flex-col gap-4 pb-28 pl-4 pt-8 lg:w-100 lg:pb-72 lg:pl-16 lg:pt-32">
           <span className="text-xs font-bold text-violet-200 lg:text-2xl">
             EJC-NSDP
           </span>
           <h2 className="text-base font-extrabold text-white lg:text-5xl">
-            Venha fazer parte do nosso movimento
+            Welcome to my Mock Site for EJC-NSDP
           </h2>
           <span className="pb-6 text-sm text-violet-200 lg:text-lg">
-            Seja bem-vindo ao Encontro de Jovens com Cristo da paróquia Nossa
-            Senhora da Divina Providência.
+            This website is a direct duplication of the main project that can be
+            found{' '}
+            <Link href="https://ejcnsdp.com.br/" className="font-bold">
+              here
+            </Link>
+            .
           </span>
           <Link href="/participe">
             <Button className="text-xs font-medium lg:text-lg">

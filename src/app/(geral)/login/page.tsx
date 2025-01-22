@@ -65,9 +65,9 @@ export default function Login() {
               <CardTitle className="text-3xl font-bold text-zinc-700">
                 Log In
               </CardTitle>
-              <CardDescription className="text-nowrap text-sm text-zinc-500">
+              <CardDescription className="text-sm text-zinc-500">
                 This is the closed area of this website, to get an username and
-                login please contact the admin.
+                password please contact the admin.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex w-full flex-col gap-6 p-0">

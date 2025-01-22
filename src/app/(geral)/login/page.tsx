@@ -84,7 +84,7 @@ export default function Login() {
                 control={control}
                 name="password"
                 render={({ field }) => (
-                  <TextInput label={'Senha'}>
+                  <TextInput label={'Password'}>
                     <Input {...field} hidable={true} />
                   </TextInput>
                 )}

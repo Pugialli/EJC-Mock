@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/table'
 
 import type { CarrosSummary } from '@/app/api/carro/get-carros-summary'
+import { EmptyTableRow } from '@/components/Table/EmptyTableRow'
 import { Pagination } from '@/components/Table/Pagination'
 import { PaginationSkeleton } from '@/components/Table/PaginationSkeleton'
 import { api } from '@/lib/axios'
@@ -117,9 +118,16 @@ export function CarrosTable() {
             <TableBody className="bg-transparent">
               {isLoadingEncontrista && <CarrosTableSkeleton />}
               {result &&
+                result.carros.length !== 0 &&
                 result.carros.map((carro) => {
                   return <CarrosTableRow key={carro.id} carro={carro} />
                 })}
+              {result && result.carros.length === 0 && (
+                <EmptyTableRow
+                  colspan={9}
+                  content="Sem carros cadastrados neste encontro"
+                />
+              )}
             </TableBody>
             <TableFooter>
               {isLoadingEncontrista && <PaginationSkeleton totalCol={9} />}

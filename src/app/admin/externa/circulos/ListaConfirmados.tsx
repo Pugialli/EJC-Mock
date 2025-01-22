@@ -2,6 +2,7 @@ import { Card } from '@/components/ui/card'
 import { useDroppable } from '@dnd-kit/core'
 import { useUniqueId } from '@dnd-kit/utilities'
 import { compareDesc } from 'date-fns'
+import { CardEncontristasListEmpty } from '../CardEncontristasListEmpty'
 import { CardEncontrista, type SortableEncontrista } from './CardEncontristas'
 
 interface ListaConfirmadosSemCirculoProps {
@@ -41,6 +42,10 @@ export function ListaConfirmadosSemCirculo({
         </div>
 
         <div className="flex flex-col gap-4">
+          {encontristasWithoutCirculo.length === 0 && (
+            <CardEncontristasListEmpty />
+          )}
+
           {encontristasWithoutCirculo.map((encontrista) => {
             return (
               <CardEncontrista

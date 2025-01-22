@@ -96,6 +96,13 @@ export function Circulo({ circulo, encontristas }: CirculoProps) {
           </div>
           <div className="flex flex-col gap-4">
             {encontristasFromThisCirculo &&
+              encontristasFromThisCirculo.length === 0 && (
+                <div className="flex items-center justify-center py-2 text-center text-zinc-400">
+                  Este círculo ainda não possui encontristas
+                </div>
+              )}
+
+            {encontristasFromThisCirculo &&
               encontristasFromThisCirculo.map((encontrista) => {
                 return (
                   <CardEncontrista

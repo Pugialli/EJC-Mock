@@ -1,4 +1,5 @@
 import type { CarroFromEncontro } from '@/app/api/encontro/[numeroEncontro]/carros/get-carros'
+import { CarroEmpty } from '../../CarroEmpty'
 import type { SortableEncontristaCarro } from './CardEncontristasCarro'
 import { Carro, type CarroDroppable } from './Carro'
 
@@ -10,6 +11,7 @@ interface CarrosProps {
 export function Carros({ carros, encontristas }: CarrosProps) {
   return (
     <div className="grid grid-cols-2">
+      {carros.length === 0 && <CarroEmpty />}
       {carros.map((carro) => {
         const droppableCarro: CarroDroppable = {
           id: carro.id,

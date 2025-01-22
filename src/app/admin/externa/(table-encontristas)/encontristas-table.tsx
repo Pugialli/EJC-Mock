@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/table'
 
 import type { EncontristaSummary } from '@/app/api/encontrista/get-encontristas-summary'
+import { EmptyTableRow } from '@/components/Table/EmptyTableRow'
 import { Pagination } from '@/components/Table/Pagination'
 import { PaginationSkeleton } from '@/components/Table/PaginationSkeleton'
 import { SortableTableHead } from '@/components/Table/SortableTableHead'
@@ -191,6 +192,7 @@ export function EncontristasTable() {
             <TableBody className="bg-transparent">
               {isLoadingEncontrista && <EncontristaTableSkeleton />}
               {result &&
+                result.encontristas.length !== 0 &&
                 result.encontristas.map((encontrista) => {
                   return (
                     <EncontristaTableRow
@@ -199,6 +201,12 @@ export function EncontristasTable() {
                     />
                   )
                 })}
+              {result && result.encontristas.length === 0 && (
+                <EmptyTableRow
+                  colspan={8}
+                  content="Sem encontristas cadastrados neste encontro"
+                />
+              )}
             </TableBody>
             <TableFooter>
               {isLoadingEncontrista && <PaginationSkeleton totalCol={8} />}

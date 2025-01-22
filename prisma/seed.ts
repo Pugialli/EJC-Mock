@@ -1,18 +1,6 @@
+import { stringToDate } from '@/utils/string-to-date'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
-
-export function stringToDate(string: string) {
-  const correctedString =
-    string.split('/')[1] +
-    '/' +
-    string.split('/')[0] +
-    '/' +
-    string.split('/')[2]
-
-  const date = new Date(correctedString)
-
-  return date
-}
 
 async function main() {
   const status = await prisma.domainStatus.createMany({
